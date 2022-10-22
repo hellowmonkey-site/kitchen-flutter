@@ -1,3 +1,4 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/page.dart';
@@ -8,6 +9,7 @@ import 'package:kitchen_flutter/page/publish_page.dart';
 import 'package:kitchen_flutter/page/search_page.dart';
 import 'package:kitchen_flutter/page/user_page.dart';
 import 'package:kitchen_flutter/provider/theme_provider.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 // 记录退出按钮时间
@@ -41,78 +43,124 @@ class MainLayout extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        final int currentIndex = themeProvider.themeModeIndex;
-                        return SimpleDialog(
-                          title: const Text('请选择主题模式'),
-                          children: themeModeList.map((item) {
-                            final int index = themeModeList.indexOf(item);
-                            return SimpleDialogOption(
-                              onPressed: () {
-                                themeProvider.changeThemeMode(index);
-                                Navigator.of(context).pop();
-                              },
-                              child: Row(
-                                children: <Widget>[
-                                  Icon(
-                                    currentIndex == index
-                                        ? Icons.check_box
-                                        : Icons.check_box_outline_blank,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      margin: const EdgeInsets.only(left: 10),
-                                      child: Text(item.text),
-                                    ),
-                                  )
-                                ],
+                  showMaterialModalBottomSheet(
+                    animationCurve: Curves.bounceIn,
+                    context: context,
+                    bounce: true,
+                    barrierColor:
+                        Get.isDarkMode ? Colors.white24 : Colors.black26,
+                    builder: (context) {
+                      final int currentIndex = themeProvider.themeModeIndex;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10, bottom: 20),
+                              child: Text(
+                                '请选择主题模式',
+                                style: TextStyle(fontSize: 18),
                               ),
-                            );
-                          }).toList(),
-                        );
-                      });
+                            ),
+                            ...themeModeList.map((item) {
+                              final int index = themeModeList.indexOf(item);
+                              return SimpleDialogOption(
+                                onPressed: () {
+                                  themeProvider.changeThemeMode(index);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      currentIndex == index
+                                          ? Icons.check_box
+                                          : Icons.check_box_outline_blank,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.only(left: 10),
+                                        child: Text(item.text),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
                 tooltip: '修改主题模式',
                 icon:
                     Icon(Get.isDarkMode ? Icons.light_mode : Icons.dark_mode)),
             IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        final currentIndex = themeProvider.themeColorIndex;
-                        return SimpleDialog(
-                          title: const Text('请选择主题颜色'),
-                          children: themeColorList.map((color) {
-                            final int index = themeColorList.indexOf(color);
-                            return SimpleDialogOption(
-                              onPressed: () {
-                                themeProvider.changeThemeColor(index);
-                                Navigator.of(context).pop();
-                              },
-                              child: Row(children: [
-                                Icon(
-                                  currentIndex == index
-                                      ? Icons.check_box
-                                      : Icons.check_box_outline_blank,
-                                  color: Theme.of(context).primaryColor,
+                  showMaterialModalBottomSheet(
+                    animationCurve: Curves.bounceIn,
+                    context: context,
+                    bounce: true,
+                    barrierColor:
+                        Get.isDarkMode ? Colors.white24 : Colors.black26,
+                    builder: (context) {
+                      final int currentIndex = themeProvider.themeModeIndex;
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10, bottom: 20),
+                                child: Text(
+                                  '请选择主题颜色',
+                                  style: TextStyle(fontSize: 18),
                                 ),
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 10),
-//                                  width: 40,
-                                    height: 40,
-                                    color: color,
-                                  ),
-                                )
-                              ]),
-                            );
-                          }).toList(),
-                        );
-                      });
+                              ),
+                              Expanded(
+                                  child: SingleChildScrollView(
+                                controller: ModalScrollController.of(context),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: themeColorList.map((color) {
+                                    final int index =
+                                        themeColorList.indexOf(color);
+                                    return SimpleDialogOption(
+                                      onPressed: () {
+                                        themeProvider.changeThemeColor(index);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Row(children: [
+                                        Icon(
+                                          currentIndex == index
+                                              ? Icons.check_box
+                                              : Icons.check_box_outline_blank,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            margin:
+                                                const EdgeInsets.only(left: 10),
+                                            //                                  width: 40,
+                                            height: 40,
+                                            color: color,
+                                          ),
+                                        )
+                                      ]),
+                                    );
+                                  }).toList(),
+                                ),
+                              ))
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
                 tooltip: '修改主题色',
                 icon: const Icon(Icons.color_lens))
@@ -125,77 +173,21 @@ class MainLayout extends StatelessWidget {
           },
           children: const [SearchPage(), UserPage()],
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Theme.of(context).bottomAppBarColor,
-          shape: const CircularNotchedRectangle(), //shape of notch
-          notchMargin:
-              5, //notche margin between floating button and bottom appbar
-          child: SizedBox(
-            height: 55,
-            child: Row(
-              //children inside bottom appbar
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: (() {
-                final List<Widget> list = [];
-                for (var item in pageList) {
-                  var index = pageList.indexOf(item);
-                  list.add(Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 12),
-                      child: Obx(
-                        () => TextButton(
-                          onPressed: () {
-                            pageController.jumpToPage(index);
-                          },
-                          style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(0),
-                              foregroundColor:
-                                  controller.pageIndex.value == index
-                                      ? Theme.of(context).primaryColor
-                                      : Theme.of(context).disabledColor,
-                              backgroundColor:
-                                  controller.pageIndex.value == index
-                                      ? themeProvider.themeBrightness ==
-                                              Brightness.dark
-                                          ? Theme.of(context).primaryColorDark
-                                          : Theme.of(context).primaryColorLight
-                                      : null,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20))),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                item.icon,
-                                size: 30,
-                              ),
-                              if (controller.pageIndex.value == index)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 5),
-                                  child: Text(
-                                    item.text,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ));
-                  if (index == 0) {
-                    list.add(const SizedBox(width: 100));
-                  }
-                }
-                return list.toList();
-              })(),
-            ),
-          ),
-        ),
+        bottomNavigationBar: Obx(() => AnimatedBottomNavigationBar(
+              splashColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme.of(context).bottomAppBarColor,
+              activeColor: Theme.of(context).primaryColor,
+              inactiveColor: Theme.of(context).disabledColor,
+              activeIndex: controller.pageIndex.value,
+              onTap: (int index) {
+                pageController.jumpToPage(index);
+              },
+              icons: const [Icons.soup_kitchen, Icons.person],
+              gapLocation: GapLocation.center,
+              notchSmoothness: NotchSmoothness.softEdge,
+              leftCornerRadius: 10,
+              rightCornerRadius: 10,
+            )),
         floatingActionButton: FloatingActionButton(
           tooltip: '发布新菜谱',
           onPressed: () {

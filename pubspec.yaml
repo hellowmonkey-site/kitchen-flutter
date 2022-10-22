@@ -49,6 +49,8 @@ dependencies:
   fluttertoast: ^8.1.1
   shared_preferences: ^2.0.15
   provider: ^6.0.4
+  modal_bottom_sheet: ^2.1.2
+  animated_bottom_navigation_bar: ^1.1.0
 
 dev_dependencies:
   flutter_test:
