@@ -8,7 +8,6 @@ const DetailPage({ Key? key }) : super(key: key);
     return Scaffold(
       appBar: AppBar(
         title: const Text('菜谱详情'),
-        elevation: 0,
       ),
       body: const Center(child: Text('开发中...')),
     );

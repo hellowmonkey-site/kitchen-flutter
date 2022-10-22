@@ -38,7 +38,6 @@ class MainLayout extends StatelessWidget {
       },
       child: Scaffold(
           appBar: AppBar(
-            elevation: 0,
             title: Obx(() => Text(pageList[controller.pageIndex.value].text)),
             actions: [
               IconButton(

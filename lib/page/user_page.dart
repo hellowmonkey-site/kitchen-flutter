@@ -17,12 +17,17 @@ class UserPage extends StatelessWidget {
       body: Column(
         children: [
           Container(
+            decoration: BoxDecoration(
+                // ignore: prefer_const_constructors
+                boxShadow: [
+                  if (!Get.isDarkMode)
+                    const BoxShadow(color: Colors.black12, blurRadius: 2)
+                ], color: Theme.of(context).backgroundColor),
             margin: const EdgeInsets.only(bottom: 20),
             padding:
                 const EdgeInsets.only(top: 20, right: 20, bottom: 30, left: 20),
-            color: Get.isDarkMode
-                ? Theme.of(context).bottomAppBarColor
-                : Theme.of(context).primaryColor,
+            // color: Theme.of(context).backgroundColor,
+
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -45,28 +50,27 @@ class UserPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
+                          children: [
+                            const Text(
                               '用户昵称',
                               maxLines: 1,
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 5),
+                              padding: const EdgeInsets.only(top: 5),
                               child: Text(
                                 '描述',
                                 maxLines: 2,
                                 style: TextStyle(
-                                  color: Colors.white70,
-                                ),
+                                    color: Theme.of(context).disabledColor),
                               ),
                             )
                           ],
                         ),
                       ),
                       IconButton(
-                          color: Colors.white,
                           onPressed: () {
                             Application.openDialog(
                                 title: '退出登录',

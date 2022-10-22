@@ -50,11 +50,17 @@ class MainApp extends StatelessWidget {
       // ],
       // supportedLocales: const [Locale('zh', 'CN')],
       theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              shadowColor: Colors.black26,
+              elevation: 2),
           primaryColor: primarySwatch,
           primarySwatch: primarySwatch,
           brightness: Brightness.light,
           backgroundColor: Colors.white),
       darkTheme: ThemeData(
+        appBarTheme: const AppBarTheme(elevation: 0),
         primaryColor: primarySwatch,
         primarySwatch: primarySwatch,
         brightness: Brightness.dark,

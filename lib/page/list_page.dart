@@ -15,10 +15,6 @@ class ListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('菜谱列表'),
-        backgroundColor: Theme.of(context).backgroundColor,
-        foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
-        shadowColor: Colors.black26,
-        elevation: Get.isDarkMode ? 0 : 2,
       ),
       body: RefreshIndicator(
         onRefresh: () async {},
