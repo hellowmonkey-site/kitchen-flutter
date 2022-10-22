@@ -1,0 +1,1 @@
+const appTitle = '沃德厨房';
