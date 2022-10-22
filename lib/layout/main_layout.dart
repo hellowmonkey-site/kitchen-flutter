@@ -4,7 +4,8 @@ import 'package:kitchen_flutter/config/page.dart';
 import 'package:kitchen_flutter/config/theme.dart';
 import 'package:kitchen_flutter/controller/main_controller.dart';
 import 'package:kitchen_flutter/helper/application.dart';
-import 'package:kitchen_flutter/page/index_page.dart';
+import 'package:kitchen_flutter/page/publish_page.dart';
+import 'package:kitchen_flutter/page/search_page.dart';
 import 'package:kitchen_flutter/page/user_page.dart';
 import 'package:kitchen_flutter/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +37,7 @@ class MainLayout extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Obx(
-              () => Text(pageList[controller.pageIndex.value].text)),
+          title: Obx(() => Text(pageList[controller.pageIndex.value].text)),
           actions: [
             IconButton(
                 onPressed: () {
@@ -50,7 +50,10 @@ class MainLayout extends StatelessWidget {
                           children: themeModeList.map((item) {
                             final int index = themeModeList.indexOf(item);
                             return SimpleDialogOption(
-                              onPressed: () {},
+                              onPressed: () {
+                                themeProvider.changeThemeMode(index);
+                                Navigator.of(context).pop();
+                              },
                               child: Row(
                                 children: <Widget>[
                                   Icon(
@@ -80,8 +83,7 @@ class MainLayout extends StatelessWidget {
                   showDialog(
                       context: context,
                       builder: (context) {
-                        final currentIndex = themeColorList
-                            .indexOf(Theme.of(context).primaryColor);
+                        final currentIndex = themeProvider.themeColorIndex;
                         return SimpleDialog(
                           title: const Text('请选择主题颜色'),
                           children: themeColorList.map((color) {
@@ -121,7 +123,7 @@ class MainLayout extends StatelessWidget {
           onPageChanged: (int index) {
             controller.changePageIndex(index);
           },
-          children: const [IndexPage(), UserPage()],
+          children: const [SearchPage(), UserPage()],
         ),
         bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).bottomAppBarColor,
@@ -141,17 +143,26 @@ class MainLayout extends StatelessWidget {
                   var index = pageList.indexOf(item);
                   list.add(Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(5),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 12),
                       child: Obx(
                         () => TextButton(
                           onPressed: () {
                             pageController.jumpToPage(index);
                           },
                           style: TextButton.styleFrom(
+                              padding: const EdgeInsets.all(0),
                               foregroundColor:
                                   controller.pageIndex.value == index
-                                      ? Theme.of(context).indicatorColor
+                                      ? Theme.of(context).primaryColor
                                       : Theme.of(context).disabledColor,
+                              backgroundColor:
+                                  controller.pageIndex.value == index
+                                      ? themeProvider.themeBrightness ==
+                                              Brightness.dark
+                                          ? Theme.of(context).primaryColorDark
+                                          : Theme.of(context).primaryColorLight
+                                      : null,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: Row(
@@ -186,7 +197,12 @@ class MainLayout extends StatelessWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          tooltip: '发布新菜谱',
+          onPressed: () {
+            Get.to(() => const PublishPage(),
+                fullscreenDialog: true, transition: Transition.downToUp);
+          },
+          backgroundColor: Theme.of(context).primaryColor,
           child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

@@ -38,7 +38,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final primarySwatch = themeColorList[themeProvider.themeColorIndex] as MaterialColor;
+    final primarySwatch =
+        themeColorList[themeProvider.themeColorIndex] as MaterialColor;
     final themeMode = themeModeList[themeProvider.themeModeIndex];
 
     return GetMaterialApp(
@@ -49,11 +50,13 @@ class MainApp extends StatelessWidget {
       // ],
       // supportedLocales: const [Locale('zh', 'CN')],
       theme: ThemeData(
+          primaryColor: primarySwatch,
           primarySwatch: primarySwatch,
           brightness: Brightness.light,
           backgroundColor: Colors.white),
       darkTheme: ThemeData(
-          primarySwatch: primarySwatch,
+        primaryColor: primarySwatch,
+        primarySwatch: primarySwatch,
         brightness: Brightness.dark,
         backgroundColor: Colors.grey[800],
       ),

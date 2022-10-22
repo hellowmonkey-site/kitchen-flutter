@@ -8,6 +8,7 @@ class PageItem {
 }
 
 final List<PageItem> pageList = [
-  PageItem(text: '首页', icon: Icons.home),
+  PageItem(text: '觅食', icon: Icons.soup_kitchen),
+  // PageItem(text: '发布', icon: Icons.add_a_photo),
   PageItem(text: '我的', icon: Icons.person)
 ];

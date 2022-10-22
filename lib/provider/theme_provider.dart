@@ -7,13 +7,15 @@ class ThemeProvider with ChangeNotifier {
   static const themeModeIndexText = 'themeModeIndex';
   static const themeColorIndexText = 'themeColorIndex';
 
-  int themeColorIndex = Application.prefs?.getInt(themeColorIndexText) ?? themeColorDefaultIndex;
+  int themeColorIndex =
+      Application.prefs?.getInt(themeColorIndexText) ?? themeColorDefaultIndex;
 
-  int themeModeIndex = Application.prefs?.getInt(themeModeIndexText)?? themeModeDefaultIndex;
+  int themeModeIndex =
+      Application.prefs?.getInt(themeModeIndexText) ?? themeModeDefaultIndex;
 
   Brightness get themeBrightness {
     var list = [Brightness.light, Brightness.dark];
-    if (themeModeIndex == 2) {
+    if (themeModeIndex == themeModeList.length - 1) {
       return MediaQuery.of(Get.context!).platformBrightness;
     }
     return list[themeModeIndex];
