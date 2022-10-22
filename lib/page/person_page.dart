@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PublishPage extends StatelessWidget {
-  const PublishPage({super.key});
+class PersonPage extends StatelessWidget {
+  const PersonPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('发布菜谱'),
+        title: const Text('个人主页'),
         backgroundColor: Theme.of(context).backgroundColor,
         foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
         shadowColor: Colors.black26,
