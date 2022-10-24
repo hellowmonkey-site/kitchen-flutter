@@ -19,19 +19,19 @@ class AjaxPlugin {
       options.headers['appid'] = appId;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      final errno = response.data['errno'];
-      final errMsg = response.data['errmsg'].toString();
-      if (errno != null && errno != successCode) {
-        if (errno == loginError) {
+      final status = response.data['status'];
+      final message = response.data['message'].toString();
+      if (status != null && status != successCode) {
+        if (status == loginError) {
           Get.to(() => const LoginPage(),
               fullscreenDialog: true, transition: Transition.downToUp);
         }
         return handler.reject(
-            DioError(requestOptions: response.requestOptions, error: errMsg));
+            DioError(requestOptions: response.requestOptions, error: message));
       }
       return handler.next(response);
     }, onError: (e, handler) {
-      Application.toast(e.error, backgroundColor: Colors.red);
+      Application.toast(e.message, backgroundColor: Colors.red);
       return handler.next(e);
     }));
     Application.ajax = dio;

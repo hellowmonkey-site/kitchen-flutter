@@ -21,9 +21,9 @@ class UserPage extends StatelessWidget {
                 boxShadow: [
                   if (!Get.isDarkMode)
                     BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(.7),
+                        color: Theme.of(context).primaryColor.withOpacity(.6),
                         blurRadius: 10,
-                        offset: const Offset(0, 5))
+                        offset: const Offset(0, 3))
                 ],
                 color: Get.isDarkMode
                     ? Theme.of(context).bottomAppBarColor
@@ -147,7 +147,7 @@ class UserPage extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right_outlined),
                   leading: const Icon(Icons.info),
                   title: const Text('系统版本'),
-                  subtitle: Text('1'),
+                  subtitle: Text('v ${Application.packageInfo.version}'),
                   onTap: () {
                     Application.toast('检查更新');
                   },

@@ -2,16 +2,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide Router;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Application {
-//  请求
+  //  请求
   static late Dio ajax;
 
-//  本地存储
+  //  本地存储
   static late SharedPreferences prefs;
 
-//  轻提示
+  // 应用信息
+  static late PackageInfo packageInfo;
+
+  //  轻提示
   static void toast(String msg,
       {Color backgroundColor = Colors.black87,
       Color textColor = Colors.white,
@@ -24,7 +28,7 @@ class Application {
         gravity: gravity);
   }
 
-//  弹框
+  //  弹框
   static openDialog(
       {required String title,
       String? content,
