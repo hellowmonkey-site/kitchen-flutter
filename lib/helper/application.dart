@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Application {
 //  请求
-  static Dio? ajax;
+  static late Dio ajax;
 
 //  本地存储
-  static SharedPreferences? prefs;
+  static late SharedPreferences prefs;
 
 //  轻提示
   static void toast(String msg,

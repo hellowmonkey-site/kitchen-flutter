@@ -18,16 +18,16 @@ class UserPage extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                // ignore: prefer_const_constructors
                 boxShadow: [
-                  if (!Get.isDarkMode)
-                    const BoxShadow(color: Colors.black12, blurRadius: 2)
-                ], color: Theme.of(context).backgroundColor),
-            margin: const EdgeInsets.only(bottom: 20),
+                  BoxShadow(
+                      color: Theme.of(context).primaryColor.withOpacity(0.7),
+                      blurRadius: 2)
+                ],
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(20)),
+            margin: const EdgeInsets.all(20),
             padding:
                 const EdgeInsets.only(top: 20, right: 20, bottom: 30, left: 20),
-            // color: Theme.of(context).backgroundColor,
-
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,

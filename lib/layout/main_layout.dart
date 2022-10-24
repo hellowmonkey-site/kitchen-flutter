@@ -18,7 +18,7 @@ int _last = 0;
 class MainLayout extends StatelessWidget {
   MainLayout({super.key});
 
-  final MainController controller = Get.put(MainController());
+  final MainController mainController = Get.put(MainController());
   final PageController pageController = PageController();
 
   @override
@@ -38,7 +38,7 @@ class MainLayout extends StatelessWidget {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: Obx(() => Text(pageList[controller.pageIndex.value].text)),
+            title: Obx(() => Text(pageList[mainController.pageIndex.value].text)),
             actions: [
               IconButton(
                   onPressed: () {
@@ -170,7 +170,7 @@ class MainLayout extends StatelessWidget {
           body: PageView(
             controller: pageController,
             onPageChanged: (int index) {
-              controller.changePageIndex(index);
+              mainController.changePageIndex(index);
             },
             children: [SearchPage(), const UserPage()],
           ),
@@ -179,7 +179,7 @@ class MainLayout extends StatelessWidget {
                 backgroundColor: Theme.of(context).bottomAppBarColor,
                 activeColor: Theme.of(context).primaryColor,
                 inactiveColor: Theme.of(context).disabledColor,
-                activeIndex: controller.pageIndex.value,
+                activeIndex: mainController.pageIndex.value,
                 onTap: (int index) {
                   pageController.jumpToPage(index);
                 },
@@ -193,7 +193,7 @@ class MainLayout extends StatelessWidget {
             tooltip: '发布新菜谱',
             onPressed: () {
               Get.to(() => const PublishPage(),
-                  fullscreenDialog: true, transition: Transition.downToUp);
+                  fullscreenDialog: true, transition: Transition.cupertinoDialog);
             },
             backgroundColor: Theme.of(context).primaryColor,
             child: const Icon(Icons.add),

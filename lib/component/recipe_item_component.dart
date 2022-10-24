@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class KitchenItemComponent extends StatelessWidget {
-  const KitchenItemComponent({Key? key}) : super(key: key);
+class RecipeItemComponent extends StatelessWidget {
+  const RecipeItemComponent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

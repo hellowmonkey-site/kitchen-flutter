@@ -22,11 +22,11 @@ class ThemeModeItem {
   final ThemeMode value;
   final String text;
 
-  ThemeModeItem({required this.text, required this.value});
+  const ThemeModeItem({required this.text, required this.value});
 }
 
 final List<ThemeModeItem> themeModeList = [
-  ThemeModeItem(text: '亮色', value: ThemeMode.light),
-  ThemeModeItem(text: '暗色', value: ThemeMode.dark),
-  ThemeModeItem(text: '跟随系统', value: ThemeMode.system),
+  const ThemeModeItem(text: '亮色', value: ThemeMode.light),
+  const ThemeModeItem(text: '暗色', value: ThemeMode.dark),
+  const ThemeModeItem(text: '跟随系统', value: ThemeMode.system),
 ];

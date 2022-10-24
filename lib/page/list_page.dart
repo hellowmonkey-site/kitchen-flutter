@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kitchen_flutter/component/kitchen_item_component.dart';
+import 'package:kitchen_flutter/component/recipe_item_component.dart';
 import 'package:kitchen_flutter/controller/list_controller.dart';
 import 'package:kitchen_flutter/controller/search_controller.dart';
 
@@ -61,13 +61,13 @@ class ListPage extends StatelessWidget {
                         child: Padding(
                       padding: EdgeInsets.only(
                           left: 10, top: 5, bottom: 5, right: 5),
-                      child: KitchenItemComponent(),
+                      child: RecipeItemComponent(),
                     )),
                     Expanded(
                         child: Padding(
                       padding: EdgeInsets.only(
                           right: 10, top: 5, bottom: 5, left: 5),
-                      child: KitchenItemComponent(),
+                      child: RecipeItemComponent(),
                     ))
                   ],
                 );

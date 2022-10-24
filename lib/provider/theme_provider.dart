@@ -8,10 +8,10 @@ class ThemeProvider with ChangeNotifier {
   static const themeColorIndexText = 'themeColorIndex';
 
   int themeColorIndex =
-      Application.prefs?.getInt(themeColorIndexText) ?? themeColorDefaultIndex;
+      Application.prefs.getInt(themeColorIndexText) ?? themeColorDefaultIndex;
 
   int themeModeIndex =
-      Application.prefs?.getInt(themeModeIndexText) ?? themeModeDefaultIndex;
+      Application.prefs.getInt(themeModeIndexText) ?? themeModeDefaultIndex;
 
   Brightness get themeBrightness {
     var list = [Brightness.light, Brightness.dark];
@@ -23,13 +23,13 @@ class ThemeProvider with ChangeNotifier {
 
   changeThemeColor(int index) {
     themeColorIndex = index;
-    Application.prefs?.setInt(themeColorIndexText, themeColorIndex);
+    Application.prefs.setInt(themeColorIndexText, themeColorIndex);
     notifyListeners();
   }
 
   changeThemeMode(int index) {
     themeModeIndex = index;
-    Application.prefs?.setInt(themeModeIndexText, themeModeIndex);
+    Application.prefs.setInt(themeModeIndexText, themeModeIndex);
     notifyListeners();
   }
 }
