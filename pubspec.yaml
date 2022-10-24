@@ -52,6 +52,8 @@ dependencies:
   crypto: ^3.0.2
   modal_bottom_sheet: ^2.1.2
   animated_bottom_navigation_bar: ^1.1.0
+  package_info_plus: ^3.0.1
+  url_launcher: ^6.1.6 
 
 dev_dependencies:
   flutter_test:

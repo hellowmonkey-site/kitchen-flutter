@@ -20,11 +20,13 @@ void main() async {
   AjaxPlugin.init();
 
   //  设置android状态栏背景透明
-  if (Platform.isAndroid) {
-    SystemUiOverlayStyle systemUiOverlayStyle =
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-  }
+  try {
+    if (Platform.isAndroid) {
+      SystemUiOverlayStyle systemUiOverlayStyle =
+          const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+      SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    }
+  } catch (e) {}
 
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider.value(value: ThemeProvider())],
@@ -52,7 +54,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
           appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
+              foregroundColor: Colors.black87,
               shadowColor: Colors.black26,
               elevation: 2),
           primaryColor: primarySwatch,

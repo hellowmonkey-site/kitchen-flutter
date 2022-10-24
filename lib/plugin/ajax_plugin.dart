@@ -24,7 +24,7 @@ class AjaxPlugin {
       if (errno != null && errno != successCode) {
         if (errno == loginError) {
           Get.to(() => const LoginPage(),
-              fullscreenDialog: true, transition: Transition.cupertinoDialog);
+              fullscreenDialog: true, transition: Transition.downToUp);
         }
         return handler.reject(
             DioError(requestOptions: response.requestOptions, error: errMsg));

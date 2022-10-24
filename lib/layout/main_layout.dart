@@ -193,7 +193,7 @@ class MainLayout extends StatelessWidget {
             tooltip: '发布新菜谱',
             onPressed: () {
               Get.to(() => const PublishPage(),
-                  fullscreenDialog: true, transition: Transition.cupertinoDialog);
+                  fullscreenDialog: true, transition: Transition.downToUp);
             },
             backgroundColor: Theme.of(context).primaryColor,
             child: const Icon(Icons.add),

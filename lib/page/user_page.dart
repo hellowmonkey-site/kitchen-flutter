@@ -19,15 +19,18 @@ class UserPage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 boxShadow: [
-                  BoxShadow(
-                      color: Theme.of(context).primaryColor.withOpacity(0.7),
-                      blurRadius: 2)
+                  if (!Get.isDarkMode)
+                    BoxShadow(
+                        color: Theme.of(context).primaryColor.withOpacity(.7),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5))
                 ],
-                color: Theme.of(context).primaryColor,
+                color: Get.isDarkMode
+                    ? Theme.of(context).bottomAppBarColor
+                    : Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(20)),
             margin: const EdgeInsets.all(20),
-            padding:
-                const EdgeInsets.only(top: 20, right: 20, bottom: 30, left: 20),
+            padding: const EdgeInsets.all(20),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -54,19 +57,18 @@ class UserPage extends StatelessWidget {
                             const Text(
                               '用户昵称',
                               maxLines: 1,
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Text(
-                                '描述',
-                                maxLines: 2,
-                                style: TextStyle(
-                                    color: Theme.of(context).disabledColor),
-                              ),
-                            )
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Text(
+                                  '描述',
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.5),
+                                  ),
+                                ))
                           ],
                         ),
                       ),
@@ -80,7 +82,10 @@ class UserPage extends StatelessWidget {
                                   }
                                 });
                           },
-                          icon: const Icon(Icons.exit_to_app))
+                          icon: const Icon(
+                            Icons.exit_to_app,
+                            color: Colors.white,
+                          ))
                     ],
                   ),
                 ))
@@ -136,6 +141,15 @@ class UserPage extends StatelessWidget {
                   onTap: () {
                     Get.to(() => const SettingPage(),
                         transition: Transition.cupertino);
+                  },
+                ),
+                ListTile(
+                  trailing: const Icon(Icons.chevron_right_outlined),
+                  leading: const Icon(Icons.info),
+                  title: const Text('系统版本'),
+                  subtitle: Text('1'),
+                  onTap: () {
+                    Application.toast('检查更新');
                   },
                 ),
               ],
