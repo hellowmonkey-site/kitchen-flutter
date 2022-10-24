@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/helper/util.dart';
 import 'package:kitchen_flutter/page/login_page.dart';
 
 class AjaxPlugin {
@@ -14,7 +15,8 @@ class AjaxPlugin {
       if (token != null) {
         options.headers['token'] = token;
       }
-      options.headers['app_id'] = appId;
+      options.headers['x-csrf-token'] = generateSecret();
+      options.headers['appid'] = appId;
       return handler.next(options);
     }, onResponse: (response, handler) {
       final errno = response.data['errno'];
