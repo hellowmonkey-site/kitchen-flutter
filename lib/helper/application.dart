@@ -20,12 +20,15 @@ class Application {
       {Color backgroundColor = Colors.black87,
       Color textColor = Colors.white,
       ToastGravity gravity = ToastGravity.BOTTOM}) {
-    Fluttertoast.cancel();
+    // Fluttertoast.cancel();
     Fluttertoast.showToast(
-        msg: msg,
-        backgroundColor: backgroundColor,
-        textColor: textColor,
-        gravity: gravity);
+      msg: msg,
+      backgroundColor: backgroundColor,
+      textColor: textColor,
+      gravity: gravity,
+      webBgColor: 'rgba(0, 0, 0, .87)',
+      webPosition: 'bottom',
+    );
   }
 
   //  弹框
@@ -61,6 +64,7 @@ class Application {
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
+            elevation: 0,
             title: Text(
               title,
               softWrap: true,
@@ -76,5 +80,16 @@ class Application {
             actions: actions.toList(),
           );
         });
+  }
+
+  // 链接跳转
+  static navigateTo(
+    Function page, {
+    transition = Transition.cupertino,
+    bool fullscreenDialog = false,
+    bool auth = false,
+  }) {
+    return Get.to(page,
+        transition: transition, fullscreenDialog: fullscreenDialog);
   }
 }

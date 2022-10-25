@@ -103,8 +103,8 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.home),
                   title: const Text('个人主页'),
                   onTap: () {
-                    Get.to(() => const PersonPage(),
-                        transition: Transition.cupertino);
+                    Application.navigateTo(() => const PersonPage(),
+                        auth: true);
                   },
                 ),
                 ListTile(
@@ -112,8 +112,8 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.work_history_rounded),
                   title: const Text('浏览记录'),
                   onTap: () {
-                    Get.to(() => const UserHistoryPage(),
-                        transition: Transition.cupertino);
+                    Application.navigateTo(() => const UserHistoryPage(),
+                        auth: true);
                   },
                 ),
                 ListTile(
@@ -121,8 +121,8 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.favorite),
                   title: const Text('我的收藏'),
                   onTap: () {
-                    Get.to(() => const UserFavoritePage(),
-                        transition: Transition.cupertino);
+                    Application.navigateTo(() => const UserFavoritePage(),
+                        auth: true);
                   },
                 ),
                 ListTile(
@@ -130,8 +130,8 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.star),
                   title: const Text('我的关注'),
                   onTap: () {
-                    Get.to(() => const UserStarPage(),
-                        transition: Transition.cupertino);
+                    Application.navigateTo(() => const UserStarPage(),
+                        auth: true);
                   },
                 ),
                 ListTile(
@@ -139,8 +139,8 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.settings),
                   title: const Text('账号设置'),
                   onTap: () {
-                    Get.to(() => const SettingPage(),
-                        transition: Transition.cupertino);
+                    Application.navigateTo(() => const SettingPage(),
+                        auth: true);
                   },
                 ),
                 ListTile(

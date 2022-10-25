@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/controller/search_controller.dart';
+import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/page/list_page.dart';
 
 class SearchPage extends StatelessWidget {
@@ -65,8 +66,7 @@ class SearchPage extends StatelessWidget {
                                       BorderRadius.all(Radius.circular(10))),
                               padding: const EdgeInsets.all(0),
                               onPressed: () {
-                                Get.to(() => ListPage(),
-                                    transition: Transition.cupertino);
+                                Application.navigateTo(() => ListPage());
                               },
                               child: const Icon(
                                 Icons.search,

@@ -23,7 +23,7 @@ class AjaxPlugin {
       final message = response.data['message'].toString();
       if (status != null && status != successCode) {
         if (status == loginError) {
-          Get.to(() => const LoginPage(),
+          Application.navigateTo(() => const LoginPage(),
               fullscreenDialog: true, transition: Transition.downToUp);
         }
         return handler.reject(

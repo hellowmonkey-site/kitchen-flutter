@@ -38,7 +38,8 @@ class MainLayout extends StatelessWidget {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: Obx(() => Text(pageList[mainController.pageIndex.value].text)),
+            title:
+                Obx(() => Text(pageList[mainController.pageIndex.value].text)),
             actions: [
               IconButton(
                   onPressed: () {
@@ -192,8 +193,10 @@ class MainLayout extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             tooltip: '发布新菜谱',
             onPressed: () {
-              Get.to(() => const PublishPage(),
-                  fullscreenDialog: true, transition: Transition.downToUp);
+              Application.navigateTo(() => const PublishPage(),
+                  fullscreenDialog: true,
+                  transition: Transition.downToUp,
+                  auth: true);
             },
             backgroundColor: Theme.of(context).primaryColor,
             child: const Icon(Icons.add),
