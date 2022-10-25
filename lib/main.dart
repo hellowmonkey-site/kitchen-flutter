@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/config/theme.dart';
+import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/layout/main_layout.dart';
+import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/plugin/ajax_plugin.dart';
 import 'package:kitchen_flutter/plugin/packageinfo_plugin.dart';
 import 'package:kitchen_flutter/plugin/prefs_plugin.dart';
 import 'package:kitchen_flutter/provider/theme_provider.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -24,6 +27,14 @@ void main() async {
     //  网络
     AjaxPlugin.init();
 
+    // 设置本地用户状态
+    final String? data = Application.prefs.getString('user');
+    if (data != null) {
+      UserModel.getUserInfo().catchError((e) {
+        print(e);
+      });
+    }
+
     //  设置android状态栏背景透明
     if (Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle =
@@ -33,7 +44,10 @@ void main() async {
   } catch (e) {}
 
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider.value(value: ThemeProvider())],
+    providers: [
+      ChangeNotifierProvider.value(value: ThemeProvider()),
+      ChangeNotifierProvider.value(value: UserProvider())
+    ],
     child: const MainApp(),
   ));
 }

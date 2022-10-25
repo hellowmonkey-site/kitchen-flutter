@@ -4,14 +4,18 @@ import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/helper/util.dart';
-import 'package:kitchen_flutter/page/login_page.dart';
+// import 'package:kitchen_flutter/page/login_page.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class AjaxPlugin {
   static void init() {
     Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options, handler) {
-      final token = Application.prefs.getString('token');
+      // final token = Application.prefs.getString('token');
+      final token =
+          Provider.of<UserProvider>(Get.context!, listen: false).token;
       if (token != null) {
         options.headers['token'] = token;
       }
@@ -23,9 +27,11 @@ class AjaxPlugin {
       final message = response.data['message'].toString();
       if (status != null && status != successCode) {
         if (status == loginError) {
-          Application.navigateTo(() => const LoginPage(),
-              fullscreenDialog: true, transition: Transition.downToUp);
+          Provider.of<UserProvider>(Get.context!, listen: false).setUser(null);
+          // Application.navigateTo(() => const LoginPage(),
+          // fullscreenDialog: true, transition: Transition.downToUp);
         }
+        Application.toast(message, backgroundColor: Colors.red);
         return handler.reject(
             DioError(requestOptions: response.requestOptions, error: message));
       }

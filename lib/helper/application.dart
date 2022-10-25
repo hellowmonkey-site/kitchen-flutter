@@ -2,7 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide Router;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/page/login_page.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -90,6 +93,12 @@ class Application {
     bool fullscreenDialog = false,
     bool auth = false,
   }) {
+    final token = Provider.of<UserProvider>(Get.context!, listen: false).token;
+    if (auth && token == null) {
+      toast('请先登录');
+      return Get.to(() => LoginPage(),
+          fullscreenDialog: true, transition: Transition.downToUp);
+    }
     return Get.to(page,
         transition: transition, fullscreenDialog: fullscreenDialog);
   }

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/page/person_page.dart';
 import 'package:kitchen_flutter/page/setting_page.dart';
 import 'package:kitchen_flutter/page/user_favorite_page.dart';
 import 'package:kitchen_flutter/page/user_history_page.dart';
 import 'package:kitchen_flutter/page/user_star_page.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       body: Column(
         children: [
@@ -54,16 +59,22 @@ class UserPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              '用户昵称',
+                            Text(
+                              userProvider.isLogined
+                                  ? userProvider.username
+                                  : '请先登录',
                               maxLines: 1,
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.white),
                             ),
                             Padding(
                                 padding: const EdgeInsets.only(top: 5),
                                 child: Text(
-                                  '描述',
+                                  userProvider.isLogined
+                                      ? userProvider.user!.samp == ''
+                                          ? '暂无签名'
+                                          : userProvider.user!.samp
+                                      : '',
                                   maxLines: 2,
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.5),
@@ -72,20 +83,31 @@ class UserPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {
-                            Application.openDialog(
-                                title: '退出登录',
-                                onTap: (confirm) {
-                                  if (confirm) {
-                                    Application.toast('退出~');
-                                  }
-                                });
-                          },
-                          icon: const Icon(
-                            Icons.exit_to_app,
-                            color: Colors.white,
-                          ))
+                      if (userProvider.isLogined)
+                        IconButton(
+                            onPressed: () {
+                              Application.openDialog(
+                                  title: '退出登录',
+                                  onTap: (confirm) {
+                                    if (confirm) {
+                                      userProvider.setUser(null);
+                                    }
+                                  });
+                            },
+                            icon: const Icon(
+                              Icons.logout,
+                              color: Colors.white,
+                            ))
+                      else
+                        IconButton(
+                            onPressed: () {
+                              Get.to(() => LoginPage(),
+                                  transition: Transition.cupertino);
+                            },
+                            icon: const Icon(
+                              Icons.login,
+                              color: Colors.white,
+                            ))
                     ],
                   ),
                 ))

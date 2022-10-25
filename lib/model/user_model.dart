@@ -1,3 +1,8 @@
+import 'package:get/get.dart';
+import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
+import 'package:provider/provider.dart';
+
 class UserModel {
   final int id;
   final String username;
@@ -28,5 +33,35 @@ class UserModel {
             token: json['token'],
             createdAt: json['created_at']);
 
-  static postLogin() {}
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['username'] = username;
+    data['cover'] = cover;
+    data['nickname'] = nickname;
+    data['samp'] = samp;
+    data['token'] = token;
+    data['created_at'] = createdAt;
+    return data;
+  }
+
+  // 登录接口
+  static Future<UserModel> postLogin(
+      {required String username, required String password}) {
+    return Application.ajax.post('login',
+        data: {'username': username, 'password': password}).then((res) {
+      final user = UserModel.fromJson(res.data['data']);
+      Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+      return user;
+    });
+  }
+
+  // 获取用户信息
+  static Future<UserModel> getUserInfo() {
+    return Application.ajax.get('user/info').then((res) {
+      final user = UserModel.fromJson(res.data['data']);
+      Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+      return user;
+    });
+  }
 }

@@ -7,8 +7,10 @@ import 'package:kitchen_flutter/controller/search_controller.dart';
 class ListPage extends StatelessWidget {
   ListPage({super.key});
 
-  ListController listController = Get.put(ListController());
-  SearchController searchController = Get.find();
+  final ListController listController = Get.put(ListController());
+  final SearchController searchController = Get.find();
+  // 滚动
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class ListPage extends StatelessWidget {
             },
             itemCount: listController.dataItemCount,
             physics: const AlwaysScrollableScrollPhysics(),
-            controller: listController.scrollController,
+            controller: scrollController,
           ),
         ),
       ),

@@ -23,14 +23,24 @@ class UserProvider with ChangeNotifier {
 
   UserModel? get user => _user;
 
-  String get token => user?.token ?? '';
+  String? get token => user?.token;
 
-  setUser(UserModel data) {
-    _user = (data == null || data.id == null) ? null : data;
+  String get username {
+    if (user == null) {
+      return '';
+    }
+    return user!.nickname == '' ? user!.username : user!.nickname;
+  }
+
+  bool get isLogined => token != null;
+
+  setUser(UserModel? data) {
+    _user = data;
     if (_user == null) {
       Application.prefs.remove('user');
     } else {
-      Application.prefs.setString('user', jsonEncode(_user).toString());
+      Application.prefs
+          .setString('user', json.encode(_user!.toJson()).toString());
     }
     notifyListeners();
   }
