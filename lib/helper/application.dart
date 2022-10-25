@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Application {
   //  请求
@@ -27,7 +28,7 @@ class Application {
       textColor: textColor,
       gravity: gravity,
       webBgColor: 'rgba(0, 0, 0, .87)',
-      webPosition: 'bottom',
+      webPosition: 'center',
     );
   }
 
@@ -91,5 +92,18 @@ class Application {
   }) {
     return Get.to(page,
         transition: transition, fullscreenDialog: fullscreenDialog);
+  }
+
+  // 打开链接
+  static void launchUrl(url) async {
+    try {
+      if (await canLaunchUrl(url)) {
+        launchUrl(url);
+      } else {
+        throw Error();
+      }
+    } catch (e) {
+      toast('无法打开此链接');
+    }
   }
 }

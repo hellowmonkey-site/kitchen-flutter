@@ -39,7 +39,7 @@ class SearchController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-    categorys.value = await CategoryModel.getCategoryList();
-    update();
+    // categorys.value = await CategoryModel.getCategoryList();
+    // update();
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/config/theme.dart';
 import 'package:kitchen_flutter/layout/main_layout.dart';
-import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/plugin/ajax_plugin.dart';
 import 'package:kitchen_flutter/plugin/packageinfo_plugin.dart';
 import 'package:kitchen_flutter/plugin/prefs_plugin.dart';

@@ -42,7 +42,7 @@ class SearchPage extends StatelessWidget {
                           filled: true,
                           border: OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  BorderRadius.all(Radius.circular(30)),
                               borderSide: BorderSide(
                                   style: BorderStyle.solid, width: 2))),
                       onChanged: (val) {

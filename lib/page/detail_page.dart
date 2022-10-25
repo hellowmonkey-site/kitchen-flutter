@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DetailPage extends StatelessWidget {
-const DetailPage({ Key? key }) : super(key: key);
+  const DetailPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('菜谱详情'),
-      ),
-      body: const Center(child: Text('开发中...')),
-    );
+        appBar: AppBar(
+          title: const Text('菜谱详情'),
+        ),
+        body: const Center(child: Text('开发中...')));
   }
 }

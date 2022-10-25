@@ -9,7 +9,7 @@ class ListController extends GetxController {
   var dataList = Rx<List<String>>([]);
   // 分页
   var page = Rx<int>(1);
-  var totalPage = Rx<int>(0);
+  var totalPage = Rx<int>(1);
   
   var loading = Rx<bool>(false);
 
