@@ -16,7 +16,7 @@ class ListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('菜谱列表'),
+        title: Text(searchController.searchTitle),
       ),
       body: RefreshIndicator(
         onRefresh: () async {},

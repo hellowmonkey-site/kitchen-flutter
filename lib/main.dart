@@ -80,7 +80,8 @@ class MainApp extends StatelessWidget {
           brightness: Brightness.light,
           backgroundColor: Colors.white),
       darkTheme: ThemeData(
-        appBarTheme: const AppBarTheme(elevation: 0),
+        appBarTheme:
+            const AppBarTheme(elevation: 0, foregroundColor: Colors.white),
         primaryColor: primarySwatch,
         primarySwatch: primarySwatch,
         brightness: Brightness.dark,

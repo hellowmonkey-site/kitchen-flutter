@@ -5,14 +5,20 @@ import 'package:kitchen_flutter/model/category_model.dart';
 class SearchController extends GetxController {
   TextEditingController textController = TextEditingController();
   var keywords = Rx<String>('');
+  var selectedCategory = Rx<List<String>>([]);
+
   var categorys = Rx<List<CategoryItemModel>>([]);
+  var recommendCategorys = Rx<List<CategoryRecommendItemModel>>([]);
 
   // 标题
-  String get searchTitle => keywords.value.isEmpty
-      ? categorys.value.isEmpty
-          ? '美食广场'
-          : categorys.value.join(',')
-      : keywords.value;
+  String get searchTitle {
+    if (keywords.value.isEmpty && selectedCategory.value.isEmpty) {
+      return '美食广场';
+    }
+    return [keywords.value, ...selectedCategory.value]
+        .where((element) => element != '')
+        .join(',');
+  }
 
   List<CategoryItemModel> get firstCategorys =>
       categorys.value.where((element) => element.parentId == 0).toList();
@@ -32,14 +38,24 @@ class SearchController extends GetxController {
     for (var item in list) {
       arr.addAll(categorys.value.where((v) => v.parentId == item.id).toList());
     }
-    print(arr);
     return arr;
+  }
+
+  // 选择分类
+  changeCategory(String name) {
+    if (selectedCategory.value.contains(name)) {
+      selectedCategory.value =
+          selectedCategory.value.where((element) => element != name).toList();
+    } else {
+      selectedCategory.value = [...selectedCategory.value, name];
+    }
+    update();
   }
 
   @override
   void onReady() async {
     super.onReady();
-    categorys.value = await CategoryModel.getCategoryList();
+    recommendCategorys.value = await CategoryModel.getCategoryRecommendList();
     update();
   }
 }

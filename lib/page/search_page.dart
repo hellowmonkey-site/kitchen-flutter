@@ -31,17 +31,17 @@ class SearchPage extends StatelessWidget {
                       cursorWidth: 3,
                       // cursorColor: Colors.white,
                       style: const TextStyle(fontSize: 16),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                           labelText: '搜菜谱',
-                          fillColor: Colors.transparent,
+                          fillColor: Theme.of(context).bottomAppBarColor,
                           hintText: '搜菜谱...',
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             textBaseline: TextBaseline.ideographic,
                           ),
-                          prefixIcon: Icon(Icons.manage_search_rounded),
+                          prefixIcon: const Icon(Icons.manage_search_rounded),
                           filled: true,
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(30)),
                               borderSide: BorderSide(
@@ -52,7 +52,8 @@ class SearchPage extends StatelessWidget {
                       // onSubmitted: onSubmitted,
                     ),
                   ),
-                  Obx(() => (searchController.keywords.value.isEmpty
+                  Obx(() => (searchController.keywords.value.isEmpty &&
+                          searchController.selectedCategory.value.isEmpty
                       ? Container()
                       : Padding(
                           padding: const EdgeInsets.only(left: 10),
@@ -64,7 +65,7 @@ class SearchPage extends StatelessWidget {
                               color: Theme.of(context).primaryColor,
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
+                                      BorderRadius.all(Radius.circular(20))),
                               padding: const EdgeInsets.all(0),
                               onPressed: () {
                                 Application.navigateTo(() => ListPage());
@@ -76,32 +77,99 @@ class SearchPage extends StatelessWidget {
                         )))
                 ],
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: SingleChildScrollView(
-                    child: Obx(() => Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        alignment: WrapAlignment.center,
-                        children: searchController.hotCategorys
-                            .map((item) => MaterialButton(
-                                  onPressed: () {},
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  color: Theme.of(context).backgroundColor,
-                                  textColor: Theme.of(context).primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: Theme.of(context).primaryColor,
-                                          width: 1),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20))),
-                                  child: Text(item.name),
-                                ))
-                            .toList())),
-                  ),
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                alignment: Alignment.center,
+                child: const Text(
+                  '冰箱里有什么？',
+                  style: TextStyle(fontSize: 18),
                 ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                    child: Obx(() => Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: searchController.recommendCategorys.value
+                              .map((item) => Container(
+                                    margin: const EdgeInsets.only(bottom: 15),
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Theme.of(context)
+                                            .bottomAppBarColor),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 15),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            item.parent.name,
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                        Wrap(
+                                          spacing: 10,
+                                          runSpacing: 10,
+                                          alignment: WrapAlignment.start,
+                                          children: item.children
+                                              .map((child) => TextButton(
+                                                  style: TextButton.styleFrom(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 5,
+                                                          horizontal: 15),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                      backgroundColor:
+                                                          searchController
+                                                                  .selectedCategory
+                                                                  .value
+                                                                  .contains(
+                                                                      child
+                                                                          .name)
+                                                              ? Theme.of(
+                                                                      context)
+                                                                  .primaryColor
+                                                              : Get.isDarkMode
+                                                                  ? Colors
+                                                                      .white12
+                                                                  : Colors
+                                                                      .black12),
+                                                  onPressed: () {
+                                                    searchController
+                                                        .changeCategory(
+                                                            child.name);
+                                                  },
+                                                  child: Text(
+                                                    child.name,
+                                                    style: TextStyle(
+                                                        color: searchController
+                                                                .selectedCategory
+                                                                .value
+                                                                .contains(
+                                                                    child.name)
+                                                            ? Colors.white
+                                                            : Theme.of(context)
+                                                                .appBarTheme
+                                                                .foregroundColor),
+                                                  )))
+                                              .toList(),
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                        ))),
               )
             ],
           ),

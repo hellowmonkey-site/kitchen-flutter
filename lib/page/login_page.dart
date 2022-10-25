@@ -37,17 +37,17 @@ class LoginPage extends StatelessWidget {
                           controller: _unameController,
                           cursorWidth: 3,
                           style: const TextStyle(fontSize: 16),
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               labelText: '用户名',
-                              fillColor: Colors.transparent,
+                              fillColor: Theme.of(context).bottomAppBarColor,
                               hintText: '用户名',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 color: Colors.grey,
                                 textBaseline: TextBaseline.ideographic,
                               ),
-                              prefixIcon: Icon(Icons.person),
+                              prefixIcon: const Icon(Icons.person),
                               filled: true,
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(30)),
                                   borderSide: BorderSide(
@@ -66,17 +66,17 @@ class LoginPage extends StatelessWidget {
                       child: TextFormField(
                           textInputAction: TextInputAction.send,
                           controller: _pwdController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               labelText: '密码',
-                              fillColor: Colors.transparent,
+                              fillColor: Theme.of(context).bottomAppBarColor,
                               hintText: '密码',
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 color: Colors.grey,
                                 textBaseline: TextBaseline.ideographic,
                               ),
-                              prefixIcon: Icon(Icons.lock),
+                              prefixIcon: const Icon(Icons.lock),
                               filled: true,
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(30)),
                                   borderSide: BorderSide(
