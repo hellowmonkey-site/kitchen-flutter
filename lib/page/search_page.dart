@@ -119,10 +119,27 @@ class SearchPage extends StatelessWidget {
                                           alignment: WrapAlignment.start,
                                           children: item.children
                                               .map((child) => FilterChip(
+                                                  avatar: CircleAvatar(
+                                                      backgroundColor: Theme.of(
+                                                              context)
+                                                          .primaryColor
+                                                          .withOpacity(0.3)),
                                                   selectedColor:
                                                       Theme.of(context)
                                                           .primaryColor,
-                                                  label: Text(child.name),
+                                                  label: Text(
+                                                    child.name,
+                                                    style: TextStyle(
+                                                        color: !Get.isDarkMode &&
+                                                                searchController
+                                                                    .selectedCategory
+                                                                    .value
+                                                                    .contains(
+                                                                        child
+                                                                            .name)
+                                                            ? Colors.white
+                                                            : null),
+                                                  ),
                                                   selected: searchController
                                                       .selectedCategory.value
                                                       .contains(child.name),
