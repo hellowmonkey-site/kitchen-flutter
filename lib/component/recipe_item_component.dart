@@ -1,10 +1,90 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kitchen_flutter/model/recipe_model.dart';
 
 class RecipeItemComponent extends StatelessWidget {
-  const RecipeItemComponent({Key? key}) : super(key: key);
+  final RecipeItemModel recipe;
+  const RecipeItemComponent(this.recipe, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return InkWell(
+      onTap: () {
+        Get.toNamed('/detail/${recipe.id}');
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+              height: 200,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Hero(
+                  tag: 'recipe-item-${recipe.id}',
+                  child: CachedNetworkImage(
+                      imageUrl: recipe.cover,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const LinearProgressIndicator(),
+                      errorWidget: (context, url, error) => Container(
+                            color: Colors.black12,
+                            // ignore: prefer_const_constructors
+                            child: Icon(
+                              Icons.error_outline,
+                              size: 40,
+                              color: Colors.grey,
+                            ),
+                          )),
+                ),
+              ),
+            ),
+            Container(
+              height: 32,
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(left: 2, right: 2),
+              child: Text(
+                recipe.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+            Container(
+              height: 20,
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(left: 2, right: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (recipe.userCover != '')
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(recipe.userCover),
+                        ),
+                      ),
+                    ),
+                  Text(
+                    recipe.userName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 12, color: Theme.of(context).disabledColor),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

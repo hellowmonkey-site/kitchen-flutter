@@ -66,7 +66,7 @@ class RecipeItemModel {
 class RecipeModel {
   // 分页获取菜谱
   static Future<PageDataModel<RecipeItemModel>> getRecipePageList(
-      {page = 1, String? keywords, List<String>? categorys}) {
+      {page = 1, String? keywords, String? categorys}) {
     return Application.ajax.get('recipe/page-list', queryParameters: {
       'page': page,
       'keywords': keywords,

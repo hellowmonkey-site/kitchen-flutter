@@ -10,16 +10,6 @@ class SearchController extends GetxController {
   var categorys = Rx<List<CategoryItemModel>>([]);
   var recommendCategorys = Rx<List<CategoryRecommendItemModel>>([]);
 
-  // 标题
-  String get searchTitle {
-    if (keywords.value.isEmpty && selectedCategory.value.isEmpty) {
-      return '美食广场';
-    }
-    return [keywords.value, ...selectedCategory.value]
-        .where((element) => element != '')
-        .join(',');
-  }
-
   List<CategoryItemModel> get firstCategorys =>
       categorys.value.where((element) => element.parentId == 0).toList();
 

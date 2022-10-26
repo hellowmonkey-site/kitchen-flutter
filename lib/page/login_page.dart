@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/controller/login_controller.dart';
-import 'package:kitchen_flutter/helper/application.dart';
-import 'package:kitchen_flutter/model/user_model.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -110,13 +108,9 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         // 通过后再提交数据。
                         if ((_formKey.currentState as FormState).validate()) {
-                          UserModel.postLogin(
-                                  username: _unameController.value.text,
-                                  password: _pwdController.value.text)
-                              .then((v) {
-                            Application.toast('登录成功');
-                            Navigator.of(context).pop();
-                          });
+                          loginController.handleSubmit(
+                              username: _unameController.value.text,
+                              password: _pwdController.value.text);
                         }
                       },
                     ),

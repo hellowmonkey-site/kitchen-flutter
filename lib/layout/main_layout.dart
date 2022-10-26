@@ -6,11 +6,9 @@ import 'package:kitchen_flutter/config/page.dart';
 import 'package:kitchen_flutter/config/theme.dart';
 import 'package:kitchen_flutter/controller/main_controller.dart';
 import 'package:kitchen_flutter/helper/application.dart';
-import 'package:kitchen_flutter/page/publish_page.dart';
 import 'package:kitchen_flutter/page/search_page.dart';
 import 'package:kitchen_flutter/page/user_page.dart';
 import 'package:kitchen_flutter/provider/theme_provider.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 // 记录退出按钮时间
@@ -44,125 +42,85 @@ class MainLayout extends StatelessWidget {
             actions: [
               IconButton(
                   onPressed: () {
-                    showMaterialModalBottomSheet(
-                      animationCurve: Curves.easeInOut,
-                      context: context,
-                      bounce: true,
-                      barrierColor:
-                          Get.isDarkMode ? Colors.white24 : Colors.black26,
-                      builder: (context) {
-                        final int currentIndex = themeProvider.themeModeIndex;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 10, bottom: 20),
-                                child: Text(
-                                  '请选择主题模式',
-                                  style: TextStyle(fontSize: 18),
-                                ),
+                    Get.bottomSheet(
+                      Container(
+                        color: Theme.of(context).backgroundColor,
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '请选择主题模式',
+                                style: TextStyle(fontSize: 18),
                               ),
-                              ...themeModeList.map((item) {
-                                final int index = themeModeList.indexOf(item);
-                                return SimpleDialogOption(
-                                  onPressed: () {
-                                    themeProvider.changeThemeMode(index);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        currentIndex == index
-                                            ? Icons.check_box
-                                            : Icons.check_box_outline_blank,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(item.text),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        );
-                      },
+                            ),
+                            ...themeModeList.map((item) {
+                              final int index = themeModeList.indexOf(item);
+                              return CheckboxListTile(
+                                secondary: item.icon,
+                                activeColor: Theme.of(context).primaryColor,
+                                title: Text(item.text),
+                                onChanged: (bool? value) {
+                                  themeProvider.changeThemeMode(index);
+                                  Get.back();
+                                },
+                                value: themeProvider.themeModeIndex == index,
+                              );
+                            }).toList()
+                          ],
+                        ),
+                      ),
+                      backgroundColor:
+                          Get.isDarkMode ? Colors.white24 : Colors.black26,
                     );
                   },
                   tooltip: '修改主题模式',
                   icon: Icon(
-                      Get.isDarkMode ? Icons.light_mode : Icons.dark_mode)),
+                      Get.isDarkMode ? Icons.dark_mode : Icons.light_mode)),
               IconButton(
                   onPressed: () {
-                    showMaterialModalBottomSheet(
-                      animationCurve: Curves.easeInOut,
-                      context: context,
-                      bounce: true,
-                      barrierColor:
-                          Get.isDarkMode ? Colors.white24 : Colors.black26,
-                      builder: (context) {
-                        final int currentIndex = themeProvider.themeModeIndex;
-                        return SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.9,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 10, bottom: 20),
-                                  child: Text(
-                                    '请选择主题颜色',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                                Expanded(
-                                    child: SingleChildScrollView(
-                                  controller: ModalScrollController.of(context),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: themeColorList.map((color) {
-                                      final int index =
-                                          themeColorList.indexOf(color);
-                                      return SimpleDialogOption(
-                                        onPressed: () {
-                                          themeProvider.changeThemeColor(index);
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Row(children: [
-                                          Icon(
-                                            currentIndex == index
-                                                ? Icons.check_box
-                                                : Icons.check_box_outline_blank,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 10),
-                                              //                                  width: 40,
-                                              height: 40,
-                                              color: color,
-                                            ),
-                                          )
-                                        ]),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ))
-                              ],
+                    Get.bottomSheet(
+                      Container(
+                        color: Theme.of(context).backgroundColor,
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '请选择主题颜色',
+                                style: TextStyle(fontSize: 18),
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                            Expanded(
+                                child: SingleChildScrollView(
+                                    child: Column(
+                              children: themeColorList.map((color) {
+                                final int index = themeColorList.indexOf(color);
+                                return CheckboxListTile(
+                                  secondary: CircleAvatar(
+                                    backgroundColor: color,
+                                  ),
+                                  activeColor: Theme.of(context).primaryColor,
+                                  title: Text(color.value.toString()),
+                                  onChanged: (bool? value) {
+                                    themeProvider.changeThemeColor(index);
+                                    Get.back();
+                                  },
+                                  value: themeProvider.themeColorIndex == index,
+                                );
+                              }).toList(),
+                            )))
+                          ],
+                        ),
+                      ),
+                      backgroundColor:
+                          Get.isDarkMode ? Colors.white24 : Colors.black26,
                     );
                   },
                   tooltip: '修改主题色',
@@ -200,10 +158,7 @@ class MainLayout extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             tooltip: '发布新菜谱',
             onPressed: () {
-              Application.navigateTo(() => const PublishPage(),
-                  fullscreenDialog: true,
-                  transition: Transition.downToUp,
-                  auth: true);
+              Application.navigateTo('/publish', auth: true);
             },
             backgroundColor: Theme.of(context).primaryColor,
             child: const Icon(Icons.add),

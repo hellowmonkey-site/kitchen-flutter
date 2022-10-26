@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/controller/search_controller.dart';
 import 'package:kitchen_flutter/helper/application.dart';
-import 'package:kitchen_flutter/page/list_page.dart';
 
 class SearchPage extends StatelessWidget {
   SearchPage({super.key});
@@ -68,7 +67,8 @@ class SearchPage extends StatelessWidget {
                                       BorderRadius.all(Radius.circular(20))),
                               padding: const EdgeInsets.all(0),
                               onPressed: () {
-                                Application.navigateTo(() => ListPage());
+                                Application.navigateTo(
+                                    '/list?keywords=${searchController.keywords.value}&categorys=${searchController.selectedCategory.value.join(',')}');
                               },
                               child: const Icon(
                                 Icons.search,

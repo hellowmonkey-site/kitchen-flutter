@@ -31,13 +31,13 @@ class AjaxPlugin {
           // Application.navigateTo(() => const LoginPage(),
           // fullscreenDialog: true, transition: Transition.downToUp);
         }
-        Application.toast(message, backgroundColor: Colors.red);
+        Application.toast(message, contentColor: Colors.red);
         return handler.reject(
             DioError(requestOptions: response.requestOptions, error: message));
       }
       return handler.next(response);
     }, onError: (e, handler) {
-      Application.toast(e.message, backgroundColor: Colors.red);
+      Application.toast(e.message, contentColor: Colors.red);
       return handler.next(e);
     }));
     Application.ajax = dio;

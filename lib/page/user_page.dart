@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
-import 'package:kitchen_flutter/page/login_page.dart';
-import 'package:kitchen_flutter/page/person_page.dart';
-import 'package:kitchen_flutter/page/setting_page.dart';
-import 'package:kitchen_flutter/page/user_favorite_page.dart';
-import 'package:kitchen_flutter/page/user_history_page.dart';
-import 'package:kitchen_flutter/page/user_star_page.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class UserPage extends StatelessWidget {
@@ -101,8 +94,7 @@ class UserPage extends StatelessWidget {
                       else
                         IconButton(
                             onPressed: () {
-                              Get.to(() => LoginPage(),
-                                  transition: Transition.cupertino);
+                              Get.toNamed('/login');
                             },
                             icon: const Icon(
                               Icons.login,
@@ -116,7 +108,6 @@ class UserPage extends StatelessWidget {
           ),
           Expanded(
               child: SingleChildScrollView(
-            controller: ModalScrollController.of(context),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -125,8 +116,7 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.home),
                   title: const Text('个人主页'),
                   onTap: () {
-                    Application.navigateTo(() => const PersonPage(),
-                        auth: true);
+                    Application.navigateTo('/person', auth: true);
                   },
                 ),
                 ListTile(
@@ -134,8 +124,7 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.work_history_rounded),
                   title: const Text('浏览记录'),
                   onTap: () {
-                    Application.navigateTo(() => const UserHistoryPage(),
-                        auth: true);
+                    Application.navigateTo('/user/history', auth: true);
                   },
                 ),
                 ListTile(
@@ -143,8 +132,7 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.favorite),
                   title: const Text('我的收藏'),
                   onTap: () {
-                    Application.navigateTo(() => const UserFavoritePage(),
-                        auth: true);
+                    Application.navigateTo('/user/favorite', auth: true);
                   },
                 ),
                 ListTile(
@@ -152,8 +140,7 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.star),
                   title: const Text('我的关注'),
                   onTap: () {
-                    Application.navigateTo(() => const UserStarPage(),
-                        auth: true);
+                    Application.navigateTo('/user/star', auth: true);
                   },
                 ),
                 ListTile(
@@ -161,8 +148,7 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.settings),
                   title: const Text('账号设置'),
                   onTap: () {
-                    Application.navigateTo(() => const SettingPage(),
-                        auth: true);
+                    Application.navigateTo('/setting', auth: true);
                   },
                 ),
                 ListTile(

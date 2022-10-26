@@ -1,6 +1,6 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide Router;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
@@ -20,20 +20,22 @@ class Application {
   static late PackageInfo packageInfo;
 
   //  轻提示
-  static void toast(String msg,
-      {Color backgroundColor = Colors.black87,
-      Color textColor = Colors.white,
-      ToastGravity gravity = ToastGravity.BOTTOM}) {
-    // Fluttertoast.cancel();
-    Fluttertoast.showToast(
-      msg: msg,
-      backgroundColor: backgroundColor,
-      textColor: textColor,
-      gravity: gravity,
-      webBgColor: 'rgba(0, 0, 0, .87)',
-      webPosition: 'center',
-    );
+  static Function toast(String msg, {Color contentColor = Colors.black87}) {
+    return BotToast.showText(
+        text: msg,
+        contentColor: contentColor,
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
   }
+
+  // //  轻提示
+  // static Function toast(String msg, {Color contentColor = Colors.black87}) {
+  //   return BotToast.showText(
+  //       text: msg,
+  //       contentColor: contentColor,
+  //       contentPadding:
+  //           const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
+  // }
 
   //  弹框
   static openDialog(
@@ -88,9 +90,7 @@ class Application {
 
   // 链接跳转
   static navigateTo(
-    Function page, {
-    transition = Transition.cupertino,
-    bool fullscreenDialog = false,
+    String page, {
     bool auth = false,
   }) {
     final token = Provider.of<UserProvider>(Get.context!, listen: false).token;
@@ -99,8 +99,7 @@ class Application {
       return Get.to(() => LoginPage(),
           fullscreenDialog: true, transition: Transition.downToUp);
     }
-    return Get.to(page,
-        transition: transition, fullscreenDialog: fullscreenDialog);
+    return Get.toNamed(page);
   }
 
   // 打开链接

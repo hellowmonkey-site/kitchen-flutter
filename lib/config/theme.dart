@@ -21,12 +21,16 @@ const themeModeDefaultIndex = 2;
 class ThemeModeItem {
   final ThemeMode value;
   final String text;
+  final Icon? icon;
 
-  const ThemeModeItem({required this.text, required this.value});
+  const ThemeModeItem({required this.text, required this.value, this.icon});
 }
 
 final List<ThemeModeItem> themeModeList = [
-  const ThemeModeItem(text: '亮色', value: ThemeMode.light),
-  const ThemeModeItem(text: '暗色', value: ThemeMode.dark),
-  const ThemeModeItem(text: '跟随系统', value: ThemeMode.system),
+  const ThemeModeItem(
+      text: '亮色', value: ThemeMode.light, icon: Icon(Icons.light_mode)),
+  const ThemeModeItem(
+      text: '暗色', value: ThemeMode.dark, icon: Icon(Icons.dark_mode)),
+  const ThemeModeItem(
+      text: '跟随系统', value: ThemeMode.system, icon: Icon(Icons.brightness_auto)),
 ];

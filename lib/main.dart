@@ -1,13 +1,16 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
+import 'package:kitchen_flutter/config/route.dart';
 import 'package:kitchen_flutter/config/theme.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/layout/main_layout.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
+import 'package:kitchen_flutter/page/notfound_page.dart';
 import 'package:kitchen_flutter/plugin/ajax_plugin.dart';
 import 'package:kitchen_flutter/plugin/packageinfo_plugin.dart';
 import 'package:kitchen_flutter/plugin/prefs_plugin.dart';
@@ -89,6 +92,12 @@ class MainApp extends StatelessWidget {
       ),
       themeMode: themeMode.value,
       home: MainLayout(),
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
+      initialRoute: '/',
+      getPages: routePages,
+      unknownRoute:
+          GetPage(name: '/notfound', page: () => const NotfoundPage()),
     );
   }
 }
