@@ -91,8 +91,8 @@ class LoginPage extends StatelessWidget {
                           }),
                     ),
                     // 登录按钮
-                    TextButton(
-                      style: TextButton.styleFrom(
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: Theme.of(context).primaryColor,
                           padding: const EdgeInsets.symmetric(

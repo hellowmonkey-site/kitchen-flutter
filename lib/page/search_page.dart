@@ -118,51 +118,19 @@ class SearchPage extends StatelessWidget {
                                           runSpacing: 10,
                                           alignment: WrapAlignment.start,
                                           children: item.children
-                                              .map((child) => TextButton(
-                                                  style: TextButton.styleFrom(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 5,
-                                                          horizontal: 15),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)),
-                                                      backgroundColor:
-                                                          searchController
-                                                                  .selectedCategory
-                                                                  .value
-                                                                  .contains(
-                                                                      child
-                                                                          .name)
-                                                              ? Theme.of(
-                                                                      context)
-                                                                  .primaryColor
-                                                              : Get.isDarkMode
-                                                                  ? Colors
-                                                                      .white12
-                                                                  : Colors
-                                                                      .black12),
-                                                  onPressed: () {
+                                              .map((child) => FilterChip(
+                                                  selectedColor:
+                                                      Theme.of(context)
+                                                          .primaryColor,
+                                                  label: Text(child.name),
+                                                  selected: searchController
+                                                      .selectedCategory.value
+                                                      .contains(child.name),
+                                                  onSelected: (checked) {
                                                     searchController
                                                         .changeCategory(
                                                             child.name);
-                                                  },
-                                                  child: Text(
-                                                    child.name,
-                                                    style: TextStyle(
-                                                        color: searchController
-                                                                .selectedCategory
-                                                                .value
-                                                                .contains(
-                                                                    child.name)
-                                                            ? Colors.white
-                                                            : Theme.of(context)
-                                                                .appBarTheme
-                                                                .foregroundColor),
-                                                  )))
+                                                  }))
                                               .toList(),
                                         ),
                                       ],
