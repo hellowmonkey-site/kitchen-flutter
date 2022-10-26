@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/model/recipe_model.dart';
 
 class ListController extends GetxController {
   // 数据列表
@@ -14,4 +15,10 @@ class ListController extends GetxController {
       dataList.value.isEmpty ? 1 : (dataList.value.length / 2).ceil() + 1;
 
   get hasMore => page.value <= totalPage.value;
+
+  @override
+  void onReady() {
+    super.onReady();
+    RecipeModel.getRecipePageList();
+  }
 }

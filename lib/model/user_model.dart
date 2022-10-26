@@ -64,4 +64,19 @@ class UserModel {
       return user;
     });
   }
+
+  // 更新用户信息
+  static Future<UserModel> putUserInfo(
+      {String? password, String? samp, String? nickname, int? coverId}) {
+    return Application.ajax.put('user/info', data: {
+      'password': password,
+      'samp': samp,
+      'nickname': nickname,
+      'cover_id': coverId
+    }).then((res) {
+      final user = UserModel.fromJson(res.data['data']);
+      Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+      return user;
+    });
+  }
 }

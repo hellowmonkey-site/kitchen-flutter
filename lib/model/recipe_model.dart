@@ -1,4 +1,5 @@
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/page_data_model.dart';
 
 class RecipeMaterialItemModel {
   final String name;
@@ -45,7 +46,8 @@ class RecipeItemModel {
             id: json['id'],
             userId: json['user_id'],
             userCover: json['user_cover'],
-            categorys: json['categorys'],
+            categorys:
+                (json['categorys'] as List).map((e) => e.toString()).toList(),
             cover: json['cover'],
             createdAt: json['created_at'],
             materials: (json['materials'] as List)
@@ -62,7 +64,26 @@ class RecipeItemModel {
 }
 
 class RecipeModel {
-  static getRecipePageList() {
-    return Application.ajax.get('recipe/page-list');
+  // 分页获取菜谱
+  static Future<PageDataModel<RecipeItemModel>> getRecipePageList(
+      {page = 1, String? keywords, List<String>? categorys}) {
+    return Application.ajax.get('recipe/page-list', queryParameters: {
+      'page': page,
+      'keywords': keywords,
+      'categorys': categorys
+    }).then((res) {
+      final data = res.data['data'];
+      data['data'] = (data['data'] as List)
+          .map((e) => RecipeItemModel.fromJson(e))
+          .toList();
+      return PageDataModel.fromJson(data);
+    });
+  }
+
+  // 获取菜谱详情
+  static Future<RecipeItemModel> getRecipeDetail(int id) {
+    return Application.ajax
+        .get('recipe/$id')
+        .then((res) => RecipeItemModel.fromJson(res.data['data']));
   }
 }
