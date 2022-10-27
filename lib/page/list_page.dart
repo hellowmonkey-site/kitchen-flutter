@@ -11,64 +11,63 @@ class ListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).bottomAppBarColor,
       appBar: AppBar(
         title: Text(listController.searchTitle),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
-        child: RefreshIndicator(
-          onRefresh: () {
-            listController.page.value = 1;
-            return listController.fetchData();
-          },
-          color: Theme.of(context).primaryColor,
-          child: Obx(
-            () => ListView.builder(
-              itemBuilder: (context, index) {
-                if (listController.dataList.value.isEmpty) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height - 250,
-                    child: Center(
-                      child: Text(
-                        '暂无数据',
-                        style:
-                            TextStyle(color: Theme.of(context).disabledColor),
-                      ),
+      body: RefreshIndicator(
+        onRefresh: () {
+          listController.page.value = 1;
+          return listController.fetchData();
+        },
+        color: Theme.of(context).primaryColor,
+        child: Obx(
+          () => ListView.builder(
+            itemBuilder: (context, index) {
+              if (listController.dataList.value.isEmpty) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height - 250,
+                  child: Center(
+                    child: Text(
+                      '暂无数据',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
                     ),
-                  );
-                } else if (index == listController.dataItemCount - 1) {
-                  return SizedBox(
-                    height: 60,
-                    child: Center(
-                      child: listController.loading.value &&
-                              listController.hasMore
-                          ? CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation(
-                                  Theme.of(context).primaryColor))
-                          : !listController.hasMore
-                              ? Text(
-                                  '暂无更多数据',
-                                  style: TextStyle(
-                                      color: Theme.of(context).disabledColor),
-                                )
-                              : listController.dataList.value.length > 6
-                                  ? Text(
-                                      '上拉加载...',
-                                      style: TextStyle(
-                                          color:
-                                              Theme.of(context).disabledColor),
-                                    )
-                                  : Container(),
-                    ),
-                  );
-                } else {
-                  final list = listController.dataList.value;
-                  int first = index * 2;
-                  int last = first + 1;
-                  final item1 = list.elementAt(first);
-                  final item2 =
-                      last > list.length - 1 ? null : list.elementAt(last);
-                  return Row(
+                  ),
+                );
+              } else if (index == listController.dataItemCount - 1) {
+                return SizedBox(
+                  height: 60,
+                  child: Center(
+                    child: listController.loading.value &&
+                            listController.hasMore
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(
+                                Theme.of(context).primaryColor))
+                        : !listController.hasMore
+                            ? Text(
+                                '暂无更多数据',
+                                style: TextStyle(
+                                    color: Theme.of(context).disabledColor),
+                              )
+                            : listController.dataList.value.length > 6
+                                ? Text(
+                                    '上拉加载...',
+                                    style: TextStyle(
+                                        color: Theme.of(context).disabledColor),
+                                  )
+                                : Container(),
+                  ),
+                );
+              } else {
+                final list = listController.dataList.value;
+                int first = index * 2;
+                int last = first + 1;
+                final item1 = list.elementAt(first);
+                final item2 =
+                    last > list.length - 1 ? null : list.elementAt(last);
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
                     children: [
                       Expanded(
                           child: Padding(
@@ -83,13 +82,13 @@ class ListPage extends StatelessWidget {
                             : RecipeItemComponent(item2),
                       ))
                     ],
-                  );
-                }
-              },
-              itemCount: listController.dataItemCount,
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: listController.scrollController,
-            ),
+                  ),
+                );
+              }
+            },
+            itemCount: listController.dataItemCount,
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: listController.scrollController,
           ),
         ),
       ),

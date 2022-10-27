@@ -20,10 +20,7 @@ class Application {
   static late PackageInfo packageInfo;
 
   //  轻提示
-  static Function toast(String msg, {Color? contentColor}) {
-    contentColor ??= Get.isDarkMode
-        ? Colors.white.withOpacity(0.8)
-        : Colors.black.withOpacity(0.8);
+  static Function toast(String msg, {Color contentColor = Colors.black87}) {
     return BotToast.showText(
         text: msg,
         contentColor: contentColor,
@@ -40,7 +37,7 @@ class Application {
   //           const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
   // }
 
-  static dialog(
+  static openDialog(
       {required String title,
       String? content,
       String cancelText = '取消',
@@ -92,57 +89,6 @@ class Application {
                   actions: actions.toList(),
                 ),
               ));
-        });
-  }
-
-  //  弹框
-  static openDialog(
-      {required String title,
-      String? content,
-      String cancelText = '取消',
-      String confirmText = '确认',
-      bool autoClose = true,
-      required Function onTap}) {
-    List<TextButton> actions = [];
-    if (cancelText != '') {
-      actions.add(TextButton(
-        child: Text(cancelText),
-        onPressed: () {
-          if (autoClose) {
-            Get.back();
-          }
-          onTap(false);
-        },
-      ));
-    }
-    actions.add(TextButton(
-        child: Text(confirmText),
-        onPressed: () {
-          if (autoClose) {
-            Get.back();
-          }
-          onTap(true);
-        }));
-    showDialog(
-        context: Get.context!,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            elevation: 0,
-            title: Text(
-              title,
-              softWrap: true,
-              style: const TextStyle(fontSize: 18),
-            ),
-            content: content == null
-                ? null
-                : Text(
-                    content,
-                    softWrap: true,
-                    style: const TextStyle(fontSize: 13, color: Colors.black87),
-                  ),
-            actions: actions.toList(),
-          );
         });
   }
 

@@ -25,7 +25,7 @@ final routePages = [
       curve: Curves.easeInOut),
   GetPage(
       name: '/detail/:id',
-      page: () => DetailPage(),
+      page: () => const DetailPage(),
       transition: Transition.cupertino,
       curve: Curves.easeInOut),
   GetPage(
@@ -39,7 +39,7 @@ final routePages = [
       transition: Transition.cupertino,
       curve: Curves.easeInOut),
   GetPage(
-      name: '/person',
+      name: '/person/:id',
       page: () => const PersonPage(),
       transition: Transition.cupertino,
       curve: Curves.easeInOut),

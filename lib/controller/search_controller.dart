@@ -1,14 +1,22 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/category_model.dart';
 
 class SearchController extends GetxController {
   TextEditingController textController = TextEditingController();
+  var focusNode = FocusNode();
+
   var keywords = Rx<String>('');
   var selectedCategory = Rx<List<String>>([]);
 
   var categorys = Rx<List<CategoryItemModel>>([]);
   var recommendCategorys = Rx<List<CategoryRecommendItemModel>>([]);
+
+  get canSearch {
+    return keywords.value.isNotEmpty || selectedCategory.value.isNotEmpty;
+  }
 
   List<CategoryItemModel> get firstCategorys =>
       categorys.value.where((element) => element.parentId == 0).toList();
@@ -42,10 +50,30 @@ class SearchController extends GetxController {
     update();
   }
 
+  // 搜索
+  handleSearch() {
+    focusNode.unfocus();
+    Application.navigateTo(
+        '/list?keywords=${keywords.value}&categorys=${selectedCategory.value.join(',')}');
+  }
+
+  // 清除条件
+  handleClear() {
+    focusNode.unfocus();
+    keywords.value = '';
+    selectedCategory.value = [];
+    textController.clear();
+  }
+
   @override
   void onReady() async {
     super.onReady();
-    recommendCategorys.value = await CategoryModel.getCategoryRecommendList();
-    update();
+    final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
+    try {
+      recommendCategorys.value = await CategoryModel.getCategoryRecommendList();
+      update();
+    } finally {
+      cancel();
+    }
   }
 }

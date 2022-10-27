@@ -44,10 +44,10 @@ class MainLayout extends StatelessWidget {
                   onPressed: () {
                     Get.bottomSheet(
                       Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10))),
+                        // decoration: const BoxDecoration(
+                        //     borderRadius: BorderRadius.only(
+                        //         topLeft: Radius.circular(10),
+                        //         topRight: Radius.circular(10))),
                         color: Theme.of(context).backgroundColor,
                         padding: const EdgeInsets.all(10),
                         child: Column(
@@ -87,10 +87,10 @@ class MainLayout extends StatelessWidget {
                   onPressed: () {
                     Get.bottomSheet(
                       Container(
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10))),
+                        // decoration: const BoxDecoration(
+                        //     borderRadius: BorderRadius.only(
+                        //         topLeft: Radius.circular(10),
+                        //         topRight: Radius.circular(10))),
                         color: Theme.of(context).backgroundColor,
                         padding: const EdgeInsets.all(10),
                         child: Column(

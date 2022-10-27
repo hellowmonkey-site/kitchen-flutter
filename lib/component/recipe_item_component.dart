@@ -25,19 +25,9 @@ class RecipeItemComponent extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Hero(
-                    tag: 'recipe-item-${recipe.id}',
-                    child: Stack(
-                      children: [
-                        cachedNetworkImage(recipe.cover),
-                        const Positioned(
-                          bottom: 20,
-                          left: 20,
-                          child: Icon(
-                            Icons.play_circle_fill_outlined,
-                          ),
-                        )
-                      ],
-                    )),
+                  tag: 'recipe-item-${recipe.id}',
+                  child: cachedNetworkImage(recipe.cover),
+                ),
               ),
             ),
             Container(
@@ -56,26 +46,39 @@ class RecipeItemComponent extends StatelessWidget {
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(left: 2, right: 2),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  if (recipe.userCover != '')
-                    Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(recipe.userCover),
+                  Expanded(
+                      child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (recipe.userCover != '')
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(recipe.userCover),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  Text(
-                    recipe.userName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12, color: Theme.of(context).disabledColor),
-                  )
+                      Text(
+                        recipe.userName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).disabledColor),
+                      )
+                    ],
+                  )),
+                  if (recipe.video.isNotEmpty)
+                    const Icon(
+                      Icons.play_circle_outline_outlined,
+                    )
                 ],
               ),
             )

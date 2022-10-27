@@ -14,16 +14,18 @@ class ListController extends GetxController {
 
   var showTopBtn = Rx(false);
 
+  // 参数
+  final parameters = Get.parameters;
+
   // 滚动
   final ScrollController scrollController = ScrollController();
 
   // 标题
   String get searchTitle {
-    if (Get.parameters['keywords'] == null &&
-        Get.parameters['categorys'] == null) {
+    if (parameters['keywords'] == null && parameters['categorys'] == null) {
       return '美食广场';
     }
-    return [Get.parameters['keywords'], Get.parameters['categorys']]
+    return [parameters['keywords'], parameters['categorys']]
         .where((element) => element != '')
         .join(',');
   }
@@ -35,11 +37,12 @@ class ListController extends GetxController {
   get hasMore => page.value <= totalPage.value;
 
   Future fetchData() {
+    print(parameters);
     loading.value = true;
     return RecipeModel.getRecipePageList(
             page: page.value,
-            keywords: Get.parameters['keywords'],
-            categorys: Get.parameters['categorys'])
+            keywords: parameters['keywords'],
+            categorys: parameters['categorys'])
         .then((data) {
       page.value = data.page;
       totalPage.value = data.pageCount;
