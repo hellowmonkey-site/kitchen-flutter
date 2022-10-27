@@ -157,6 +157,8 @@ class SearchPage extends StatelessWidget {
                           searchController.handleClear();
                         },
                         style: ElevatedButton.styleFrom(
+                            foregroundColor:
+                                Theme.of(context).appBarTheme.foregroundColor,
                             backgroundColor:
                                 Theme.of(context).bottomAppBarColor,
                             shadowColor: Theme.of(context).shadowColor,
@@ -177,6 +179,7 @@ class SearchPage extends StatelessWidget {
                           searchController.handleSearch();
                         },
                         style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
                             shadowColor: Theme.of(context).primaryColor,
                             elevation: 10,
                             shape: const RoundedRectangleBorder(
@@ -190,16 +193,13 @@ class SearchPage extends StatelessWidget {
                           children: const [
                             Icon(
                               Icons.search_rounded,
-                              color: Colors.white,
                             ),
                             Padding(
                               padding: EdgeInsets.only(left: 5),
                               child: Text(
                                 '搜索',
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
