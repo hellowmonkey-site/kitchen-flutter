@@ -35,11 +35,7 @@ class ListController extends GetxController {
   get hasMore => page.value <= totalPage.value;
 
   Future fetchData() {
-    if (dataList.value.isEmpty) {
-      BotToast.showLoading(backgroundColor: Colors.transparent);
-    }
     loading.value = true;
-    update();
     return RecipeModel.getRecipePageList(
             page: page.value,
             keywords: Get.parameters['keywords'],
@@ -54,14 +50,17 @@ class ListController extends GetxController {
       }
     }).whenComplete(() {
       loading.value = false;
-      BotToast.closeAllLoading();
     });
   }
 
   @override
   void onReady() {
     super.onReady();
-    fetchData();
+
+    final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
+    fetchData().whenComplete(() {
+      cancel();
+    });
 
     // 监听滚动
     scrollController.addListener(() {

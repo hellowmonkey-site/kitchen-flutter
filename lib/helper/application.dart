@@ -20,7 +20,10 @@ class Application {
   static late PackageInfo packageInfo;
 
   //  轻提示
-  static Function toast(String msg, {Color contentColor = Colors.black87}) {
+  static Function toast(String msg, {Color? contentColor}) {
+    contentColor ??= Get.isDarkMode
+        ? Colors.white.withOpacity(0.8)
+        : Colors.black.withOpacity(0.8);
     return BotToast.showText(
         text: msg,
         contentColor: contentColor,

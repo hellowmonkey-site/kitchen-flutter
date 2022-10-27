@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -39,7 +40,7 @@ void main() async {
     }
 
     //  设置android状态栏背景透明
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle =
           const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);

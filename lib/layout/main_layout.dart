@@ -44,6 +44,10 @@ class MainLayout extends StatelessWidget {
                   onPressed: () {
                     Get.bottomSheet(
                       Container(
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10))),
                         color: Theme.of(context).backgroundColor,
                         padding: const EdgeInsets.all(10),
                         child: Column(
@@ -57,17 +61,16 @@ class MainLayout extends StatelessWidget {
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
-                            ...themeModeList.map((item) {
-                              final int index = themeModeList.indexOf(item);
+                            ...themeModeList.asMap().entries.map((item) {
                               return CheckboxListTile(
-                                secondary: item.icon,
+                                secondary: item.value.icon,
                                 activeColor: Theme.of(context).primaryColor,
-                                title: Text(item.text),
+                                title: Text(item.value.text),
                                 onChanged: (bool? value) {
-                                  themeProvider.changeThemeMode(index);
+                                  themeProvider.changeThemeMode(item.key);
                                   Get.back();
                                 },
-                                value: themeProvider.themeModeIndex == index,
+                                value: themeProvider.themeModeIndex == item.key,
                               );
                             }).toList()
                           ],
@@ -84,6 +87,10 @@ class MainLayout extends StatelessWidget {
                   onPressed: () {
                     Get.bottomSheet(
                       Container(
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10))),
                         color: Theme.of(context).backgroundColor,
                         padding: const EdgeInsets.all(10),
                         child: Column(
@@ -100,19 +107,20 @@ class MainLayout extends StatelessWidget {
                             Expanded(
                                 child: SingleChildScrollView(
                                     child: Column(
-                              children: themeColorList.map((color) {
-                                final int index = themeColorList.indexOf(color);
+                              children:
+                                  themeColorList.asMap().entries.map((item) {
                                 return CheckboxListTile(
                                   secondary: CircleAvatar(
-                                    backgroundColor: color,
+                                    backgroundColor: item.value,
                                   ),
                                   activeColor: Theme.of(context).primaryColor,
-                                  title: Text(color.value.toString()),
+                                  title: Text(item.value.value.toString()),
                                   onChanged: (bool? value) {
-                                    themeProvider.changeThemeColor(index);
+                                    themeProvider.changeThemeColor(item.key);
                                     Get.back();
                                   },
-                                  value: themeProvider.themeColorIndex == index,
+                                  value:
+                                      themeProvider.themeColorIndex == item.key,
                                 );
                               }).toList(),
                             )))

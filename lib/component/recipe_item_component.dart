@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
 
 class RecipeItemComponent extends StatelessWidget {
@@ -25,22 +25,19 @@ class RecipeItemComponent extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Hero(
-                  tag: 'recipe-item-${recipe.id}',
-                  child: CachedNetworkImage(
-                      imageUrl: recipe.cover,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          const LinearProgressIndicator(),
-                      errorWidget: (context, url, error) => Container(
-                            color: Colors.black12,
-                            // ignore: prefer_const_constructors
-                            child: Icon(
-                              Icons.error_outline,
-                              size: 40,
-                              color: Colors.grey,
-                            ),
-                          )),
-                ),
+                    tag: 'recipe-item-${recipe.id}',
+                    child: Stack(
+                      children: [
+                        cachedNetworkImage(recipe.cover),
+                        const Positioned(
+                          bottom: 20,
+                          left: 20,
+                          child: Icon(
+                            Icons.play_circle_fill_outlined,
+                          ),
+                        )
+                      ],
+                    )),
               ),
             ),
             Container(
