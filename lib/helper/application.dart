@@ -40,6 +40,61 @@ class Application {
   //           const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
   // }
 
+  static dialog(
+      {required String title,
+      String? content,
+      String cancelText = '取消',
+      String confirmText = '确认',
+      bool autoClose = true,
+      required Function onTap}) {
+    List<TextButton> actions = [];
+    if (cancelText != '') {
+      actions.add(TextButton(
+        child: Text(cancelText),
+        onPressed: () {
+          if (autoClose) {
+            Get.back();
+          }
+          onTap(false);
+        },
+      ));
+    }
+    actions.add(TextButton(
+        child: Text(confirmText),
+        onPressed: () {
+          if (autoClose) {
+            Get.back();
+          }
+          onTap(true);
+        }));
+    Get.generalDialog(
+        pageBuilder: (context, anim1, anim2) => Container(),
+        transitionBuilder: (context, anim1, anim2, child) {
+          return Transform.scale(
+              scale: anim1.value,
+              child: Opacity(
+                opacity: anim1.value,
+                child: AlertDialog(
+                  elevation: 0,
+                  title: Text(
+                    title,
+                    softWrap: true,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  content: content == null
+                      ? null
+                      : Text(
+                          content,
+                          softWrap: true,
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.black87),
+                        ),
+                  actions: actions.toList(),
+                ),
+              ));
+        });
+  }
+
   //  弹框
   static openDialog(
       {required String title,
@@ -54,7 +109,7 @@ class Application {
         child: Text(cancelText),
         onPressed: () {
           if (autoClose) {
-            Navigator.of(Get.context!).pop();
+            Get.back();
           }
           onTap(false);
         },
@@ -64,7 +119,7 @@ class Application {
         child: Text(confirmText),
         onPressed: () {
           if (autoClose) {
-            Navigator.of(Get.context!).pop();
+            Get.back();
           }
           onTap(true);
         }));
