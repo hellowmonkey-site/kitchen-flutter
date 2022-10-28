@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/user_favorite_model.dart';
+import 'package:kitchen_flutter/model/user_star_model.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -52,6 +54,9 @@ class UserModel {
         data: {'username': username, 'password': password}).then((res) {
       final user = UserModel.fromJson(res.data['data']);
       Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+      // 获取关注、收藏信息
+      UserFavoriteModel.getUserFavoriteList();
+      UserStarModel.getUserStarList();
       return user;
     });
   }
@@ -61,6 +66,9 @@ class UserModel {
     return Application.ajax.get('user/info').then((res) {
       final user = UserModel.fromJson(res.data['data']);
       Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+      // 获取关注、收藏信息
+      UserFavoriteModel.getUserFavoriteList();
+      UserStarModel.getUserStarList();
       return user;
     });
   }

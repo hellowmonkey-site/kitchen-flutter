@@ -1,4 +1,7 @@
+import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/provider/user_star_provider.dart';
+import 'package:provider/provider.dart';
 
 class UserStarItemModel {
   final int userId;
@@ -27,21 +30,31 @@ class UserStarItemModel {
 class UserStarModel {
   // 获取关注列表
   static Future<List<UserStarItemModel>> getUserStarList() {
-    return Application.ajax.get('user-star').then((res) =>
-        (res.data['data'] as List)
-            .map((e) => UserStarItemModel.fromJson(e))
-            .toList());
+    return Application.ajax.get('user-star').then((res) {
+      final data = (res.data['data'] as List)
+          .map((e) => UserStarItemModel.fromJson(e))
+          .toList();
+      Provider.of<UserStarProvider>(Get.context!, listen: false)
+          .setStarList(data);
+      return data;
+    });
   }
 
   // 添加关注
   static Future postUserStar(int userId) {
-    return Application.ajax.post('user-star',
-        data: {'user_id': userId}).then((res) => res.data['data']);
+    return Application.ajax
+        .post('user-star', data: {'user_id': userId}).then((res) {
+      getUserStarList();
+      return res.data['data'];
+    });
   }
 
   // 取消关注
   static Future deleteUserStar(int userId) {
-    return Application.ajax.delete('user-star',
-        data: {'user_id': userId}).then((res) => res.data['data']);
+    return Application.ajax
+        .delete('user-star', data: {'user_id': userId}).then((res) {
+      getUserStarList();
+      return res.data['data'];
+    });
   }
 }

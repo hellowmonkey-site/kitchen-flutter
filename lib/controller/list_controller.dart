@@ -2,6 +2,8 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
+import 'package:kitchen_flutter/provider/recipe_provider.dart';
+import 'package:provider/provider.dart';
 
 class ListController extends GetxController {
   // 数据列表
@@ -23,7 +25,7 @@ class ListController extends GetxController {
   // 标题
   String get searchTitle {
     if (parameters['keywords'] == null && parameters['categorys'] == null) {
-      return '美食广场';
+      return '觅食';
     }
     return [parameters['keywords'], parameters['categorys']]
         .where((element) => element != '')
@@ -37,7 +39,6 @@ class ListController extends GetxController {
   get hasMore => page.value <= totalPage.value;
 
   Future fetchData() {
-    print(parameters);
     loading.value = true;
     return RecipeModel.getRecipePageList(
             page: page.value,
