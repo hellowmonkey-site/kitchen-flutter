@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/page_data_model.dart';
+import 'package:kitchen_flutter/model/user_model.dart';
+import 'package:kitchen_flutter/provider/person_provider.dart';
 import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -69,11 +71,12 @@ class RecipeItemModel {
 class RecipeModel {
   // 分页获取菜谱
   static Future<PageDataModel<RecipeItemModel>> getRecipePageList(
-      {page = 1, String? keywords, String? categorys}) {
+      {page = 1, String? keywords, String? categorys, int? userId}) {
     return Application.ajax.get('recipe/page-list', queryParameters: {
       'page': page,
       'keywords': keywords,
-      'categorys': categorys
+      'categorys': categorys,
+      'user_id': userId
     }).then((res) {
       final data = res.data['data'];
       final list = (data['data'] as List)
@@ -84,6 +87,19 @@ class RecipeModel {
       // 缓存
       Provider.of<RecipeProvider>(Get.context!, listen: false)
           .pushRecipeList(list);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList(
+          list
+              .map((item) => UserModel(
+                  id: item.userId,
+                  username: item.userName,
+                  nickname: item.userName,
+                  cover: item.userCover,
+                  samp: '',
+                  token: '',
+                  createdAt: ''))
+              .toList());
 
       return PageDataModel.fromJson(data);
     });
@@ -96,6 +112,18 @@ class RecipeModel {
       // 缓存
       Provider.of<RecipeProvider>(Get.context!, listen: false)
           .pushRecipeList([data]);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
+        UserModel(
+            id: data.userId,
+            username: data.userName,
+            nickname: data.userName,
+            cover: data.cover,
+            samp: '',
+            token: '',
+            createdAt: '')
+      ]);
       return data;
     });
   }

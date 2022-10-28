@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/config/common.dart';
-import 'package:kitchen_flutter/controller/list_controller.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
 import 'package:kitchen_flutter/model/user_favorite_model.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
@@ -260,9 +259,12 @@ class _DetailPageState extends State<DetailPage>
                                 Expanded(
                                     child: Row(
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(data.userCover),
+                                    Hero(
+                                      tag: 'person-item-${data.userId}',
+                                      child: CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(data.userCover),
+                                      ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 10),

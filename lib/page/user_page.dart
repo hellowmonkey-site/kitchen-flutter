@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -34,12 +35,13 @@ class UserPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
+                SizedBox(
                   width: 70,
                   height: 70,
                   child: CircleAvatar(
-                    radius: 70,
-                    backgroundColor: Colors.amberAccent,
+                    backgroundImage: userProvider.user.cover.isEmpty
+                        ? Image.asset('static/image/avatar/01.png').image
+                        : NetworkImage(userProvider.user.cover),
                   ),
                 ),
                 Expanded(
@@ -64,9 +66,9 @@ class UserPage extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 5),
                                 child: Text(
                                   userProvider.isLogined
-                                      ? userProvider.user!.samp == ''
+                                      ? userProvider.user.samp.isEmpty
                                           ? '暂无签名'
-                                          : userProvider.user!.samp
+                                          : userProvider.user.samp
                                       : '',
                                   maxLines: 2,
                                   style: TextStyle(
@@ -83,7 +85,7 @@ class UserPage extends StatelessWidget {
                                   title: '退出登录',
                                   onTap: (confirm) {
                                     if (confirm) {
-                                      userProvider.setUser(null);
+                                      userProvider.setUser(defaultUserModel);
                                     }
                                   });
                             },
@@ -116,7 +118,8 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.home),
                   title: const Text('个人主页'),
                   onTap: () {
-                    Application.navigateTo('/person', auth: true);
+                    Application.navigateTo('/person/${userProvider.user.id}',
+                        auth: true);
                   },
                 ),
                 ListTile(

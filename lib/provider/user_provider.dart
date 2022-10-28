@@ -5,7 +5,7 @@ import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
 
 class UserProvider with ChangeNotifier {
-  UserModel? _user;
+  UserModel _user = defaultUserModel;
 
   UserProvider() {
     // 初始化
@@ -21,26 +21,23 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  UserModel? get user => _user;
+  UserModel get user => _user;
 
-  String? get token => user?.token;
+  String get token => user.token;
 
   String get username {
-    if (user == null) {
-      return '';
-    }
-    return user!.nickname == '' ? user!.username : user!.nickname;
+    return user.nickname.isEmpty ? user.username : user.nickname;
   }
 
-  bool get isLogined => token != null;
+  bool get isLogined => token.isNotEmpty;
 
-  setUser(UserModel? data) {
+  setUser(UserModel data) {
     _user = data;
-    if (_user == null) {
+    if (_user.id == 0) {
       Application.prefs.remove('user');
     } else {
       Application.prefs
-          .setString('user', json.encode(_user!.toJson()).toString());
+          .setString('user', json.encode(_user.toJson()).toString());
     }
     notifyListeners();
   }

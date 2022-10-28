@@ -2,8 +2,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
-import 'package:kitchen_flutter/provider/recipe_provider.dart';
-import 'package:provider/provider.dart';
 
 class ListController extends GetxController {
   // 数据列表
@@ -36,7 +34,7 @@ class ListController extends GetxController {
   get dataItemCount =>
       dataList.value.isEmpty ? 1 : (dataList.value.length / 2).ceil() + 1;
 
-  get hasMore => page.value <= totalPage.value;
+  get hasMore => page.value < totalPage.value;
 
   Future fetchData() {
     loading.value = true;
@@ -68,8 +66,9 @@ class ListController extends GetxController {
 
     // 监听滚动
     scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
+      if (hasMore &&
+          scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent) {
         page.value += 1;
         fetchData();
       }

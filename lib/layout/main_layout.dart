@@ -115,7 +115,8 @@ class MainLayout extends StatelessWidget {
                                     backgroundColor: item.value,
                                   ),
                                   activeColor: Theme.of(context).primaryColor,
-                                  title: Text(item.value.value.toString()),
+                                  title: Text(
+                                      '#${item.value.value.toRadixString(16).toUpperCase()}'),
                                   onChanged: (bool? value) {
                                     themeProvider.changeThemeColor(item.key);
                                     Get.back();

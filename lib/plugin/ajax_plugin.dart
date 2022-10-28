@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/helper/util.dart';
+import 'package:kitchen_flutter/model/user_model.dart';
 // import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class AjaxPlugin {
       // final token = Application.prefs.getString('token');
       final token =
           Provider.of<UserProvider>(Get.context!, listen: false).token;
-      if (token != null) {
+      if (token.isNotEmpty) {
         options.headers['token'] = token;
       }
       options.headers['x-csrf-token'] = generateSecret();
@@ -27,7 +28,8 @@ class AjaxPlugin {
       final message = response.data['message'].toString();
       if (status != null && status != successCode) {
         if (status == loginError) {
-          Provider.of<UserProvider>(Get.context!, listen: false).setUser(null);
+          Provider.of<UserProvider>(Get.context!, listen: false)
+              .setUser(defaultUserModel);
           // Application.navigateTo(() => const LoginPage(),
           // fullscreenDialog: true, transition: Transition.downToUp);
         }

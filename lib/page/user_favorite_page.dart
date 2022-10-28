@@ -1,15 +1,182 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kitchen_flutter/component/common_component.dart';
+import 'package:kitchen_flutter/model/user_favorite_model.dart';
+import 'package:kitchen_flutter/provider/user_favorite_provider.dart';
+import 'package:provider/provider.dart';
 
 class UserFavoritePage extends StatelessWidget {
-  const UserFavoritePage({Key? key}) : super(key: key);
+  UserFavoritePage({Key? key}) : super(key: key);
+
+  final scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    UserFavoriteProvider userFavoriteProvider =
+        Provider.of<UserFavoriteProvider>(context);
+
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         title: const Text('我的收藏'),
       ),
-      body: const Center(child: Text('开发中...')),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          final item = userFavoriteProvider.favoriteList[index];
+          return SizedBox(
+            height: 100,
+            // color: Theme.of(context).bottomAppBarColor,
+            child: InkWell(
+              onTap: () {
+                Get.toNamed('/detail/${item.recipeId}');
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            width: index ==
+                                    userFavoriteProvider.favoriteList.length - 1
+                                ? 0
+                                : 1,
+                            color: Theme.of(context)
+                                .disabledColor
+                                .withOpacity(0.1)))),
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      width: 140,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Hero(
+                          tag: 'recipe-item-${item.recipeId}',
+                          child: cachedNetworkImage(item.recipeCover),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              item.recipeTitle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      color: Theme.of(context).disabledColor,
+                                      size: 18,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Text(
+                                        item.createdAt,
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .disabledColor),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                                InkWell(
+                                  onTap: () {
+                                    Get.bottomSheet(
+                                      Container(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 20),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  UserFavoriteModel
+                                                      .deleteUserFavorite(
+                                                          item.recipeId);
+                                                  Get.back();
+                                                },
+                                                child: Container(
+                                                  height: 50,
+                                                  color: Theme.of(context)
+                                                      .bottomAppBarColor,
+                                                  alignment: Alignment.center,
+                                                  child: const Text(
+                                                    '取消收藏',
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                Get.back();
+                                              },
+                                              child: Container(
+                                                height: 50,
+                                                color: Theme.of(context)
+                                                    .bottomAppBarColor,
+                                                alignment: Alignment.center,
+                                                child: const Text(
+                                                  '取消',
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      backgroundColor: Get.isDarkMode
+                                          ? Colors.white24
+                                          : Colors.black26,
+                                    );
+                                  },
+                                  child: Icon(Icons.more_vert,
+                                      color: Theme.of(context).disabledColor),
+                                )
+                              ],
+                            )
+                          ],
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        itemCount: userFavoriteProvider.favoriteList.length,
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: scrollController,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {
+          scrollController.animateTo(0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOutQuart);
+        },
+        child: const Icon(Icons.arrow_upward),
+      ),
     );
   }
 }

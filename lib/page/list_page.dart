@@ -38,20 +38,13 @@ class ListPage extends StatelessWidget {
                 return SizedBox(
                   height: 60,
                   child: Center(
-                    child: listController.loading.value &&
-                            listController.hasMore
-                        ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).primaryColor))
-                        : !listController.hasMore
-                            ? Text(
-                                '暂无更多数据',
-                                style: TextStyle(
-                                    color: Theme.of(context).disabledColor),
-                              )
-                            : listController.dataList.value.length > 6
+                    child: listController.dataList.value.isEmpty
+                        ? Container()
+                        : listController.loading.value
+                            ? const CircularProgressIndicator()
+                            : !listController.hasMore
                                 ? Text(
-                                    '上拉加载...',
+                                    '暂无更多数据',
                                     style: TextStyle(
                                         color: Theme.of(context).disabledColor),
                                   )

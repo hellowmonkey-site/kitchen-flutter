@@ -6,5 +6,5 @@ const baseUrl = isProd
     ? 'https://kitchen.api.hellowmonkey.cc/'
     : 'http://192.168.5.19:7001/';
 const successCode = 200;
-const loginError = 1000;
+const loginError = 10000;
 const webUrl = 'https://kitchen.hellowmonkey.cc';

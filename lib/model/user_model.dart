@@ -73,6 +73,13 @@ class UserModel {
     });
   }
 
+  // 获取person信息
+  static Future<UserModel> getPersonDetail(int id) {
+    return Application.ajax
+        .get('person/$id')
+        .then((res) => UserModel.fromJson(res.data['data']));
+  }
+
   // 更新用户信息
   static Future<UserModel> putUserInfo(
       {String? password, String? samp, String? nickname, int? coverId}) {
@@ -88,3 +95,13 @@ class UserModel {
     });
   }
 }
+
+final defaultUserModel = UserModel(
+  id: 0,
+  cover: '',
+  createdAt: '',
+  samp: '',
+  nickname: '',
+  token: '',
+  username: '',
+);

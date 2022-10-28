@@ -55,17 +55,17 @@ final routePages = [
       curve: Curves.easeInOut),
   GetPage(
       name: '/user/favorite',
-      page: () => const UserFavoritePage(),
+      page: () => UserFavoritePage(),
       transition: Transition.cupertino,
       curve: Curves.easeInOut),
   GetPage(
       name: '/user/history',
-      page: () => const UserHistoryPage(),
+      page: () => UserHistoryPage(),
       transition: Transition.cupertino,
       curve: Curves.easeInOut),
   GetPage(
       name: '/user/star',
-      page: () => const UserStarPage(),
+      page: () => UserStarPage(),
       transition: Transition.cupertino,
       curve: Curves.easeInOut),
 ];

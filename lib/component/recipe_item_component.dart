@@ -54,17 +54,19 @@ class RecipeItemComponent extends StatelessWidget {
                       child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (recipe.userCover != '')
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Hero(
+                            tag: 'person-item-${recipe.userId}',
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(recipe.userCover),
                             ),
                           ),
                         ),
+                      ),
                       Text(
                         recipe.userName,
                         maxLines: 1,

@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/user_model.dart';
+import 'package:kitchen_flutter/provider/person_provider.dart';
 import 'package:kitchen_flutter/provider/user_star_provider.dart';
 import 'package:provider/provider.dart';
 
 class UserStarItemModel {
+  final int id;
   final int userId;
   final int starUserId;
   final String starUserName;
@@ -11,7 +14,8 @@ class UserStarItemModel {
   final String createdAt;
 
   UserStarItemModel(
-      {required this.userId,
+      {required this.id,
+      required this.userId,
       required this.starUserId,
       required this.starUserName,
       required this.starUserCover,
@@ -19,6 +23,7 @@ class UserStarItemModel {
 
   UserStarItemModel.fromJson(Map<String, dynamic> json)
       : this(
+          id: json['id'],
           createdAt: json['created_at'],
           userId: json['user_id'],
           starUserId: json['star_user_id'],
@@ -34,8 +39,24 @@ class UserStarModel {
       final data = (res.data['data'] as List)
           .map((e) => UserStarItemModel.fromJson(e))
           .toList();
+
+      // 缓存
       Provider.of<UserStarProvider>(Get.context!, listen: false)
           .setStarList(data);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList(
+          data
+              .map((item) => UserModel(
+                  id: item.starUserId,
+                  username: item.starUserName,
+                  nickname: item.starUserName,
+                  cover: item.starUserCover,
+                  samp: '',
+                  token: '',
+                  createdAt: ''))
+              .toList());
+
       return data;
     });
   }
@@ -51,8 +72,11 @@ class UserStarModel {
 
   // 取消关注
   static Future deleteUserStar(int userId) {
-    return Application.ajax
-        .delete('user-star', data: {'user_id': userId}).then((res) {
+    final id = Provider.of<UserStarProvider>(Get.context!, listen: false)
+        .starList
+        .firstWhere((element) => element.starUserId == userId)
+        .id;
+    return Application.ajax.delete('user-star/$id').then((res) {
       getUserStarList();
       return res.data['data'];
     });

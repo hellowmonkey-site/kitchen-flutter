@@ -15,8 +15,13 @@ import 'package:kitchen_flutter/page/notfound_page.dart';
 import 'package:kitchen_flutter/plugin/ajax_plugin.dart';
 import 'package:kitchen_flutter/plugin/packageinfo_plugin.dart';
 import 'package:kitchen_flutter/plugin/prefs_plugin.dart';
+import 'package:kitchen_flutter/provider/person_provider.dart';
+import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:kitchen_flutter/provider/theme_provider.dart';
+import 'package:kitchen_flutter/provider/user_favorite_provider.dart';
+import 'package:kitchen_flutter/provider/user_history_provider.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
+import 'package:kitchen_flutter/provider/user_star_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -50,7 +55,12 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: ThemeProvider()),
-      ChangeNotifierProvider.value(value: UserProvider())
+      ChangeNotifierProvider.value(value: UserProvider()),
+      ChangeNotifierProvider.value(value: UserFavoriteProvider()),
+      ChangeNotifierProvider.value(value: UserStarProvider()),
+      ChangeNotifierProvider.value(value: UserHistoryProvider()),
+      ChangeNotifierProvider.value(value: RecipeProvider()),
+      ChangeNotifierProvider.value(value: PersonProvider())
     ],
     child: const MainApp(),
   ));

@@ -98,7 +98,7 @@ class Application {
     bool auth = false,
   }) {
     final token = Provider.of<UserProvider>(Get.context!, listen: false).token;
-    if (auth && token == null) {
+    if (auth && token.isEmpty) {
       toast('请先登录');
       return Get.to(() => LoginPage(),
           fullscreenDialog: true, transition: Transition.downToUp);

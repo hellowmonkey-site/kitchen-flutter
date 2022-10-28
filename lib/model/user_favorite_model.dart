@@ -4,6 +4,7 @@ import 'package:kitchen_flutter/provider/user_favorite_provider.dart';
 import 'package:provider/provider.dart';
 
 class UserFavoriteItemModel {
+  final int id;
   final int userId;
   final int recipeId;
   final String recipeTitle;
@@ -17,10 +18,12 @@ class UserFavoriteItemModel {
       required this.recipeTitle,
       required this.recipeCover,
       required this.recipeVideo,
-      required this.createdAt});
+      required this.createdAt,
+      required this.id});
 
   UserFavoriteItemModel.fromJson(Map<String, dynamic> json)
       : this(
+            id: json['id'],
             createdAt: json['created_at'],
             userId: json['user_id'],
             recipeId: json['recipe_id'],
@@ -53,8 +56,11 @@ class UserFavoriteModel {
 
   // 取消收藏
   static Future deleteUserFavorite(int recipeId) {
-    return Application.ajax
-        .delete('user-favorite', data: {'recipe_id': recipeId}).then((res) {
+    final id = Provider.of<UserFavoriteProvider>(Get.context!, listen: false)
+        .favoriteList
+        .firstWhere((element) => element.recipeId == recipeId)
+        .id;
+    return Application.ajax.delete('user-favorite/$id').then((res) {
       getUserFavoriteList();
       return res.data['data'];
     });
