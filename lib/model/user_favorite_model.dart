@@ -1,4 +1,7 @@
+import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/provider/user_favorite_provider.dart';
+import 'package:provider/provider.dart';
 
 class UserFavoriteItemModel {
   final int userId;
@@ -29,21 +32,31 @@ class UserFavoriteItemModel {
 class UserFavoriteModel {
   // 获取收藏列表
   static Future<List<UserFavoriteItemModel>> getUserFavoriteList() {
-    return Application.ajax.get('user-favorite').then((res) =>
-        (res.data['data'] as List)
-            .map((e) => UserFavoriteItemModel.fromJson(e))
-            .toList());
+    return Application.ajax.get('user-favorite').then((res) {
+      final data = (res.data['data'] as List)
+          .map((e) => UserFavoriteItemModel.fromJson(e))
+          .toList();
+      Provider.of<UserFavoriteProvider>(Get.context!, listen: false)
+          .setFavoriteList(data);
+      return data;
+    });
   }
 
   // 添加收藏
   static Future postUserFavorite(int recipeId) {
-    return Application.ajax.post('user-favorite',
-        data: {'recipe_id': recipeId}).then((res) => res.data['data']);
+    return Application.ajax
+        .post('user-favorite', data: {'recipe_id': recipeId}).then((res) {
+      getUserFavoriteList();
+      return res.data['data'];
+    });
   }
 
   // 取消收藏
   static Future deleteUserFavorite(int recipeId) {
-    return Application.ajax.delete('user-favorite',
-        data: {'recipe_id': recipeId}).then((res) => res.data['data']);
+    return Application.ajax
+        .delete('user-favorite', data: {'recipe_id': recipeId}).then((res) {
+      getUserFavoriteList();
+      return res.data['data'];
+    });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
@@ -133,12 +134,13 @@ class MainLayout extends StatelessWidget {
                   },
                   tooltip: '修改主题色',
                   icon: const Icon(Icons.color_lens)),
-              IconButton(
-                  onPressed: () {
-                    Application.launchUrl(webUrl);
-                  },
-                  tooltip: 'Web端',
-                  icon: const Icon(Icons.web))
+              if (!kIsWeb)
+                IconButton(
+                    onPressed: () {
+                      Application.launchUrl(webUrl);
+                    },
+                    tooltip: 'Web端',
+                    icon: const Icon(Icons.web))
             ],
           ),
           body: PageView(

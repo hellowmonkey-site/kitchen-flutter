@@ -1,5 +1,8 @@
+import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/page_data_model.dart';
+import 'package:kitchen_flutter/provider/recipe_provider.dart';
+import 'package:provider/provider.dart';
 
 class RecipeMaterialItemModel {
   final String name;
@@ -73,17 +76,27 @@ class RecipeModel {
       'categorys': categorys
     }).then((res) {
       final data = res.data['data'];
-      data['data'] = (data['data'] as List)
+      final list = (data['data'] as List)
           .map((e) => RecipeItemModel.fromJson(e))
           .toList();
+      data['data'] = list;
+
+      // 缓存
+      Provider.of<RecipeProvider>(Get.context!, listen: false)
+          .pushRecipeList(list);
+
       return PageDataModel.fromJson(data);
     });
   }
 
   // 获取菜谱详情
   static Future<RecipeItemModel> getRecipeDetail(int id) {
-    return Application.ajax
-        .get('recipe/$id')
-        .then((res) => RecipeItemModel.fromJson(res.data['data']));
+    return Application.ajax.get('recipe/$id').then((res) {
+      final data = RecipeItemModel.fromJson(res.data['data']);
+      // 缓存
+      Provider.of<RecipeProvider>(Get.context!, listen: false)
+          .pushRecipeList([data]);
+      return data;
+    });
   }
 }
