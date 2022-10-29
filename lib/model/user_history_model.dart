@@ -10,6 +10,7 @@ class UserHistoryItemModel {
   final String recipeCover;
   final String recipeVideo;
   final String createdAt;
+  final String updatedAt;
 
   UserHistoryItemModel(
       {required this.userId,
@@ -17,6 +18,7 @@ class UserHistoryItemModel {
       required this.recipeTitle,
       required this.recipeCover,
       required this.recipeVideo,
+      required this.updatedAt,
       required this.createdAt});
 
   UserHistoryItemModel.fromJson(Map<String, dynamic> json)
@@ -26,6 +28,7 @@ class UserHistoryItemModel {
             recipeId: json['recipe_id'],
             recipeCover: json['recipe_cover'],
             recipeTitle: json['recipe_title'],
+            updatedAt: json['updated_at'],
             recipeVideo: json['recipe_video']);
 }
 

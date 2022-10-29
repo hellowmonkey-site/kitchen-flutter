@@ -171,7 +171,6 @@ class MainLayout extends StatelessWidget {
             onPressed: () {
               Application.navigateTo('/publish', auth: true);
             },
-            backgroundColor: Theme.of(context).primaryColor,
             child: const Icon(Icons.add),
           ),
           floatingActionButtonLocation:

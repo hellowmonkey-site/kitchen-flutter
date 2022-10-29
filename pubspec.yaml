@@ -55,6 +55,7 @@ dependencies:
   url_launcher: ^6.1.6
   bot_toast: ^4.0.3
   image_picker: ^0.8.6
+  flutter_native_splash: ^2.2.12
   share_plus: 5.0.0
 
 dev_dependencies:

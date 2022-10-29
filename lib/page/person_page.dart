@@ -264,7 +264,6 @@ class _PersonPageState extends State<PersonPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             scrollController.animateTo(0,
                 duration: const Duration(milliseconds: 300),

@@ -62,31 +62,35 @@ class LoginPage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 30),
                       child: TextFormField(
-                          textInputAction: TextInputAction.send,
-                          controller: _pwdController,
-                          decoration: InputDecoration(
-                              labelText: '密码',
-                              fillColor: Theme.of(context).bottomAppBarColor,
-                              hintText: '密码',
-                              hintStyle: const TextStyle(
-                                color: Colors.grey,
-                                textBaseline: TextBaseline.ideographic,
-                              ),
-                              prefixIcon: const Icon(Icons.lock),
-                              filled: true,
-                              border: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30)),
-                                  borderSide: BorderSide(
-                                      style: BorderStyle.solid, width: 2))),
-                          obscureText: true,
-                          //校验密码
-                          validator: (v) {
-                            if (v == null || v.trim().length <= 5) {
-                              return '密码不能少于6位';
-                            }
-                            return null;
-                          }),
+                        textInputAction: TextInputAction.send,
+                        controller: _pwdController,
+                        decoration: InputDecoration(
+                            labelText: '密码',
+                            fillColor: Theme.of(context).bottomAppBarColor,
+                            hintText: '密码',
+                            hintStyle: const TextStyle(
+                              color: Colors.grey,
+                              textBaseline: TextBaseline.ideographic,
+                            ),
+                            prefixIcon: const Icon(Icons.lock),
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                                borderSide: BorderSide(
+                                    style: BorderStyle.solid, width: 2))),
+                        obscureText: true,
+                        //校验密码
+                        validator: (v) {
+                          if (v == null || v.trim().length <= 5) {
+                            return '密码不能少于6位';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (value) {
+                          handleSubmit();
+                        },
+                      ),
                     ),
                     // 登录按钮
                     ElevatedButton(
@@ -106,12 +110,7 @@ class LoginPage extends StatelessWidget {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        // 通过后再提交数据。
-                        if ((_formKey.currentState as FormState).validate()) {
-                          loginController.handleSubmit(
-                              username: _unameController.value.text,
-                              password: _pwdController.value.text);
-                        }
+                        handleSubmit();
                       },
                     ),
                     Container(
@@ -128,5 +127,15 @@ class LoginPage extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  // 提交
+  void handleSubmit() {
+    // 通过后再提交数据。
+    if ((_formKey.currentState as FormState).validate()) {
+      loginController.handleSubmit(
+          username: _unameController.value.text,
+          password: _pwdController.value.text);
+    }
   }
 }

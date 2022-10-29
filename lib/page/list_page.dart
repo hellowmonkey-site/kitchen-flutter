@@ -86,7 +86,6 @@ class ListPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
           listController.scrollController.animateTo(0,
               duration: const Duration(milliseconds: 300),

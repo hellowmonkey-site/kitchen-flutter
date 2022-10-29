@@ -46,8 +46,8 @@ final routePages = [
   GetPage(
       name: '/publish',
       page: () => const PublishPage(),
-      transition: Transition.downToUp,
-      curve: Curves.bounceInOut),
+      transition: Transition.cupertino,
+      curve: Curves.easeInOut),
   GetPage(
       name: '/setting',
       page: () => const SettingPage(),

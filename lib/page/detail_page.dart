@@ -146,6 +146,7 @@ class _DetailPageState extends State<DetailPage>
     return Scaffold(
       extendBodyBehindAppBar: !canPlayVideo,
       appBar: AppBar(
+        foregroundColor: opacity < 0.5 ? Colors.white : null,
         title: Text(
           data.title,
           style: TextStyle(
@@ -442,7 +443,6 @@ class _DetailPageState extends State<DetailPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             // web端是控制播放的按钮
             // app是返回顶部按钮

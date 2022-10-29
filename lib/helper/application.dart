@@ -118,4 +118,59 @@ class Application {
       toast('无法打开此链接');
     }
   }
+
+  // bottomSheet
+  static Future<int?> showBottomSheet(List<String> list) {
+    return Get.bottomSheet<int>(
+      Container(
+        color: Get.isDarkMode
+            ? const Color.fromARGB(255, 54, 54, 54)
+            : const Color.fromARGB(255, 247, 247, 247),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              child: Column(
+                children: list
+                    .asMap()
+                    .entries
+                    .map((item) => InkWell(
+                          onTap: () {
+                            Get.back(result: item.key);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 1),
+                            height: 50,
+                            color: Theme.of(Get.context!).bottomAppBarColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              item.value,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Get.back();
+              },
+              child: Container(
+                height: 50,
+                color: Theme.of(Get.context!).bottomAppBarColor,
+                alignment: Alignment.center,
+                child: const Text(
+                  '取消',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+      backgroundColor: Get.isDarkMode ? Colors.white24 : Colors.black26,
+    );
+  }
 }

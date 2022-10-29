@@ -39,7 +39,7 @@ class UserModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['username'] = username;
-    data['cover'] = cover;
+    data['cover'] = cover ?? '';
     data['nickname'] = nickname;
     data['samp'] = samp;
     data['token'] = token;
@@ -81,14 +81,8 @@ class UserModel {
   }
 
   // 更新用户信息
-  static Future<UserModel> putUserInfo(
-      {String? password, String? samp, String? nickname, int? coverId}) {
-    return Application.ajax.put('user/info', data: {
-      'password': password,
-      'samp': samp,
-      'nickname': nickname,
-      'cover_id': coverId
-    }).then((res) {
+  static Future<UserModel> putUserInfo(Map<String, dynamic> data) {
+    return Application.ajax.put('user/info', data: data).then((res) {
       final user = UserModel.fromJson(res.data['data']);
       Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
       return user;

@@ -59,11 +59,8 @@ class RecipeItemComponent extends StatelessWidget {
                         child: SizedBox(
                           width: 20,
                           height: 20,
-                          child: Hero(
-                            tag: 'person-item-${recipe.userId}',
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(recipe.userCover),
-                            ),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(recipe.userCover),
                           ),
                         ),
                       ),

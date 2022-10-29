@@ -39,9 +39,18 @@ class UserPage extends StatelessWidget {
                   width: 70,
                   height: 70,
                   child: CircleAvatar(
-                    backgroundImage: userProvider.user.cover.isEmpty
-                        ? Image.asset('static/image/avatar/01.png').image
-                        : NetworkImage(userProvider.user.cover),
+                    backgroundImage: NetworkImage(userProvider.user.cover),
+                    child: userProvider.user.cover.isEmpty
+                        ? Text(
+                            userProvider.username.isEmpty
+                                ? ''
+                                : userProvider.username[0],
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
+                          )
+                        : null,
                   ),
                 ),
                 Expanded(
@@ -67,7 +76,7 @@ class UserPage extends StatelessWidget {
                                 child: Text(
                                   userProvider.isLogined
                                       ? userProvider.user.samp.isEmpty
-                                          ? '暂无签名'
+                                          ? '暂无个性签名'
                                           : userProvider.user.samp
                                       : '',
                                   maxLines: 2,

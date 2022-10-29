@@ -6,7 +6,7 @@ import 'package:kitchen_flutter/model/category_model.dart';
 
 class SearchController extends GetxController {
   TextEditingController textController = TextEditingController();
-  var focusNode = FocusNode();
+  FocusNode focusNode = FocusNode();
 
   var keywords = Rx<String>('');
   var selectedCategory = Rx<List<String>>([]);

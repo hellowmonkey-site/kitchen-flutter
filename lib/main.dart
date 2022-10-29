@@ -4,6 +4,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/config/route.dart';
@@ -26,8 +27,11 @@ import 'package:provider/provider.dart';
 
 void main() async {
   try {
+    // 启动图
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
     //  本地存储
-    WidgetsFlutterBinding.ensureInitialized();
     await PrefsPlugin.init();
 
     // 应用信息
@@ -64,6 +68,8 @@ void main() async {
     ],
     child: const MainApp(),
   ));
+
+  FlutterNativeSplash.remove();
 }
 
 class MainApp extends StatelessWidget {
@@ -94,6 +100,9 @@ class MainApp extends StatelessWidget {
           brightness: Brightness.light,
           backgroundColor: Colors.white),
       darkTheme: ThemeData(
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white),
         appBarTheme:
             const AppBarTheme(elevation: 0, foregroundColor: Colors.white),
         primaryColor: primarySwatch,
