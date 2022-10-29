@@ -60,6 +60,15 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+     applicationVariants.all { variant ->
+        variant.outputs.all { 
+            def appName = 'hellowmonkey-kitchen'
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            // 输入结果如：MyAppName-0.5.1-release.apk
+            outputFileName = "${appName}-${defaultConfig.versionName}-${buildType}.apk"
+        }
+    } 
 }
 
 flutter {
