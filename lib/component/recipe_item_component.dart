@@ -56,13 +56,7 @@ class RecipeItemComponent extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(recipe.userCover),
-                          ),
-                        ),
+                        child: userAvatar(recipe.userCover),
                       ),
                       Text(
                         recipe.userName,

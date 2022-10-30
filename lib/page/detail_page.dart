@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/config/common.dart';
+import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
 import 'package:kitchen_flutter/model/user_favorite_model.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
@@ -212,7 +213,12 @@ class _DetailPageState extends State<DetailPage>
                                     controller: chewieController!,
                                   )),
                           )
-                        : cachedNetworkImage(data.cover),
+                        : InkWell(
+                            onTap: () {
+                              Application.showImagePreview(data.cover);
+                            },
+                            child: cachedNetworkImage(data.cover),
+                          ),
                   ),
                 ),
                 Container(
@@ -262,10 +268,8 @@ class _DetailPageState extends State<DetailPage>
                                   children: [
                                     Hero(
                                       tag: 'person-item-${data.userId}',
-                                      child: CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(data.userCover),
-                                      ),
+                                      child:
+                                          userAvatar(data.userCover, size: 40),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 10),
@@ -316,16 +320,9 @@ class _DetailPageState extends State<DetailPage>
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
                                     decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                      width:
-                                          item.key == data.materials.length - 1
-                                              ? 0
-                                              : 1,
-                                      color: Theme.of(context)
-                                          .shadowColor
-                                          .withOpacity(0.05),
-                                    ))),
+                                        border: itemBorder(
+                                            isLast: item.key ==
+                                                data.materials.length - 1)),
                                     child: Row(
                                       children: [
                                         Expanded(
@@ -368,50 +365,11 @@ class _DetailPageState extends State<DetailPage>
                                     padding: const EdgeInsets.only(bottom: 15),
                                     child: InkWell(
                                       onTap: () {
-                                        Get.to(
-                                            () => Scaffold(
-                                                  backgroundColor:
-                                                      Colors.black87,
-                                                  extendBodyBehindAppBar: true,
-                                                  appBar: AppBar(
-                                                    elevation: 0,
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                  ),
-                                                  body:
-                                                      PhotoViewGallery.builder(
-                                                    scrollPhysics:
-                                                        const BouncingScrollPhysics(),
-                                                    builder:
-                                                        (BuildContext context,
-                                                            int index) {
-                                                      return PhotoViewGalleryPageOptions(
-                                                        imageProvider:
-                                                            NetworkImage(data
-                                                                .steps[index]
-                                                                .img),
-                                                      );
-                                                    },
-                                                    itemCount:
-                                                        data.steps.length,
-                                                    loadingBuilder:
-                                                        (context, progress) =>
-                                                            const Center(
-                                                      child:
-                                                          LinearProgressIndicator(),
-                                                    ),
-                                                    pageController:
-                                                        PageController(
-                                                            initialPage:
-                                                                item.key),
-                                                    // onPageChanged: (i) {},
-                                                  ),
-                                                ),
-                                            transition:
-                                                Transition.cupertinoDialog,
-                                            fullscreenDialog: true);
+                                        Application.showImageGallery(
+                                            data.steps
+                                                .map((e) => e.img)
+                                                .toList(),
+                                            initIndex: item.key);
                                       },
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(10),

@@ -1,6 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/component/recipe_item_component.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
@@ -155,8 +156,11 @@ class _PersonPageState extends State<PersonPage> {
                         width: _headerHeight,
                         child: Hero(
                           tag: 'person-item-$id',
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(user.cover),
+                          child: GestureDetector(
+                            onTap: () {
+                              Application.showImagePreview(user.cover);
+                            },
+                            child: userAvatar(user.cover, size: _headerHeight),
                           ),
                         ),
                       ),

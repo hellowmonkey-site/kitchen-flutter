@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
 import 'package:kitchen_flutter/provider/user_star_provider.dart';
@@ -29,20 +30,25 @@ class UserStarPage extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (context, index) {
                 final item = userStarProvider.starList[index];
-                return Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                return Container(
+                  decoration: BoxDecoration(
+                      border: itemBorder(
+                          isLast:
+                              index == userStarProvider.starList.length - 1)),
+                  // padding: const EdgeInsets.only(top: 10),
                   child: ListTile(
                     onTap: () {
                       Get.toNamed('/person/${item.starUserId}');
                     },
                     leading: Hero(
                       tag: 'person-item-${item.starUserId}',
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(item.starUserCover),
-                      ),
+                      child: userAvatar(item.starUserCover, size: 40),
                     ),
                     title: Text(item.starUserName),
-                    subtitle: Text(item.createdAt),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text(item.createdAt),
+                    ),
                     trailing: InkWell(
                       onTap: () async {
                         final index =

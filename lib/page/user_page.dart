@@ -38,19 +38,22 @@ class UserPage extends StatelessWidget {
                 SizedBox(
                   width: 70,
                   height: 70,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(userProvider.user.cover),
-                    child: userProvider.user.cover.isEmpty
-                        ? Text(
-                            userProvider.username.isEmpty
-                                ? ''
-                                : userProvider.username[0],
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.6),
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold),
-                          )
-                        : null,
+                  child: GestureDetector(
+                    onTap: () {
+                      Application.showImagePreview(userProvider.user.cover);
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(userProvider.user.cover),
+                      child: Text(
+                        userProvider.username.isEmpty
+                            ? ''
+                            : userProvider.username[0],
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.6),
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(

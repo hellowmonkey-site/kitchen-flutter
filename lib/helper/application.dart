@@ -2,9 +2,12 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide Router;
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -107,9 +110,9 @@ class Application {
   }
 
   // 打开链接
-  static void launchUrl(url) async {
+  static void launchUrl(String url) async {
     try {
-      if (await canLaunchUrl(url)) {
+      if (await canLaunchUrl(Uri.parse(url))) {
         launchUrl(url);
       } else {
         throw Error();
@@ -172,5 +175,59 @@ class Application {
       ),
       backgroundColor: Get.isDarkMode ? Colors.white24 : Colors.black26,
     );
+  }
+
+  // 图片预览-相册
+  static showImageGallery(List<String> list, {initIndex = 0}) {
+    return Get.to(
+        () => Scaffold(
+              backgroundColor: Colors.black87,
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+              ),
+              body: PhotoViewGallery.builder(
+                scrollPhysics: const BouncingScrollPhysics(),
+                builder: (BuildContext context, int index) {
+                  final orgUrl = list[index].split('?').first;
+                  final url = '${baseUrl}proxy/image?url=$orgUrl';
+                  return PhotoViewGalleryPageOptions(
+                    imageProvider: NetworkImage(url),
+                  );
+                },
+                itemCount: list.length,
+                loadingBuilder: (context, progress) => const Center(
+                  child: LinearProgressIndicator(),
+                ),
+                pageController: PageController(initialPage: initIndex),
+              ),
+            ),
+        transition: Transition.cupertinoDialog,
+        fullscreenDialog: true);
+  }
+
+  // 图片预览
+  static showImagePreview(String src) {
+    final orgUrl = src.split('?').first;
+    final url = '${baseUrl}proxy/image?url=$orgUrl';
+    return Get.to(
+        () => Scaffold(
+              backgroundColor: Colors.black87,
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+              ),
+              body: PhotoView(
+                  imageProvider: NetworkImage(url),
+                  loadingBuilder: (context, progress) => const Center(
+                        child: LinearProgressIndicator(),
+                      )),
+            ),
+        transition: Transition.cupertinoDialog,
+        fullscreenDialog: true);
   }
 }

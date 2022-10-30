@@ -30,6 +30,8 @@ class UserFavoritePage extends StatelessWidget {
             )
           : ListView.builder(
               itemBuilder: (context, index) {
+                print(
+                    '$index---${index == userFavoriteProvider.favoriteList.length - 1}');
                 final item = userFavoriteProvider.favoriteList[index];
                 return SizedBox(
                   height: 100,
@@ -40,17 +42,10 @@ class UserFavoritePage extends StatelessWidget {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: index ==
-                                          userFavoriteProvider
-                                                  .favoriteList.length -
-                                              1
-                                      ? 0
-                                      : 1,
-                                  color: Theme.of(context)
-                                      .disabledColor
-                                      .withOpacity(0.1)))),
+                          border: itemBorder(
+                              isLast: index ==
+                                  userFavoriteProvider.favoriteList.length -
+                                      1)),
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -59,7 +54,7 @@ class UserFavoritePage extends StatelessWidget {
                         children: [
                           Container(
                             margin: const EdgeInsets.only(right: 10),
-                            width: 140,
+                            width: 130,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Hero(
@@ -95,7 +90,7 @@ class UserFavoritePage extends StatelessWidget {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Icon(
-                                            Icons.timer_outlined,
+                                            Icons.date_range_outlined,
                                             color:
                                                 Theme.of(context).disabledColor,
                                             size: 18,
