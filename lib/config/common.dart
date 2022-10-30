@@ -7,4 +7,4 @@ const baseUrl = isProd
     : 'http://192.168.5.19:7001/';
 const successCode = 200;
 const loginError = 10000;
-const webUrl = 'https://kitchen.hellowmonkey.cc';
+const webUrl = 'https://kitchen.hellowmonkey.cc/';

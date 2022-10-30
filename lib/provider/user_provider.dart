@@ -25,7 +25,7 @@ class UserProvider with ChangeNotifier {
 
   UserModel get user => _user;
 
-  String get token => user.token;
+  String get token => user?.token ?? '';
 
   String get username {
     return user.nickname.isEmpty ? user.username : user.nickname;

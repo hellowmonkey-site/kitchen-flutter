@@ -4,7 +4,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/config/route.dart';
@@ -26,9 +26,9 @@ import 'package:provider/provider.dart';
 void main() async {
   try {
     // 启动图
-    // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
     WidgetsFlutterBinding.ensureInitialized();
-    // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     //  本地存储
     await PrefsPlugin.init();
@@ -45,6 +45,8 @@ void main() async {
           const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
+
+    FlutterNativeSplash.remove();
   } catch (e) {}
 
   runApp(MultiProvider(
@@ -59,8 +61,6 @@ void main() async {
     ],
     child: const MainApp(),
   ));
-
-  // FlutterNativeSplash.remove();
 }
 
 class MainApp extends StatelessWidget {
