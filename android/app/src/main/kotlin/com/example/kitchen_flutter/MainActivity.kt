@@ -1,4 +1,4 @@
-package com.example.kitchen_flutter
+package cc.hellowmonkey.kitchen
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -34,10 +34,11 @@ class UserProvider with ChangeNotifier {
   bool get isLogined => token.isNotEmpty;
 
   setUser(UserModel data) {
-    _user = data;
-    if (_user.id == 0) {
+    if (data == null || data.id == null || data.id == 0) {
+      _user = defaultUserModel;
       Application.prefs.remove('user');
     } else {
+      _user = data;
       Application.prefs
           .setString('user', json.encode(_user.toJson()).toString());
     }

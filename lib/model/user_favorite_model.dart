@@ -13,13 +13,13 @@ class UserFavoriteItemModel {
   final String createdAt;
 
   UserFavoriteItemModel(
-      {required this.userId,
-      required this.recipeId,
-      required this.recipeTitle,
-      required this.recipeCover,
-      required this.recipeVideo,
-      required this.createdAt,
-      required this.id});
+      {this.userId = 0,
+      this.recipeId = 0,
+      this.recipeTitle = '',
+      this.recipeCover = '',
+      this.recipeVideo = '',
+      this.createdAt = '',
+      this.id = 0});
 
   UserFavoriteItemModel.fromJson(Map<String, dynamic> json)
       : this(

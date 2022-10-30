@@ -8,11 +8,11 @@ class CategoryItemModel {
   final int status;
 
   CategoryItemModel(
-      {required this.id,
-      required this.name,
-      required this.parentId,
-      required this.order,
-      required this.status});
+      {this.id = 0,
+      this.name = '',
+      this.parentId = 0,
+      this.order = 0,
+      this.status = 0});
 
   CategoryItemModel.fromJson(Map<String, dynamic> json)
       : this(

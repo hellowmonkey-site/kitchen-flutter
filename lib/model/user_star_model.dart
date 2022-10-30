@@ -14,12 +14,12 @@ class UserStarItemModel {
   final String createdAt;
 
   UserStarItemModel(
-      {required this.id,
-      required this.userId,
-      required this.starUserId,
-      required this.starUserName,
-      required this.starUserCover,
-      required this.createdAt});
+      {this.id = 0,
+      this.userId = 0,
+      this.starUserId = 0,
+      this.starUserName = '',
+      this.starUserCover = '',
+      this.createdAt = ''});
 
   UserStarItemModel.fromJson(Map<String, dynamic> json)
       : this(

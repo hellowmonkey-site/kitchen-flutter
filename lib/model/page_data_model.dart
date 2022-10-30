@@ -6,10 +6,10 @@ class PageDataModel<T> {
   final List<T> data;
 
   PageDataModel(
-      {required this.pageCount,
-      required this.count,
-      required this.pageSize,
-      required this.page,
+      {this.pageCount = 0,
+      this.count = 0,
+      this.pageSize = 10,
+      this.page = 1,
       required this.data});
 
   PageDataModel.fromJson(Map<String, dynamic> json)

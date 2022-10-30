@@ -9,10 +9,7 @@ class StorageModel {
   final String filepath;
 
   StorageModel(
-      {required this.id,
-      required this.url,
-      required this.filename,
-      required this.filepath});
+      {this.id = 0, this.url = '', this.filename = '', this.filepath = ''});
 
   StorageModel.fromJson(Map<String, dynamic> json)
       : this(

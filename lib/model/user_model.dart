@@ -16,13 +16,13 @@ class UserModel {
   final String createdAt;
 
   UserModel(
-      {required this.id,
-      required this.username,
+      {this.id = 0,
+      this.username = '',
       this.cover = '',
-      required this.nickname,
-      required this.samp,
-      required this.token,
-      required this.createdAt,
+      this.nickname = '',
+      this.samp = '',
+      this.token = '',
+      this.createdAt = '',
       this.password});
 
   UserModel.fromJson(Map<String, dynamic> json)
@@ -90,12 +90,4 @@ class UserModel {
   }
 }
 
-final defaultUserModel = UserModel(
-  id: 0,
-  cover: '',
-  createdAt: '',
-  samp: '',
-  nickname: '',
-  token: '',
-  username: '',
-);
+final defaultUserModel = UserModel();

@@ -13,13 +13,13 @@ class UserHistoryItemModel {
   final String updatedAt;
 
   UserHistoryItemModel(
-      {required this.userId,
-      required this.recipeId,
-      required this.recipeTitle,
-      required this.recipeCover,
-      required this.recipeVideo,
-      required this.updatedAt,
-      required this.createdAt});
+      {this.userId = 0,
+      this.recipeId = 0,
+      this.recipeTitle = '',
+      this.recipeCover = '',
+      this.recipeVideo = '',
+      this.updatedAt = '',
+      this.createdAt = ''});
 
   UserHistoryItemModel.fromJson(Map<String, dynamic> json)
       : this(

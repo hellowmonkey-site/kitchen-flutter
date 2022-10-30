@@ -9,13 +9,13 @@ import 'package:provider/provider.dart';
 class RecipeMaterialItemModel {
   final String name;
   final String unit;
-  RecipeMaterialItemModel({required this.name, required this.unit});
+  RecipeMaterialItemModel({this.name = '', this.unit = ''});
 }
 
 class RecipeStepItemModel {
   final String img;
   final String text;
-  RecipeStepItemModel({required this.img, required this.text});
+  RecipeStepItemModel({this.img = '', this.text = ''});
 }
 
 class RecipeItemModel {
@@ -32,19 +32,20 @@ class RecipeItemModel {
   final List<String> categorys;
   final String createdAt;
 
-  RecipeItemModel(
-      {required this.id,
-      required this.userId,
-      required this.userCover,
-      required this.categorys,
-      required this.cover,
-      required this.createdAt,
-      required this.materials,
-      required this.samp,
-      required this.steps,
-      required this.title,
-      required this.userName,
-      required this.video});
+  RecipeItemModel({
+    this.id = 0,
+    this.userId = 0,
+    this.userCover = '',
+    this.cover = '',
+    this.createdAt = '',
+    this.samp = '',
+    this.title = '',
+    this.userName = '',
+    this.video = '',
+    required this.categorys,
+    required this.materials,
+    required this.steps,
+  });
 
   RecipeItemModel.fromJson(Map<String, dynamic> json)
       : this(

@@ -3,6 +3,5 @@ class RequestModel<T> {
   final String message;
   final T data;
 
-  RequestModel(
-      {required this.status, required this.message, required this.data});
+  RequestModel({this.status = 200, this.message = '操作成功', required this.data});
 }
