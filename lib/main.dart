@@ -4,14 +4,12 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+// import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/config/route.dart';
 import 'package:kitchen_flutter/config/theme.dart';
-import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/layout/main_layout.dart';
-import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/page/notfound_page.dart';
 import 'package:kitchen_flutter/plugin/ajax_plugin.dart';
 import 'package:kitchen_flutter/plugin/packageinfo_plugin.dart';
@@ -28,8 +26,9 @@ import 'package:provider/provider.dart';
 void main() async {
   try {
     // 启动图
-    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
+    // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     //  本地存储
     await PrefsPlugin.init();
@@ -39,14 +38,6 @@ void main() async {
 
     //  网络
     AjaxPlugin.init();
-
-    // 设置本地用户状态
-    final String? data = Application.prefs.getString('user');
-    if (data != null) {
-      UserModel.getUserInfo().catchError((e) {
-        print(e);
-      });
-    }
 
     //  设置android状态栏背景透明
     if (!kIsWeb && Platform.isAndroid) {
@@ -69,7 +60,7 @@ void main() async {
     child: const MainApp(),
   ));
 
-  FlutterNativeSplash.remove();
+  // FlutterNativeSplash.remove();
 }
 
 class MainApp extends StatelessWidget {

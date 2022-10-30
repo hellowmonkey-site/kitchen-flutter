@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cc.hellowmonkey.kitchen">
+    package="com.example.kitchen_flutter">
    <application
-        android:label="沃德影视"
+        android:label="沃德厨房"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

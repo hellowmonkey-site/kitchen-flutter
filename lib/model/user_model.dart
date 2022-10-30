@@ -39,7 +39,7 @@ class UserModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['username'] = username;
-    data['cover'] = cover ?? '';
+    data['cover'] = cover;
     data['nickname'] = nickname;
     data['samp'] = samp;
     data['token'] = token;

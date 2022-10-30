@@ -13,8 +13,10 @@ class UserProvider with ChangeNotifier {
     if (data != null) {
       try {
         final userData = json.decode(data);
-        final user = UserModel.fromJson(userData);
-        setUser(user);
+        if (userData != null && userData['id'] != null && userData['id'] != 0) {
+          final user = UserModel.fromJson(userData);
+          setUser(user);
+        }
       } catch (e) {
         print(e);
       }
