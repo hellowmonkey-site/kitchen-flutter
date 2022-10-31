@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/common_model.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -38,23 +39,29 @@ class UserPage extends StatelessWidget {
                 SizedBox(
                   width: 70,
                   height: 70,
-                  child: GestureDetector(
-                    onTap: () {
-                      Application.showImagePreview(userProvider.user.cover);
-                    },
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(userProvider.user.cover),
-                      child: Text(
-                        userProvider.username.isEmpty
-                            ? ''
-                            : userProvider.username[0],
-                        style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+                  child: userProvider.user.cover.isEmpty
+                      ? CircleAvatar(
+                          backgroundColor: Theme.of(context).disabledColor,
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            Application.showImagePreview(
+                                userProvider.user.cover);
+                          },
+                          child: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(userProvider.user.cover),
+                            child: Text(
+                              userProvider.username.isEmpty
+                                  ? ''
+                                  : userProvider.username[0],
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.6),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                 ),
                 Expanded(
                     child: Padding(
@@ -171,8 +178,22 @@ class UserPage extends StatelessWidget {
                   leading: const Icon(Icons.info),
                   title: const Text('系统版本'),
                   subtitle: Text('v ${Application.packageInfo.version}'),
-                  onTap: () {
-                    Application.toast('检查更新');
+                  onTap: () async {
+                    // 检查更新
+                    final info = await CommonModel.getAppInfo();
+                    if (info.version == Application.packageInfo.version) {
+                      Application.toast('已是最新版本');
+                    } else {
+                      Application.openDialog(
+                          title: '发现新版本',
+                          content: info.description,
+                          confirmText: '立即更新',
+                          onTap: (c) {
+                            if (c) {
+                              Application.openUrl(info.downloadUrl);
+                            }
+                          });
+                    }
                   },
                 ),
               ],

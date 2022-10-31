@@ -30,8 +30,6 @@ class UserFavoritePage extends StatelessWidget {
             )
           : ListView.builder(
               itemBuilder: (context, index) {
-                print(
-                    '$index---${index == userFavoriteProvider.favoriteList.length - 1}');
                 final item = userFavoriteProvider.favoriteList[index];
                 return SizedBox(
                   height: 100,

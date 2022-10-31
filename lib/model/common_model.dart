@@ -1,4 +1,5 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:dio/dio.dart';
 
@@ -19,6 +20,27 @@ class StorageModel {
             filepath: json['filepath']);
 }
 
+class AppInfoModel {
+  final String version;
+  final String appName;
+  final String downloadUrl;
+  final String description;
+
+  AppInfoModel({
+    required this.version,
+    required this.appName,
+    required this.downloadUrl,
+    this.description = '',
+  });
+
+  AppInfoModel.fromJson(Map<String, dynamic> json)
+      : this(
+            version: json['version'],
+            appName: json['appName'],
+            downloadUrl: appUrl,
+            description: json['description']);
+}
+
 class CommonModel {
   // 文件上传
   static Future<StorageModel> uploadFile(XFile file) async {
@@ -29,5 +51,12 @@ class CommonModel {
         .post('common/upload-file', data: formData)
         .then((res) => StorageModel.fromJson(res.data['data']));
     return data;
+  }
+
+  // 检查更新
+  static Future<AppInfoModel> getAppInfo() {
+    return Application.ajax
+        .get('common/app-info')
+        .then((res) => AppInfoModel.fromJson(res.data['data']));
   }
 }

@@ -110,14 +110,8 @@ class Application {
   }
 
   // 打开链接
-  static void launchUrl(String url) async {
-    try {
-      if (await canLaunchUrl(Uri.parse(url))) {
-        launchUrl(url);
-      } else {
-        throw Error();
-      }
-    } catch (e) {
+  static void openUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
       toast('无法打开此链接');
     }
   }

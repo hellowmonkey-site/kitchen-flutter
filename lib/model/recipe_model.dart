@@ -106,26 +106,42 @@ class RecipeModel {
     });
   }
 
-  // 获取菜谱详情
-  static Future<RecipeItemModel> getRecipeDetail(int id) {
-    return Application.ajax.get('recipe/$id').then((res) {
-      final data = RecipeItemModel.fromJson(res.data['data']);
-      // 缓存
-      Provider.of<RecipeProvider>(Get.context!, listen: false)
-          .pushRecipeList([data]);
+  // 获取视频地址
+  static Future<String> getVideoSrc(int id) {
+    return Application.ajax
+        .get('recipe/video-src/$id')
+        .then((res) => res.data['data'].toString());
+  }
 
-      // 作者缓存
-      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
-        UserModel(
-            id: data.userId,
-            username: data.userName,
-            nickname: data.userName,
-            cover: data.cover,
-            samp: '',
-            token: '',
-            createdAt: '')
-      ]);
-      return data;
-    });
+  // 获取菜谱详情
+  static Future<RecipeItemModel> getRecipeDetail(int id) async {
+    final data = await Application.ajax
+        .get('recipe/$id')
+        .then((res) => res.data['data']);
+    print('data:$data');
+    if (data['video'] != null && data['video'] != '') {
+      try {
+        data['video'] = await getVideoSrc(id);
+        print('video:${data['video']}');
+      } catch (e) {}
+    }
+    final recipe = RecipeItemModel.fromJson(data);
+    // 缓存
+    Provider.of<RecipeProvider>(Get.context!, listen: false)
+        .pushRecipeList([recipe]);
+
+    // 作者缓存
+    Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
+      UserModel(
+          id: recipe.userId,
+          username: recipe.userName,
+          nickname: recipe.userName,
+          cover: recipe.cover,
+          samp: '',
+          token: '',
+          createdAt: '')
+    ]);
+    print(recipe);
+    return recipe;
   }
 }

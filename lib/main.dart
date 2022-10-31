@@ -4,6 +4,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/config/common.dart';
@@ -45,8 +46,6 @@ void main() async {
           const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
-
-    FlutterNativeSplash.remove();
   } catch (e) {}
 
   runApp(MultiProvider(
@@ -75,11 +74,12 @@ class MainApp extends StatelessWidget {
 
     return GetMaterialApp(
       title: appTitle,
-      // localizationsDelegates: const [
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      // ],
-      // supportedLocales: const [Locale('zh', 'CN')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('zh', 'CN')],
       theme: ThemeData(
           appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white,
@@ -92,8 +92,7 @@ class MainApp extends StatelessWidget {
           backgroundColor: Colors.white),
       darkTheme: ThemeData(
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white),
+            backgroundColor: primarySwatch, foregroundColor: Colors.white),
         appBarTheme:
             const AppBarTheme(elevation: 0, foregroundColor: Colors.white),
         primaryColor: primarySwatch,

@@ -135,10 +135,17 @@ class MainLayout extends StatelessWidget {
                   },
                   tooltip: '修改主题色',
                   icon: const Icon(Icons.color_lens)),
-              if (!kIsWeb)
+              if (kIsWeb)
                 IconButton(
                     onPressed: () {
-                      Application.launchUrl(webUrl);
+                      Application.openUrl(appUrl);
+                    },
+                    tooltip: 'App下载',
+                    icon: const Icon(Icons.file_download_outlined))
+              else
+                IconButton(
+                    onPressed: () {
+                      Application.openUrl(webUrl);
                     },
                     tooltip: 'Web端',
                     icon: const Icon(Icons.web))
@@ -151,21 +158,21 @@ class MainLayout extends StatelessWidget {
             },
             children: [SearchPage(), const UserPage()],
           ),
-          bottomNavigationBar: Obx(() => AnimatedBottomNavigationBar(
-                splashColor: Theme.of(context).primaryColor,
-                backgroundColor: Theme.of(context).bottomAppBarColor,
-                activeColor: Theme.of(context).primaryColor,
-                inactiveColor: Theme.of(context).disabledColor,
-                activeIndex: mainController.pageIndex.value,
-                onTap: (int index) {
-                  pageController.jumpToPage(index);
-                },
-                icons: const [Icons.soup_kitchen, Icons.person],
-                gapLocation: GapLocation.center,
-                notchSmoothness: NotchSmoothness.softEdge,
-                leftCornerRadius: 10,
-                rightCornerRadius: 10,
-              )),
+          bottomNavigationBar: AnimatedBottomNavigationBar(
+            splashColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).bottomAppBarColor,
+            activeColor: Theme.of(context).primaryColor,
+            inactiveColor: Theme.of(context).disabledColor,
+            activeIndex: mainController.pageIndex.value,
+            onTap: (int index) {
+              pageController.jumpToPage(index);
+            },
+            icons: const [Icons.soup_kitchen, Icons.person],
+            gapLocation: GapLocation.center,
+            notchSmoothness: NotchSmoothness.softEdge,
+            leftCornerRadius: 20,
+            rightCornerRadius: 20,
+          ),
           floatingActionButton: FloatingActionButton(
             tooltip: '发布新菜谱',
             onPressed: () {

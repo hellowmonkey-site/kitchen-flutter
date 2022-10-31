@@ -13,7 +13,6 @@ import 'package:kitchen_flutter/model/user_star_model.dart';
 import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:kitchen_flutter/provider/user_favorite_provider.dart';
 import 'package:kitchen_flutter/provider/user_star_provider.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
@@ -25,8 +24,7 @@ class DetailPage extends StatefulWidget {
   State<DetailPage> createState() => _DetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage>
-    with SingleTickerProviderStateMixin {
+class _DetailPageState extends State<DetailPage> {
   VideoPlayerController? videoPlayerController;
   ChewieController? chewieController;
   // 滚动
@@ -34,7 +32,10 @@ class _DetailPageState extends State<DetailPage>
 
   final id = int.parse(Get.parameters['id']!);
 
-  final double headerHeight = 350;
+  double headerHeight = 350;
+
+  // 是否可以播放视频
+  var canPlayVideo = false;
 
   var data = RecipeItemModel(
       id: 0,
@@ -52,13 +53,6 @@ class _DetailPageState extends State<DetailPage>
 
   double opacity = 0;
 
-  // 是否可以播放视频
-  get canPlayVideo {
-    return data.video.isNotEmpty &&
-        videoPlayerController != null &&
-        videoPlayerController!.value.isInitialized;
-  }
-
   bool onNotification(ScrollNotification notification) {
     if (canPlayVideo) {
       return false;
@@ -74,27 +68,41 @@ class _DetailPageState extends State<DetailPage>
 
   fetchData() async {
     // 填充初始值
-    data = Provider.of<RecipeProvider>(context, listen: false)
-        .recipeList
-        .firstWhere(
-          (element) => id == element.id,
-          orElse: () => data,
-        );
-    setState(() {});
+    setState(() {
+      data = Provider.of<RecipeProvider>(context, listen: false)
+          .recipeList
+          .firstWhere(
+            (element) => id == element.id,
+            orElse: () => data,
+          );
+      print('data111---$data');
+    });
 
     // 获取数据
-    data = await RecipeModel.getRecipeDetail(id);
-    setState(() {});
+    final recipe = await RecipeModel.getRecipeDetail(id);
+    print('recipe---$recipe');
+    setState(() {
+      data = recipe;
+    });
 
     if (data.video.isNotEmpty) {
+      if (videoPlayerController != null) {
+        videoPlayerController!.dispose();
+      }
       videoPlayerController = VideoPlayerController.network(data.video);
       await videoPlayerController!.initialize();
+
       if (!kIsWeb) {
+        if (chewieController != null) {
+          chewieController!.dispose();
+        }
         chewieController = ChewieController(
             // aspectRatio: 1,
             videoPlayerController: videoPlayerController!,
             // placeholder: Image.network(data.cover),
             showControls: true,
+            materialProgressColors: ChewieProgressColors(
+                playedColor: Theme.of(context).primaryColor.withOpacity(0.8)),
             playbackSpeeds: const [
               0.5,
               1,
@@ -108,23 +116,24 @@ class _DetailPageState extends State<DetailPage>
               3
             ]);
       }
+      setState(() {
+        canPlayVideo = true;
+        opacity = 1;
+        headerHeight = MediaQuery.of(context).size.width /
+            videoPlayerController!.value.aspectRatio;
+      });
+      await Future.delayed(const Duration(milliseconds: 100));
       videoPlayerController!.play();
     }
 
     setState(() {});
-
-    if (canPlayVideo) {
-      setState(() {
-        opacity = 1;
-      });
-    }
   }
 
   @override
   void initState() {
-    super.initState();
-
     fetchData();
+
+    super.initState();
   }
 
   @override
@@ -417,13 +426,9 @@ class _DetailPageState extends State<DetailPage>
             }
           },
           child: (data.video.isNotEmpty && kIsWeb
-              ? AnimatedIcon(
-                  icon: (videoPlayerController!.value.isPlaying
-                      ? AnimatedIcons.play_pause
-                      : AnimatedIcons.pause_play),
-                  progress: AnimationController(vsync: this)
-                    ..drive(Tween(begin: 0, end: 1))
-                    ..duration = const Duration(milliseconds: 500))
+              ? Icon(videoPlayerController!.value.isPlaying
+                  ? Icons.pause
+                  : Icons.play_arrow)
               : const Icon(Icons.arrow_upward))),
     );
   }

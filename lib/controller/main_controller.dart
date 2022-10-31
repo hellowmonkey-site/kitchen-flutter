@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/common_model.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,22 @@ class MainController extends GetxController {
         .isNotEmpty) {
       UserModel.getUserInfo();
     }
+    // 检查更新
+    CommonModel.getAppInfo().then((data) => {
+          if (data.version != Application.packageInfo.version)
+            {
+              Application.openDialog(
+                  title: '发现新版本',
+                  content: data.description,
+                  confirmText: '立即更新',
+                  onTap: (c) {
+                    if (c) {
+                      Application.openUrl(data.downloadUrl);
+                    }
+                  })
+            }
+        });
+
     super.onReady();
   }
 }
