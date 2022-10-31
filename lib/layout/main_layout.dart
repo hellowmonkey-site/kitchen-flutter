@@ -158,21 +158,21 @@ class MainLayout extends StatelessWidget {
             },
             children: [SearchPage(), const UserPage()],
           ),
-          bottomNavigationBar: AnimatedBottomNavigationBar(
-            splashColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).bottomAppBarColor,
-            activeColor: Theme.of(context).primaryColor,
-            inactiveColor: Theme.of(context).disabledColor,
-            activeIndex: mainController.pageIndex.value,
-            onTap: (int index) {
-              pageController.jumpToPage(index);
-            },
-            icons: const [Icons.soup_kitchen, Icons.person],
-            gapLocation: GapLocation.center,
-            notchSmoothness: NotchSmoothness.softEdge,
-            leftCornerRadius: 20,
-            rightCornerRadius: 20,
-          ),
+          bottomNavigationBar: Obx(() => AnimatedBottomNavigationBar(
+                splashColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).bottomAppBarColor,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: Theme.of(context).disabledColor,
+                activeIndex: mainController.pageIndex.value,
+                onTap: (int index) {
+                  pageController.jumpToPage(index);
+                },
+                icons: const [Icons.soup_kitchen, Icons.person],
+                gapLocation: GapLocation.center,
+                notchSmoothness: NotchSmoothness.softEdge,
+                leftCornerRadius: 20,
+                rightCornerRadius: 20,
+              )),
           floatingActionButton: FloatingActionButton(
             tooltip: '发布新菜谱',
             onPressed: () {
