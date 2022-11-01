@@ -42,19 +42,6 @@ class _DetailPageState extends State<DetailPage> {
 
   double opacity = 0;
 
-  bool onNotification(ScrollNotification notification) {
-    if (canPlayVideo) {
-      return false;
-    }
-    double progress = notification.metrics.pixels / headerHeight;
-    if (opacity != 1 || progress <= 1) {
-      setState(() {
-        opacity = min(progress, 1);
-      });
-    }
-    return false;
-  }
-
   fetchData() async {
     final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
     try {
@@ -66,6 +53,7 @@ class _DetailPageState extends State<DetailPage> {
             orElse: () => defaultRecipeItemModel,
           );
       setState(() {});
+      print('data.cover----------------------${data.cover}');
 
       // 获取数据
       data = await RecipeModel.getRecipeDetail(id);
@@ -123,6 +111,19 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     fetchData();
+
+    // 监听滚动
+    scrollController.addListener(() {
+      if (canPlayVideo) {
+        return;
+      }
+      double progress = scrollController.position.pixels / headerHeight;
+      if (opacity != 1 || progress <= 1) {
+        setState(() {
+          opacity = min(progress, 1);
+        });
+      }
+    });
 
     super.initState();
   }
@@ -189,239 +190,231 @@ class _DetailPageState extends State<DetailPage> {
           )
         ],
       ),
-      body: NotificationListener<ScrollNotification>(
-        onNotification: onNotification,
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: headerHeight,
-                  child: Hero(
-                    tag: 'recipe-item-$id',
-                    child: canPlayVideo
-                        ? (kIsWeb
-                            ? Stack(
+      body: SingleChildScrollView(
+        controller: scrollController,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: headerHeight,
+                child: Hero(
+                  tag: 'recipe-item-$id',
+                  child: canPlayVideo
+                      ? (kIsWeb
+                          ? Stack(
+                              children: [
+                                VideoPlayer(videoPlayerController!),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: Icon(
+                                        videoPlayerController!.value.isPlaying
+                                            ? Icons.pause
+                                            : Icons.play_arrow),
+                                    onPressed: () {
+                                      setState(() {
+                                        videoPlayerController!.value.isPlaying
+                                            ? videoPlayerController!.pause()
+                                            : videoPlayerController!.play();
+                                      });
+                                    },
+                                  ),
+                                )
+                              ],
+                            )
+                          : Chewie(
+                              controller: chewieController!,
+                            ))
+                      : (data.cover.isEmpty
+                          ? Center(
+                              child: Text(
+                                '封面加载中...',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).disabledColor),
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                Application.showImagePreview(data.cover);
+                              },
+                              child: cachedNetworkImage(data.cover),
+                            )),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(20),
+                color: Theme.of(context).bottomAppBarColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        data.title,
+                        style: const TextStyle(fontSize: 22),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                          color:
+                              Theme.of(context).shadowColor.withOpacity(0.05),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      child: Text(data.samp),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color:
+                              Theme.of(context).shadowColor.withOpacity(0.05),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10))),
+                      margin: const EdgeInsets.only(bottom: 30),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/person/${data.userId}');
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                  child: Row(
                                 children: [
-                                  VideoPlayer(videoPlayerController!),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: IconButton(
-                                      icon: Icon(
-                                          videoPlayerController!.value.isPlaying
-                                              ? Icons.pause
-                                              : Icons.play_arrow),
-                                      onPressed: () {
-                                        setState(() {
-                                          videoPlayerController!.value.isPlaying
-                                              ? videoPlayerController!.pause()
-                                              : videoPlayerController!.play();
-                                        });
-                                      },
-                                    ),
+                                  Hero(
+                                    tag: 'person-item-${data.userId}',
+                                    child: userAvatar(data.userCover, size: 40),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(data.userName),
                                   )
                                 ],
-                              )
-                            : Chewie(
-                                controller: chewieController!,
-                              ))
-                        : (data.cover.isEmpty
-                            ? Center(
-                                child: Text(
-                                  '封面加载中...',
-                                  style: TextStyle(
-                                      color: Theme.of(context).disabledColor),
-                                ),
-                              )
-                            : InkWell(
-                                onTap: () {
-                                  Application.showImagePreview(data.cover);
-                                },
-                                child: cachedNetworkImage(data.cover),
                               )),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  color: Theme.of(context).bottomAppBarColor,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          data.title,
-                          style: const TextStyle(fontSize: 22),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        margin: const EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).shadowColor.withOpacity(0.05),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10))),
-                        child: Text(data.samp),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).shadowColor.withOpacity(0.05),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10))),
-                        margin: const EdgeInsets.only(bottom: 30),
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed('/person/${data.userId}');
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    Hero(
-                                      tag: 'person-item-${data.userId}',
-                                      child:
-                                          userAvatar(data.userCover, size: 40),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(data.userName),
-                                    )
-                                  ],
-                                )),
-                                if (userStarProvider.starUserIds
-                                    .contains(data.userId))
-                                  IconButton(
-                                      tooltip: '点击取消关注',
-                                      onPressed: () {
-                                        UserStarModel.deleteUserStar(
-                                            data.userId);
-                                      },
-                                      icon: const Icon(
-                                        Icons.star,
-                                        color: Colors.redAccent,
-                                      ))
-                                else
-                                  IconButton(
-                                      tooltip: '点击关注此作者',
-                                      onPressed: () {
-                                        UserStarModel.postUserStar(data.userId);
-                                      },
-                                      icon: const Icon(
-                                          Icons.star_border_outlined))
-                              ],
-                            ),
+                              if (userStarProvider.starUserIds
+                                  .contains(data.userId))
+                                IconButton(
+                                    tooltip: '点击取消关注',
+                                    onPressed: () {
+                                      UserStarModel.deleteUserStar(data.userId);
+                                    },
+                                    icon: const Icon(
+                                      Icons.star,
+                                      color: Colors.redAccent,
+                                    ))
+                              else
+                                IconButton(
+                                    tooltip: '点击关注此作者',
+                                    onPressed: () {
+                                      UserStarModel.postUserStar(data.userId);
+                                    },
+                                    icon:
+                                        const Icon(Icons.star_border_outlined))
+                            ],
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 15),
-                        child: Text(
-                          '用料',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 15),
+                      child: Text(
+                        '用料',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 30),
-                        child: Column(
-                          children: data.materials
-                              .asMap()
-                              .entries
-                              .map((item) => Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    decoration: BoxDecoration(
-                                        border: itemBorder(
-                                            isLast: item.key ==
-                                                data.materials.length - 1)),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            child: Text(
-                                          item.value.name,
-                                          style: const TextStyle(fontSize: 16),
-                                        )),
-                                        if (item.value.unit.isNotEmpty)
-                                          SizedBox(
-                                            width: 120,
-                                            child: Text(
-                                              item.value.unit,
-                                              style:
-                                                  const TextStyle(fontSize: 16),
-                                            ),
-                                          )
-                                      ],
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: Column(
+                        children: data.materials
+                            .asMap()
+                            .entries
+                            .map((item) => Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  decoration: BoxDecoration(
+                                      border: itemBorder(
+                                          isLast: item.key ==
+                                              data.materials.length - 1)),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                        item.value.name,
+                                        style: const TextStyle(fontSize: 16),
+                                      )),
+                                      if (item.value.unit.isNotEmpty)
+                                        SizedBox(
+                                          width: 120,
+                                          child: Text(
+                                            item.value.unit,
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        )
+                                    ],
+                                  ),
+                                ))
+                            .toList(),
                       ),
-                      ...data.steps
-                          .asMap()
-                          .entries
-                          .map((item) => Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 15),
-                                    child: Text(
-                                      '步骤 ${item.key + 1}',
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                    ),
+                    ...data.steps
+                        .asMap()
+                        .entries
+                        .map((item) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  child: Text(
+                                    '步骤 ${item.key + 1}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Application.showImageGallery(
+                                          data.steps.map((e) => e.img).toList(),
+                                          initIndex: item.key);
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: cachedNetworkImage(item.value.img),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 15),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Application.showImageGallery(
-                                            data.steps
-                                                .map((e) => e.img)
-                                                .toList(),
-                                            initIndex: item.key);
-                                      },
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child:
-                                            cachedNetworkImage(item.value.img),
-                                      ),
-                                    ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: item.key == data.steps.length - 1
+                                          ? 0
+                                          : 30),
+                                  child: Text(
+                                    item.value.text,
+                                    style: const TextStyle(fontSize: 16),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom:
-                                            item.key == data.steps.length - 1
-                                                ? 0
-                                                : 30),
-                                    child: Text(
-                                      item.value.text,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  )
-                                ],
-                              ))
-                          .toList(),
-                    ],
-                  ),
+                                )
+                              ],
+                            ))
+                        .toList(),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/recipe_model.dart';
+import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:kitchen_flutter/provider/user_history_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -39,8 +41,24 @@ class UserHistoryModel {
       final data = (res.data['data'] as List)
           .map((e) => UserHistoryItemModel.fromJson(e))
           .toList();
+
+      // 缓存
       Provider.of<UserHistoryProvider>(Get.context!, listen: false)
           .setHistoryList(data);
+
+      // 缓存菜谱
+      Provider.of<RecipeProvider>(Get.context!, listen: false).pushRecipeList(
+          data
+              .map((item) => RecipeItemModel(
+                  categorys: [],
+                  materials: [],
+                  steps: [],
+                  id: item.recipeId,
+                  title: item.recipeTitle,
+                  cover: item.recipeCover,
+                  video: item.recipeVideo))
+              .toList());
+
       return data;
     });
   }

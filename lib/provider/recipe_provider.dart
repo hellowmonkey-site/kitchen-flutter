@@ -15,6 +15,6 @@ class RecipeProvider with ChangeNotifier {
     final list = data
         .where((element) => _recipeList.every((v) => v.id != element.id))
         .toList();
-    setRecipeList(list);
+    setRecipeList([..._recipeList, ...list]);
   }
 }
