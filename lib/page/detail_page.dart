@@ -232,7 +232,7 @@ class _DetailPageState extends State<DetailPage> {
                       : (data.cover.isEmpty
                           ? Center(
                               child: Text(
-                                '封面加载中...',
+                                '暂无封面',
                                 style: TextStyle(
                                     fontSize: 12,
                                     color: Theme.of(context).disabledColor),
