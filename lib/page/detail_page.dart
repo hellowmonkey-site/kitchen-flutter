@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,19 +38,7 @@ class _DetailPageState extends State<DetailPage> {
   // 是否可以播放视频
   var canPlayVideo = false;
 
-  var data = RecipeItemModel(
-      id: 0,
-      userId: 0,
-      userCover: '',
-      userName: '',
-      categorys: [],
-      cover: '',
-      createdAt: '',
-      materials: [],
-      samp: '',
-      steps: [],
-      title: '',
-      video: '');
+  var data = defaultRecipeItemModel;
 
   double opacity = 0;
 
@@ -67,66 +56,68 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   fetchData() async {
-    // 填充初始值
-    setState(() {
+    final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
+    try {
+      // 填充初始值
       data = Provider.of<RecipeProvider>(context, listen: false)
           .recipeList
           .firstWhere(
             (element) => id == element.id,
-            orElse: () => data,
+            orElse: () => defaultRecipeItemModel,
           );
-      print('data111---$data');
-    });
+      setState(() {});
 
-    // 获取数据
-    final recipe = await RecipeModel.getRecipeDetail(id);
-    print('recipe---$recipe');
-    setState(() {
-      data = recipe;
-    });
+      // 获取数据
+      data = await RecipeModel.getRecipeDetail(id);
+      setState(() {});
 
-    if (data.video.isNotEmpty) {
-      if (videoPlayerController != null) {
-        videoPlayerController!.dispose();
-      }
-      videoPlayerController = VideoPlayerController.network(data.video);
-      await videoPlayerController!.initialize();
-
-      if (!kIsWeb) {
-        if (chewieController != null) {
-          chewieController!.dispose();
+      if (data.video.isNotEmpty) {
+        if (videoPlayerController != null) {
+          videoPlayerController!.dispose();
         }
-        chewieController = ChewieController(
-            // aspectRatio: 1,
-            videoPlayerController: videoPlayerController!,
-            // placeholder: Image.network(data.cover),
-            showControls: true,
-            materialProgressColors: ChewieProgressColors(
-                playedColor: Theme.of(context).primaryColor.withOpacity(0.8)),
-            playbackSpeeds: const [
-              0.5,
-              1,
-              1.25,
-              1.5,
-              1.75,
-              2,
-              2.25,
-              2.5,
-              2.75,
-              3
-            ]);
-      }
-      setState(() {
-        canPlayVideo = true;
-        opacity = 1;
-        headerHeight = MediaQuery.of(context).size.width /
-            videoPlayerController!.value.aspectRatio;
-      });
-      await Future.delayed(const Duration(milliseconds: 100));
-      videoPlayerController!.play();
-    }
+        videoPlayerController = VideoPlayerController.network(data.video);
+        await videoPlayerController!.initialize();
+        await Future.delayed(const Duration(milliseconds: 100));
 
-    setState(() {});
+        if (!kIsWeb) {
+          if (chewieController != null) {
+            chewieController!.dispose();
+          }
+          chewieController = ChewieController(
+              // aspectRatio: 1,
+              videoPlayerController: videoPlayerController!,
+              // placeholder: Image.network(data.cover),
+              showControls: true,
+              materialProgressColors: ChewieProgressColors(
+                  playedColor:
+                      Theme.of(Get.context!).primaryColor.withOpacity(0.8)),
+              playbackSpeeds: const [
+                0.5,
+                1,
+                1.25,
+                1.5,
+                1.75,
+                2,
+                2.25,
+                2.5,
+                2.75,
+                3
+              ]);
+        }
+        setState(() {
+          canPlayVideo = true;
+          opacity = 1;
+          headerHeight = MediaQuery.of(context).size.width /
+              videoPlayerController!.value.aspectRatio;
+        });
+
+        await videoPlayerController!.play();
+      }
+
+      setState(() {});
+    } finally {
+      cancel();
+    }
   }
 
   @override
@@ -169,11 +160,11 @@ class _DetailPageState extends State<DetailPage> {
             Theme.of(context).bottomAppBarColor.withOpacity(opacity),
         elevation: Get.isDarkMode ? 0 : opacity * 2,
         actions: [
-          if (userFavoriteProvider.favoriteRecipeIds.contains(data.id))
+          if (userFavoriteProvider.favoriteRecipeIds.contains(id))
             IconButton(
                 tooltip: '点击取消收藏',
                 onPressed: () {
-                  UserFavoriteModel.deleteUserFavorite(data.id);
+                  UserFavoriteModel.deleteUserFavorite(id);
                 },
                 icon: const Icon(
                   Icons.favorite,
@@ -183,7 +174,7 @@ class _DetailPageState extends State<DetailPage> {
             IconButton(
                 tooltip: '点击添加收藏',
                 onPressed: () {
-                  UserFavoriteModel.postUserFavorite(data.id);
+                  UserFavoriteModel.postUserFavorite(id);
                 },
                 icon: const Icon(
                   Icons.favorite_border_outlined,
@@ -191,7 +182,7 @@ class _DetailPageState extends State<DetailPage> {
           IconButton(
             onPressed: () {
               Share.share('【$appTitle】${data.title}',
-                  subject: '$webUrl/detail/${data.id}');
+                  subject: '$webUrl/detail/$id');
             },
             icon: const Icon(Icons.share),
             tooltip: '分享',
@@ -211,23 +202,48 @@ class _DetailPageState extends State<DetailPage> {
                 SizedBox(
                   height: headerHeight,
                   child: Hero(
-                    tag: 'recipe-item-${data.id}',
+                    tag: 'recipe-item-$id',
                     child: canPlayVideo
-                        ? Container(
-                            // height: headerHeight,
-                            color: Colors.black,
-                            child: (kIsWeb
-                                ? VideoPlayer(videoPlayerController!)
-                                : Chewie(
-                                    controller: chewieController!,
-                                  )),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              Application.showImagePreview(data.cover);
-                            },
-                            child: cachedNetworkImage(data.cover),
-                          ),
+                        ? (kIsWeb
+                            ? Stack(
+                                children: [
+                                  VideoPlayer(videoPlayerController!),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: IconButton(
+                                      icon: Icon(
+                                          videoPlayerController!.value.isPlaying
+                                              ? Icons.pause
+                                              : Icons.play_arrow),
+                                      onPressed: () {
+                                        setState(() {
+                                          videoPlayerController!.value.isPlaying
+                                              ? videoPlayerController!.pause()
+                                              : videoPlayerController!.play();
+                                        });
+                                      },
+                                    ),
+                                  )
+                                ],
+                              )
+                            : Chewie(
+                                controller: chewieController!,
+                              ))
+                        : (data.cover.isEmpty
+                            ? Center(
+                                child: Text(
+                                  '封面加载中...',
+                                  style: TextStyle(
+                                      color: Theme.of(context).disabledColor),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  Application.showImagePreview(data.cover);
+                                },
+                                child: cachedNetworkImage(data.cover),
+                              )),
                   ),
                 ),
                 Container(
@@ -411,25 +427,11 @@ class _DetailPageState extends State<DetailPage> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // web端是控制播放的按钮
-            // app是返回顶部按钮
-            if (data.video.isNotEmpty && kIsWeb) {
-              setState(() {
-                videoPlayerController!.value.isPlaying
-                    ? videoPlayerController!.pause()
-                    : videoPlayerController!.play();
-              });
-            } else {
-              scrollController.animateTo(0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOutQuart);
-            }
+            scrollController.animateTo(0,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOutQuart);
           },
-          child: (data.video.isNotEmpty && kIsWeb
-              ? Icon(videoPlayerController!.value.isPlaying
-                  ? Icons.pause
-                  : Icons.play_arrow)
-              : const Icon(Icons.arrow_upward))),
+          child: const Icon(Icons.arrow_upward)),
     );
   }
 }

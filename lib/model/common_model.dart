@@ -43,10 +43,11 @@ class AppInfoModel {
 
 class CommonModel {
   // 文件上传
-  static Future<StorageModel> uploadFile(XFile file) async {
+  static Future<StorageModel> uploadFile(XFile file, {isImage = true}) async {
     final fileData =
         await MultipartFile.fromFile(file.path, filename: file.name);
-    FormData formData = FormData.fromMap({'file': fileData});
+    FormData formData =
+        FormData.fromMap({'file': fileData, 'is_image': isImage});
     final data = await Application.ajax
         .post('common/upload-file', data: formData)
         .then((res) => StorageModel.fromJson(res.data['data']));

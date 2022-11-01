@@ -29,7 +29,7 @@ class MainLayout extends StatelessWidget {
       onWillPop: () {
         int now = DateTime.now().millisecondsSinceEpoch;
         if (now - _last > 1200) {
-          Application.toast('在按一次退出');
+          Application.toast('再按一次退出');
           _last = DateTime.now().millisecondsSinceEpoch;
           return Future.value(false);
         } else {

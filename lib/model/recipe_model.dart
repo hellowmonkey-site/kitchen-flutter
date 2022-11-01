@@ -118,11 +118,9 @@ class RecipeModel {
     final data = await Application.ajax
         .get('recipe/$id')
         .then((res) => res.data['data']);
-    print('data:$data');
     if (data['video'] != null && data['video'] != '') {
       try {
         data['video'] = await getVideoSrc(id);
-        print('video:${data['video']}');
       } catch (e) {}
     }
     final recipe = RecipeItemModel.fromJson(data);
@@ -141,7 +139,9 @@ class RecipeModel {
           token: '',
           createdAt: '')
     ]);
-    print(recipe);
     return recipe;
   }
 }
+
+final defaultRecipeItemModel =
+    RecipeItemModel(categorys: [], materials: [], steps: []);

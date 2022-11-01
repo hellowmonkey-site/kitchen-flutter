@@ -106,6 +106,9 @@ class MainApp extends StatelessWidget {
       navigatorObservers: [BotToastNavigatorObserver()],
       initialRoute: '/',
       getPages: routePages,
+      routingCallback: (value) {
+        BotToast.closeAllLoading();
+      },
       unknownRoute:
           GetPage(name: '/notfound', page: () => const NotfoundPage()),
     );
