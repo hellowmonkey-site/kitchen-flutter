@@ -146,11 +146,10 @@ class _PublishPageState extends State<PublishPage> {
               ),
             ),
             FloatingActionButton.extended(
-              onPressed: () {},
+              onPressed: _position == 3 ? () {} : null,
               tooltip: '发布菜谱',
               icon: const Icon(Icons.send_rounded),
               label: const Text('发布菜谱'),
-              backgroundColor: Theme.of(context).disabledColor,
             )
           ],
         ),
