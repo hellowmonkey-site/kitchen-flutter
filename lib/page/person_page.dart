@@ -106,7 +106,15 @@ class _PersonPageState extends State<PersonPage> {
           title: AnimatedOpacity(
             opacity: overHeader ? 1 : 0,
             duration: const Duration(milliseconds: 200),
-            child: Text(username),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: userAvatar(user.cover, size: 30),
+                ),
+                Text(username),
+              ],
+            ),
           ),
           elevation: 0,
           actions: [

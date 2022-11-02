@@ -6,6 +6,7 @@ import 'package:kitchen_flutter/provider/user_history_provider.dart';
 import 'package:provider/provider.dart';
 
 class UserHistoryItemModel {
+  final int id;
   final int userId;
   final int recipeId;
   final String recipeTitle;
@@ -15,7 +16,8 @@ class UserHistoryItemModel {
   final String updatedAt;
 
   UserHistoryItemModel(
-      {this.userId = 0,
+      {this.id = 0,
+      this.userId = 0,
       this.recipeId = 0,
       this.recipeTitle = '',
       this.recipeCover = '',
@@ -25,8 +27,9 @@ class UserHistoryItemModel {
 
   UserHistoryItemModel.fromJson(Map<String, dynamic> json)
       : this(
-            createdAt: json['created_at'],
+            id: json['id'],
             userId: json['user_id'],
+            createdAt: json['created_at'],
             recipeId: json['recipe_id'],
             recipeCover: json['recipe_cover'],
             recipeTitle: json['recipe_title'],
@@ -60,6 +63,20 @@ class UserHistoryModel {
               .toList());
 
       return data;
+    });
+  }
+
+  // 清空浏览记录
+  static Future clearUserHistory() {
+    return Application.ajax.delete('user/recipe-history/clear').then((value) {
+      return getUserHistoryList();
+    });
+  }
+
+  // 删除浏览记录
+  static Future deleteUserHistory(int id) {
+    return Application.ajax.delete('user/recipe-history/$id').then((value) {
+      return getUserHistoryList();
     });
   }
 }

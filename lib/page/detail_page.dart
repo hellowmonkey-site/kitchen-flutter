@@ -53,7 +53,6 @@ class _DetailPageState extends State<DetailPage> {
             orElse: () => defaultRecipeItemModel,
           );
       setState(() {});
-      print('data.cover----------------------${data.cover}');
 
       // 获取数据
       data = await RecipeModel.getRecipeDetail(id);

@@ -374,7 +374,8 @@ class _PublishPageState extends State<PublishPage> {
               left: 15,
               right: 15,
               child: FloatingActionButton.extended(
-                onPressed: _currentStep == 3 ? () {} : null,
+                elevation: 5,
+                onPressed: _lastStep == 3 ? () {} : null,
                 tooltip: '发布菜谱',
                 icon: const Icon(Icons.send_rounded),
                 label: const Text('发布菜谱'),
@@ -388,7 +389,7 @@ class _PublishPageState extends State<PublishPage> {
 
   StepState _getState(index) {
     if (_currentStep == index) return StepState.editing;
-    if (_currentStep > index) return StepState.complete;
+    if (_lastStep > index) return StepState.complete;
     return StepState.indexed;
   }
 }

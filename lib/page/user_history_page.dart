@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/controller/user_history_controller.dart';
+import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/user_history_model.dart';
 import 'package:kitchen_flutter/provider/user_history_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,20 @@ class UserHistoryPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('浏览记录'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Application.openDialog(
+                    title: '确认清空所有浏览记录吗？',
+                    content: '清除后就不再能找回了哦',
+                    onTap: (c) {
+                      if (c) {
+                        UserHistoryModel.clearUserHistory();
+                      }
+                    });
+              },
+              icon: const Icon(Icons.delete_outline))
+        ],
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: userHistoryProvider.historyList.isEmpty
@@ -78,20 +94,46 @@ class UserHistoryPage extends StatelessWidget {
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Icon(
-                                        Icons.date_range_outlined,
-                                        color: Theme.of(context).disabledColor,
-                                        size: 18,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 5),
-                                        child: Text(
-                                          item.updatedAt,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .disabledColor),
-                                        ),
+                                      Expanded(
+                                          child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.date_range_outlined,
+                                            color:
+                                                Theme.of(context).disabledColor,
+                                            size: 18,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 5),
+                                            child: Text(
+                                              item.createdAt,
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .disabledColor),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                      InkWell(
+                                        onTap: () async {
+                                          final index =
+                                              await Application.showBottomSheet(
+                                                  ['删除浏览记录']);
+                                          if (index == 0) {
+                                            UserHistoryModel.deleteUserHistory(
+                                                item.id);
+                                          }
+                                        },
+                                        child: Icon(Icons.more_vert,
+                                            color: Theme.of(context)
+                                                .disabledColor),
                                       )
                                     ],
                                   )
