@@ -15,6 +15,6 @@ class PersonProvider with ChangeNotifier {
     final list = data
         .where((element) => _personList.every((v) => v.id != element.id))
         .toList();
-    setPersonList(list);
+    setPersonList([..._personList, ...list]);
   }
 }

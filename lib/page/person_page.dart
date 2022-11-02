@@ -44,7 +44,7 @@ class _PersonPageState extends State<PersonPage> {
         .personList
         .firstWhere(
           (element) => id == element.id,
-          orElse: () => user,
+          orElse: () => defaultUserModel,
         );
     setState(() {});
 

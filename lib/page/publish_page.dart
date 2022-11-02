@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 
@@ -12,11 +14,13 @@ class _PublishPageState extends State<PublishPage> {
   TextEditingController textController = TextEditingController();
   FocusNode focusNode = FocusNode();
 
-  int _position = 0;
+  int _currentStep = 0;
+  int _lastStep = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('发布菜谱'),
       ),
@@ -33,23 +37,25 @@ class _PublishPageState extends State<PublishPage> {
               child: Stepper(
                 elevation: Theme.of(context).appBarTheme.elevation,
                 type: StepperType.vertical,
-                currentStep: _position,
+                currentStep: _currentStep,
                 onStepTapped: (index) {
-                  if (_position <= index) {
+                  if (_lastStep <= index) {
                     return;
                   }
                   setState(() {
-                    _position = index;
+                    _currentStep = index;
+                    _lastStep = max(_currentStep, _lastStep);
                   });
                 },
                 onStepContinue: () {
                   setState(() {
-                    _position++;
+                    _currentStep++;
+                    _lastStep = max(_currentStep, _lastStep);
                   });
                 },
                 onStepCancel: () {
                   setState(() {
-                    _position--;
+                    _currentStep--;
                   });
                 },
                 controlsBuilder: (_, ControlsDetails details) {
@@ -81,7 +87,7 @@ class _PublishPageState extends State<PublishPage> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).primaryColor,
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20),
+                                    vertical: 12, horizontal: 20),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 )),
@@ -95,7 +101,7 @@ class _PublishPageState extends State<PublishPage> {
                 steps: [
                   Step(
                     title: const Text('名称'),
-                    isActive: _position == 0,
+                    isActive: _currentStep == 0,
                     state: _getState(0),
                     content: SingleChildScrollView(
                       child: Column(
@@ -153,7 +159,7 @@ class _PublishPageState extends State<PublishPage> {
                                     color: Theme.of(context)
                                         .disabledColor
                                         .withOpacity(.02)),
-                                height: 300,
+                                height: 250,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +170,7 @@ class _PublishPageState extends State<PublishPage> {
                                           const EdgeInsets.only(bottom: 10),
                                       child: Icon(
                                         Icons.add_a_photo_outlined,
-                                        size: 60,
+                                        size: 40,
                                         color: Theme.of(context).disabledColor,
                                       ),
                                     ),
@@ -186,7 +192,7 @@ class _PublishPageState extends State<PublishPage> {
                   ),
                   Step(
                     title: const Text('用料'),
-                    isActive: _position == 1,
+                    isActive: _currentStep == 1,
                     state: _getState(1),
                     content: SingleChildScrollView(
                         child: Form(
@@ -242,7 +248,7 @@ class _PublishPageState extends State<PublishPage> {
                   ),
                   Step(
                     title: const Text('步骤'),
-                    isActive: _position == 2,
+                    isActive: _currentStep == 2,
                     state: _getState(2),
                     content: SingleChildScrollView(
                         child: Form(
@@ -327,7 +333,7 @@ class _PublishPageState extends State<PublishPage> {
                   ),
                   Step(
                     title: const Text('分类'),
-                    isActive: _position == 3,
+                    isActive: _currentStep == 3,
                     state: _getState(3),
                     content: SingleChildScrollView(
                         child: Padding(
@@ -368,7 +374,7 @@ class _PublishPageState extends State<PublishPage> {
               left: 15,
               right: 15,
               child: FloatingActionButton.extended(
-                onPressed: _position == 3 ? () {} : null,
+                onPressed: _currentStep == 3 ? () {} : null,
                 tooltip: '发布菜谱',
                 icon: const Icon(Icons.send_rounded),
                 label: const Text('发布菜谱'),
@@ -381,8 +387,8 @@ class _PublishPageState extends State<PublishPage> {
   }
 
   StepState _getState(index) {
-    if (_position == index) return StepState.editing;
-    if (_position > index) return StepState.complete;
+    if (_currentStep == index) return StepState.editing;
+    if (_currentStep > index) return StepState.complete;
     return StepState.indexed;
   }
 }

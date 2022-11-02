@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/user_favorite_model.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
+import 'package:kitchen_flutter/provider/person_provider.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,7 @@ class UserModel {
   final String username;
   final String? password;
   final String cover;
+  final int coverId;
   final String samp;
   final String nickname;
   final String token;
@@ -18,6 +20,7 @@ class UserModel {
   UserModel(
       {this.id = 0,
       this.username = '',
+      this.coverId = 0,
       this.cover = '',
       this.nickname = '',
       this.samp = '',
@@ -30,6 +33,7 @@ class UserModel {
             id: json['id'],
             username: json['username'],
             cover: json['cover'],
+            coverId: json['cover_id'],
             nickname: json['nickname'],
             samp: json['samp'],
             token: json['token'],
@@ -53,7 +57,18 @@ class UserModel {
     return Application.ajax.post('login',
         data: {'username': username, 'password': password}).then((res) {
       final user = UserModel.fromJson(res.data['data']);
+
       Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
+        UserModel(
+            id: user.id,
+            username: user.username,
+            nickname: user.nickname,
+            cover: user.cover)
+      ]);
+
       // 获取关注、收藏信息
       UserFavoriteModel.getUserFavoriteList();
       UserStarModel.getUserStarList();
@@ -65,26 +80,62 @@ class UserModel {
   static Future<UserModel> getUserInfo() {
     return Application.ajax.get('user/info').then((res) {
       final user = UserModel.fromJson(res.data['data']);
+
       Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
+        UserModel(
+            id: user.id,
+            username: user.username,
+            nickname: user.nickname,
+            cover: user.cover)
+      ]);
+
       // 获取关注、收藏信息
       UserFavoriteModel.getUserFavoriteList();
       UserStarModel.getUserStarList();
+
       return user;
     });
   }
 
   // 获取person信息
   static Future<UserModel> getPersonDetail(int id) {
-    return Application.ajax
-        .get('person/$id')
-        .then((res) => UserModel.fromJson(res.data['data']));
+    return Application.ajax.get('person/$id').then((res) {
+      final user = UserModel.fromJson(res.data['data']);
+
+      Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
+        UserModel(
+            id: user.id,
+            username: user.username,
+            nickname: user.nickname,
+            cover: user.cover)
+      ]);
+
+      return user;
+    });
   }
 
   // 更新用户信息
   static Future<UserModel> putUserInfo(Map<String, dynamic> data) {
     return Application.ajax.put('user/info', data: data).then((res) {
       final user = UserModel.fromJson(res.data['data']);
+
       Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
+
+      // 作者缓存
+      Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([
+        UserModel(
+            id: user.id,
+            username: user.username,
+            nickname: user.nickname,
+            cover: user.cover)
+      ]);
+
       return user;
     });
   }

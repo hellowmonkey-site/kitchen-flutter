@@ -96,10 +96,7 @@ class RecipeModel {
                   id: item.userId,
                   username: item.userName,
                   nickname: item.userName,
-                  cover: item.userCover,
-                  samp: '',
-                  token: '',
-                  createdAt: ''))
+                  cover: item.userCover))
               .toList());
 
       return PageDataModel.fromJson(data);
@@ -134,10 +131,7 @@ class RecipeModel {
           id: recipe.userId,
           username: recipe.userName,
           nickname: recipe.userName,
-          cover: recipe.cover,
-          samp: '',
-          token: '',
-          createdAt: '')
+          cover: recipe.cover)
     ]);
     return recipe;
   }

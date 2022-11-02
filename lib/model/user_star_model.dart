@@ -51,10 +51,7 @@ class UserStarModel {
                   id: item.starUserId,
                   username: item.starUserName,
                   nickname: item.starUserName,
-                  cover: item.starUserCover,
-                  samp: '',
-                  token: '',
-                  createdAt: ''))
+                  cover: item.starUserCover))
               .toList());
 
       return data;

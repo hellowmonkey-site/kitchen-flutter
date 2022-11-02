@@ -56,7 +56,8 @@ class _SettingPageState extends State<SettingPage> {
                     final cover = await CommonModel.uploadFile(file);
                     await UserModel.putUserInfo({'cover_id': cover.id});
                   } catch (e) {
-                    Application.toast('上传失败，请使用app重试');
+                    Application.toast('上传失败，请使用app重试',
+                        contentColor: Colors.red);
                   } finally {
                     BotToast.closeAllLoading();
                   }
