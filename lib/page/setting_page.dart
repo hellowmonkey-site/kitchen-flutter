@@ -1,9 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:kitchen_flutter/helper/application.dart';
-import 'package:kitchen_flutter/model/common_model.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +16,6 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   FocusNode focusNode = FocusNode();
   TextEditingController textController = TextEditingController();
-  final ImagePicker imagePicker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -40,24 +37,11 @@ class _SettingPageState extends State<SettingPage> {
               child: GestureDetector(
                 onTap: () async {
                   try {
-                    final index =
-                        await Application.showBottomSheet(['相册选取', '拍照']);
-                    if (index == null) {
-                      return;
+                    final cover = await Application.uploadImage();
+                    if (cover != null) {
+                      BotToast.showLoading();
+                      await UserModel.putUserInfo({'cover_id': cover.id});
                     }
-                    final XFile? file = await imagePicker.pickImage(
-                        source: index == 0
-                            ? ImageSource.gallery
-                            : ImageSource.camera);
-                    if (file == null) {
-                      return;
-                    }
-                    BotToast.showLoading();
-                    final cover = await CommonModel.uploadFile(file);
-                    await UserModel.putUserInfo({'cover_id': cover.id});
-                  } catch (e) {
-                    Application.toast('上传失败，请使用app重试',
-                        contentColor: Colors.red);
                   } finally {
                     BotToast.closeAllLoading();
                   }
@@ -65,11 +49,14 @@ class _SettingPageState extends State<SettingPage> {
                 child: SizedBox(
                   width: 80,
                   height: 80,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(userProvider.user.cover),
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white.withOpacity(0.8),
+                  child: Hero(
+                    tag: 'person-item-${userProvider.user.id}',
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(userProvider.user.cover),
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.white.withOpacity(0.8),
+                      ),
                     ),
                   ),
                 ),

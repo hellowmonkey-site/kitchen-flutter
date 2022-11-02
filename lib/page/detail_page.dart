@@ -181,8 +181,8 @@ class _DetailPageState extends State<DetailPage> {
                 )),
           IconButton(
             onPressed: () {
-              Share.share('【$appTitle】${data.title}',
-                  subject: '$webUrl/detail/$id');
+              Share.share('【$appTitle】${data.title} <$webUrl/detail/$id>',
+                  subject: data.userName);
             },
             icon: const Icon(Icons.share),
             tooltip: '分享',
@@ -269,17 +269,17 @@ class _DetailPageState extends State<DetailPage> {
                               const BorderRadius.all(Radius.circular(10))),
                       child: Text(data.samp),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).shadowColor.withOpacity(0.05),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10))),
-                      margin: const EdgeInsets.only(bottom: 30),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.toNamed('/person/${data.userId}');
-                        },
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed('/person/${data.userId}');
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).shadowColor.withOpacity(0.05),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10))),
+                        margin: const EdgeInsets.only(bottom: 30),
                         child: Container(
                           padding: const EdgeInsets.all(20),
                           child: Row(

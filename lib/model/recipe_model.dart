@@ -7,14 +7,14 @@ import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
 class RecipeMaterialItemModel {
-  final String name;
-  final String unit;
+  String name;
+  String unit;
   RecipeMaterialItemModel({this.name = '', this.unit = ''});
 }
 
 class RecipeStepItemModel {
-  final String img;
-  final String text;
+  String img;
+  String text;
   RecipeStepItemModel({this.img = '', this.text = ''});
 }
 
@@ -67,6 +67,45 @@ class RecipeItemModel {
             title: json['title'],
             userName: json['user_name'],
             video: json['video']);
+}
+
+class RecipeInputModel {
+  String title;
+  String samp;
+  String cover;
+  String video;
+  int coverId;
+  int videoId;
+  List<RecipeMaterialItemModel> materials;
+  List<RecipeStepItemModel> steps;
+  List<String> categorys;
+
+  RecipeInputModel({
+    this.cover = '',
+    this.coverId = 0,
+    this.samp = '',
+    this.title = '',
+    this.video = '',
+    this.videoId = 0,
+    required this.categorys,
+    required this.materials,
+    required this.steps,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['cover_id'] = coverId;
+    data['video_id'] = videoId;
+    data['samp'] = samp;
+    data['title'] = title;
+    data['categorys'] = categorys.map((e) => e.toString()).toList();
+    data['materials'] = materials
+        .map((item) => ({'name': item.name, 'unit': item.unit}))
+        .toList();
+    data['steps'] =
+        steps.map((item) => ({'text': item.text, 'img': item.img})).toList();
+    return data;
+  }
 }
 
 class RecipeModel {
@@ -134,6 +173,13 @@ class RecipeModel {
           cover: recipe.cover)
     ]);
     return recipe;
+  }
+
+  // 发布菜谱
+  static Future postRecipe(RecipeInputModel input) {
+    return Application.ajax
+        .post('recipe', data: input.toJson())
+        .then((res) => res.data['data']);
   }
 }
 

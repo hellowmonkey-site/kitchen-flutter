@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kitchen_flutter/component/common_component.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/common_model.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
@@ -48,19 +49,10 @@ class UserPage extends StatelessWidget {
                             Application.showImagePreview(
                                 userProvider.user.cover);
                           },
-                          child: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(userProvider.user.cover),
-                            child: Text(
-                              userProvider.username.isEmpty
-                                  ? ''
-                                  : userProvider.username[0],
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(0.6),
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
+                          child: Hero(
+                              tag: 'person-item-${userProvider.user.id}',
+                              child: userAvatar(userProvider.user.cover,
+                                  size: 70)),
                         ),
                 ),
                 Expanded(

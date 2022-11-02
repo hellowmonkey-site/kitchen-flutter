@@ -57,7 +57,7 @@ class _PersonPageState extends State<PersonPage> {
     setState(() {
       loading = true;
     });
-    return RecipeModel.getRecipePageList(userId: id).then((data) {
+    return RecipeModel.getRecipePageList(userId: id, page: page).then((data) {
       page = data.page;
       totalPage = data.pageCount;
       if (page == 1) {
@@ -109,14 +109,14 @@ class _PersonPageState extends State<PersonPage> {
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 5),
-                  child: userAvatar(user.cover, size: 30),
+                  padding: const EdgeInsets.only(right: 10),
+                  child: userAvatar(user.cover, size: 25),
                 ),
                 Text(username),
               ],
             ),
           ),
-          elevation: 0,
+          elevation: overHeader ? null : 0,
           actions: [
             if (userStarProvider.starUserIds.contains(user.id))
               IconButton(
@@ -137,8 +137,8 @@ class _PersonPageState extends State<PersonPage> {
                   icon: const Icon(Icons.star_border_outlined)),
             IconButton(
               onPressed: () {
-                Share.share('【$appTitle】$username',
-                    subject: '$webUrl/person/${user.id}');
+                Share.share('【$appTitle】$username <$webUrl/person/${user.id}>',
+                    subject: username);
               },
               icon: const Icon(Icons.share),
               tooltip: '分享',
@@ -162,12 +162,12 @@ class _PersonPageState extends State<PersonPage> {
                       Container(
                         margin: const EdgeInsets.only(right: 10),
                         width: _headerHeight,
-                        child: Hero(
-                          tag: 'person-item-$id',
-                          child: GestureDetector(
-                            onTap: () {
-                              Application.showImagePreview(user.cover);
-                            },
+                        child: GestureDetector(
+                          onTap: () {
+                            Application.showImagePreview(user.cover);
+                          },
+                          child: Hero(
+                            tag: 'person-item-$id',
                             child: userAvatar(user.cover, size: _headerHeight),
                           ),
                         ),

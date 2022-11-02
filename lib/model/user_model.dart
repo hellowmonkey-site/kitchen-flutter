@@ -11,7 +11,7 @@ class UserModel {
   final String username;
   final String? password;
   final String cover;
-  final int coverId;
+  final int? coverId;
   final String samp;
   final String nickname;
   final String token;
@@ -44,6 +44,7 @@ class UserModel {
     data['id'] = id;
     data['username'] = username;
     data['cover'] = cover;
+    data['cover_id'] = coverId;
     data['nickname'] = nickname;
     data['samp'] = samp;
     data['token'] = token;
@@ -104,8 +105,6 @@ class UserModel {
   static Future<UserModel> getPersonDetail(int id) {
     return Application.ajax.get('person/$id').then((res) {
       final user = UserModel.fromJson(res.data['data']);
-
-      Provider.of<UserProvider>(Get.context!, listen: false).setUser(user);
 
       // 作者缓存
       Provider.of<PersonProvider>(Get.context!, listen: false).pushPersonList([

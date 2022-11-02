@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -17,6 +19,21 @@ class SearchController extends GetxController {
 
   get canSearch {
     return keywords.value.isNotEmpty || selectedCategory.value.isNotEmpty;
+  }
+
+  // 发布菜谱时随机选取分类
+  List<CategoryItemModel> get recipeRandomCategorys {
+    const length = 10;
+    final List<CategoryItemModel> list = [];
+    for (var element in recommendCategorys.value) {
+      list.addAll(element.children);
+    }
+    if (list.length <= length) {
+      return list;
+    }
+    final r = Random();
+    final start = r.nextInt(list.length - (length + 2));
+    return list.sublist(start, start + length);
   }
 
   List<CategoryItemModel> get firstCategorys =>

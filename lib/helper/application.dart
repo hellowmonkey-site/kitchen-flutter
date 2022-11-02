@@ -2,7 +2,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide Router;
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kitchen_flutter/config/common.dart';
+import 'package:kitchen_flutter/model/common_model.dart';
 import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -25,7 +27,9 @@ class Application {
   //  轻提示
   static Function toast(String msg, {Color contentColor = Colors.black87}) {
     return BotToast.showText(
+        duration: const Duration(seconds: 3),
         text: msg,
+        textStyle: const TextStyle(fontSize: 15),
         contentColor: contentColor,
         contentPadding:
             const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
@@ -223,5 +227,28 @@ class Application {
             ),
         transition: Transition.cupertinoDialog,
         fullscreenDialog: true);
+  }
+
+  // 图片上传
+  static Future<StorageModel?> uploadImage() async {
+    final ImagePicker imagePicker = ImagePicker();
+    try {
+      final index = await Application.showBottomSheet(['相册选取', '拍照']);
+      if (index == null) {
+        return null;
+      }
+      final XFile? file = await imagePicker.pickImage(
+          source: index == 0 ? ImageSource.gallery : ImageSource.camera);
+      if (file == null) {
+        return null;
+      }
+      final cancel = BotToast.showLoading();
+      final data = await CommonModel.uploadFile(file);
+      cancel();
+      return data;
+    } catch (e) {
+      Application.toast('上传失败，请使用app重试', contentColor: Colors.red);
+    }
+    return null;
   }
 }
