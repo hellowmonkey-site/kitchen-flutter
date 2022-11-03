@@ -137,7 +137,7 @@ class _PersonPageState extends State<PersonPage> {
                   icon: const Icon(Icons.star_border_outlined)),
             IconButton(
               onPressed: () {
-                Share.share('【$appTitle】$username <$webUrl/person/${user.id}>',
+                Share.share('【$appTitle】$username <$webUrl#/person/${user.id}>',
                     subject: username);
               },
               icon: const Icon(Icons.share),

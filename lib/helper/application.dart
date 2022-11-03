@@ -29,7 +29,7 @@ class Application {
     return BotToast.showText(
         duration: const Duration(seconds: 3),
         text: msg,
-        textStyle: const TextStyle(fontSize: 15),
+        textStyle: const TextStyle(fontSize: 15, color: Colors.white),
         contentColor: contentColor,
         contentPadding:
             const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
@@ -238,6 +238,9 @@ class Application {
         return null;
       }
       final XFile? file = await imagePicker.pickImage(
+          maxWidth: 1200,
+          maxHeight: 1500,
+          imageQuality: 80,
           source: index == 0 ? ImageSource.gallery : ImageSource.camera);
       if (file == null) {
         return null;

@@ -183,7 +183,7 @@ class _PublishPageState extends State<PublishPage> {
                                 key: _formKey0,
                                 child: TextFormField(
                                     focusNode: focusNode,
-                                    textInputAction: TextInputAction.search,
+                                    textInputAction: TextInputAction.done,
                                     textCapitalization:
                                         TextCapitalization.sentences,
                                     cursorWidth: 3,
@@ -229,8 +229,10 @@ class _PublishPageState extends State<PublishPage> {
                                   final cover = await Application.uploadImage();
                                   if (cover != null) {
                                     BotToast.showLoading();
-                                    recipeInput.cover = cover.url;
-                                    recipeInput.coverId = cover.id;
+                                    setState(() {
+                                      recipeInput.cover = cover.url;
+                                      recipeInput.coverId = cover.id;
+                                    });
                                   }
                                 } finally {
                                   BotToast.closeAllLoading();
@@ -430,9 +432,11 @@ class _PublishPageState extends State<PublishPage> {
                                                               .uploadImage();
                                                       if (data != null) {
                                                         BotToast.showLoading();
-                                                        recipeInput
-                                                            .steps[item.key]
-                                                            .img = data.url;
+                                                        setState(() {
+                                                          recipeInput
+                                                              .steps[item.key]
+                                                              .img = data.url;
+                                                        });
                                                       }
                                                     } finally {
                                                       BotToast

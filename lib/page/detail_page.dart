@@ -181,7 +181,7 @@ class _DetailPageState extends State<DetailPage> {
                 )),
           IconButton(
             onPressed: () {
-              Share.share('【$appTitle】${data.title} <$webUrl/detail/$id>',
+              Share.share('【$appTitle】${data.title} <$webUrl#/detail/$id>',
                   subject: data.userName);
             },
             icon: const Icon(Icons.share),
