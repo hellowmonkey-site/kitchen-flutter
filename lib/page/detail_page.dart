@@ -13,6 +13,7 @@ import 'package:kitchen_flutter/model/user_favorite_model.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
 import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:kitchen_flutter/provider/user_favorite_provider.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:kitchen_flutter/provider/user_star_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -186,7 +187,25 @@ class _DetailPageState extends State<DetailPage> {
             },
             icon: const Icon(Icons.share),
             tooltip: '分享',
-          )
+          ),
+          if (Provider.of<UserProvider>(context, listen: false).user.id ==
+              data.userId)
+            IconButton(
+              onPressed: () {
+                Application.openDialog(
+                    title: '确认要删除此菜谱？',
+                    onTap: (c) {
+                      if (c) {
+                        RecipeModel.deleteRecipe(data.id).then((value) {
+                          Application.toast('删除成功');
+                          Get.back(result: 1);
+                        });
+                      }
+                    });
+              },
+              icon: const Icon(Icons.delete_outline),
+              tooltip: '删除',
+            )
         ],
       ),
       body: SingleChildScrollView(

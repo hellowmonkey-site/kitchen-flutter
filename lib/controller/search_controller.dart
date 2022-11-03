@@ -6,6 +6,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/category_model.dart';
+import 'package:kitchen_flutter/provider/recipe_provider.dart';
+import 'package:provider/provider.dart';
 
 class SearchController extends GetxController {
   TextEditingController textController = TextEditingController();
@@ -23,7 +25,7 @@ class SearchController extends GetxController {
 
   // 发布菜谱时随机选取分类
   List<CategoryItemModel> get recipeRandomCategorys {
-    const length = 10;
+    const length = 20;
     final List<CategoryItemModel> list = [];
     for (var element in recommendCategorys.value) {
       list.addAll(element.children);
@@ -89,6 +91,8 @@ class SearchController extends GetxController {
     final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
     try {
       recommendCategorys.value = await CategoryModel.getCategoryRecommendList();
+      Provider.of<RecipeProvider>(Get.context!, listen: false)
+          .setRecipeRandomCategorys(recipeRandomCategorys);
       update();
     } finally {
       cancel();

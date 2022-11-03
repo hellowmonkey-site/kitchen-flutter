@@ -6,6 +6,8 @@ import 'package:kitchen_flutter/controller/search_controller.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/category_model.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
+import 'package:kitchen_flutter/provider/recipe_provider.dart';
+import 'package:provider/provider.dart';
 
 class PublishPage extends StatefulWidget {
   const PublishPage({Key? key}) : super(key: key);
@@ -15,11 +17,7 @@ class PublishPage extends StatefulWidget {
 }
 
 class _PublishPageState extends State<PublishPage> {
-  FocusNode focusNode = FocusNode();
-
   final ImagePicker imagePicker = ImagePicker();
-
-  final SearchController searchController = Get.find();
 
   List<CategoryItemModel> recipeRandomCategorys = [];
 
@@ -39,7 +37,7 @@ class _PublishPageState extends State<PublishPage> {
   int _currentStep = 0;
   int _lastStep = 0;
 
-  final steps = ['名称及封面', '配菜及佐料', '做法及步骤', '推荐至分类'];
+  final steps = ['基本信息', '配菜及佐料', '做法及步骤', '推荐至分类'];
 
   get _canPublish => _lastStep == steps.length - 1;
 
@@ -51,12 +49,14 @@ class _PublishPageState extends State<PublishPage> {
 
   @override
   void initState() {
-    recipeRandomCategorys = searchController.recipeRandomCategorys;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final recipeRandomCategorys =
+        Provider.of<RecipeProvider>(context).recipeRandomCategorys;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -173,17 +173,16 @@ class _PublishPageState extends State<PublishPage> {
                     isActive: _currentStep == 0,
                     state: _getState(0),
                     content: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 20),
-                              child: Form(
-                                key: _formKey0,
+                      child: Form(
+                        key: _formKey0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 20),
                                 child: TextFormField(
-                                    focusNode: focusNode,
-                                    textInputAction: TextInputAction.done,
+                                    textInputAction: TextInputAction.next,
                                     textCapitalization:
                                         TextCapitalization.sentences,
                                     cursorWidth: 3,
@@ -219,71 +218,112 @@ class _PublishPageState extends State<PublishPage> {
                                         return '请先填写菜谱名称';
                                       }
                                       return null;
-                                    }),
-                              )),
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            child: InkWell(
-                              onTap: () async {
-                                try {
-                                  final cover = await Application.uploadImage();
-                                  if (cover != null) {
-                                    BotToast.showLoading();
-                                    setState(() {
-                                      recipeInput.cover = cover.url;
-                                      recipeInput.coverId = cover.id;
-                                    });
+                                    })),
+                            Container(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: TextFormField(
+                                    autofocus: false,
+                                    textInputAction: TextInputAction.newline,
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
+                                    cursorWidth: 3,
+                                    minLines: 3,
+                                    maxLines: 10,
+                                    style: const TextStyle(fontSize: 16),
+                                    decoration: InputDecoration(
+                                        labelText: '菜谱介绍',
+                                        fillColor:
+                                            Theme.of(context).bottomAppBarColor,
+                                        hintText: '菜谱介绍',
+                                        hintStyle: const TextStyle(
+                                          color: Colors.grey,
+                                          textBaseline:
+                                              TextBaseline.ideographic,
+                                        ),
+                                        prefixIcon:
+                                            const Icon(Icons.soap_outlined),
+                                        filled: true,
+                                        border: const OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                            borderSide: BorderSide(
+                                                style: BorderStyle.solid,
+                                                width: 1))),
+                                    onChanged: (value) {
+                                      recipeInput.samp = value;
+                                    },
+                                    validator: (v) {
+                                      if (v == null || v.trim().isEmpty) {
+                                        return '请先填写菜谱介绍';
+                                      }
+                                      return null;
+                                    })),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: InkWell(
+                                onTap: () async {
+                                  try {
+                                    final cover =
+                                        await Application.uploadImage();
+                                    if (cover != null) {
+                                      BotToast.showLoading();
+                                      setState(() {
+                                        recipeInput.cover = cover.url;
+                                        recipeInput.coverId = cover.id;
+                                      });
+                                    }
+                                  } finally {
+                                    BotToast.closeAllLoading();
                                   }
-                                } finally {
-                                  BotToast.closeAllLoading();
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .disabledColor
-                                            .withOpacity(.1)),
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Theme.of(context)
-                                        .disabledColor
-                                        .withOpacity(.02)),
-                                height: 250,
-                                child: recipeInput.cover.isNotEmpty
-                                    ? Image.network(
-                                        recipeInput.cover,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10),
-                                            child: Icon(
-                                              Icons.add_a_photo_outlined,
-                                              size: 40,
-                                              color: Theme.of(context)
-                                                  .disabledColor,
-                                            ),
-                                          ),
-                                          Text(
-                                            '上传菜谱封面',
-                                            style: TextStyle(
+                                },
+                                child: Container(
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Theme.of(context)
+                                              .disabledColor
+                                              .withOpacity(.1)),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Theme.of(context)
+                                          .disabledColor
+                                          .withOpacity(.02)),
+                                  height: 250,
+                                  child: recipeInput.cover.isNotEmpty
+                                      ? Image.network(
+                                          recipeInput.cover,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 10),
+                                              child: Icon(
+                                                Icons.add_a_photo_outlined,
+                                                size: 40,
                                                 color: Theme.of(context)
-                                                    .disabledColor
-                                                    .withOpacity(.4)),
-                                          )
-                                        ],
-                                      ),
+                                                    .disabledColor,
+                                              ),
+                                            ),
+                                            Text(
+                                              '上传菜谱封面',
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .disabledColor
+                                                      .withOpacity(.4)),
+                                            )
+                                          ],
+                                        ),
+                                ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -304,55 +344,84 @@ class _PublishPageState extends State<PublishPage> {
                                 .map((item) {
                               return Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
-                                  child: Column(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 15),
-                                        child: TextFormField(
-                                          decoration: const InputDecoration(
-                                            prefixIcon:
-                                                Icon(Icons.food_bank_outlined),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                            labelText: '食材',
-                                          ),
-                                          onChanged: (value) {
-                                            recipeInput.materials[item.key]
-                                                .name = value;
-                                          },
-                                          validator: (v) {
-                                            if (v == null || v.trim().isEmpty) {
-                                              return '请先填食材';
-                                            }
-                                            return null;
-                                          },
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 15),
+                                              child: TextFormField(
+                                                decoration:
+                                                    const InputDecoration(
+                                                  prefixIcon: Icon(
+                                                      Icons.food_bank_outlined),
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  labelText: '食材',
+                                                ),
+                                                onChanged: (value) {
+                                                  recipeInput
+                                                      .materials[item.key]
+                                                      .name = value;
+                                                },
+                                                validator: (v) {
+                                                  if (v == null ||
+                                                      v.trim().isEmpty) {
+                                                    return '请先填食材';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 20),
+                                              child: TextFormField(
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    prefixIcon: Icon(Icons
+                                                        .line_weight_outlined),
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10),
+                                                    labelText: '用量',
+                                                  ),
+                                                  onChanged: (value) {
+                                                    recipeInput
+                                                        .materials[item.key]
+                                                        .unit = value;
+                                                  },
+                                                  validator: (v) {
+                                                    if (v == null ||
+                                                        v.trim().isEmpty) {
+                                                      return '请先填写用量';
+                                                    }
+                                                    return null;
+                                                  }),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 20),
-                                        child: TextFormField(
-                                            decoration: const InputDecoration(
-                                              prefixIcon: Icon(
-                                                  Icons.line_weight_outlined),
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              labelText: '用量',
-                                            ),
-                                            onChanged: (value) {
-                                              recipeInput.materials[item.key]
-                                                  .unit = value;
+                                            const EdgeInsets.only(left: 10),
+                                        child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                recipeInput.materials
+                                                    .removeAt(item.key);
+                                              });
                                             },
-                                            validator: (v) {
-                                              if (v == null ||
-                                                  v.trim().isEmpty) {
-                                                return '请先填写用量';
-                                              }
-                                              return null;
-                                            }),
+                                            child: Icon(
+                                              Icons.remove_circle_outline,
+                                              color: Theme.of(context)
+                                                  .disabledColor,
+                                            )),
                                       ),
                                     ],
                                   ));
@@ -408,93 +477,132 @@ class _PublishPageState extends State<PublishPage> {
                                         return Padding(
                                           padding:
                                               const EdgeInsets.only(bottom: 10),
-                                          child: Column(
+                                          child: Row(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 20),
-                                                child: Text(
-                                                  '步骤${item.key + 1}',
-                                                  style: const TextStyle(
-                                                      fontSize: 20),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 20),
+                                                      child: Text(
+                                                        '步骤${item.key + 1}',
+                                                        style: const TextStyle(
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10),
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          try {
+                                                            final data =
+                                                                await Application
+                                                                    .uploadImage();
+                                                            if (data != null) {
+                                                              BotToast
+                                                                  .showLoading();
+                                                              setState(() {
+                                                                recipeInput
+                                                                    .steps[item
+                                                                        .key]
+                                                                    .img = data.url;
+                                                              });
+                                                            }
+                                                          } finally {
+                                                            BotToast
+                                                                .closeAllLoading();
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .disabledColor
+                                                                      .withOpacity(
+                                                                          .1)),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .disabledColor
+                                                                  .withOpacity(
+                                                                      .02)),
+                                                          height: 200,
+                                                          child: recipeInput
+                                                                  .steps[
+                                                                      item.key]
+                                                                  .img
+                                                                  .isNotEmpty
+                                                              ? Image.network(
+                                                                  recipeInput
+                                                                      .steps[item
+                                                                          .key]
+                                                                      .img,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                )
+                                                              : Center(
+                                                                  child: Text(
+                                                                    '上传步骤图',
+                                                                    style: TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .disabledColor
+                                                                            .withOpacity(.4)),
+                                                                  ),
+                                                                ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 20),
+                                                      child: TextFormField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                        prefixIcon: Icon(Icons
+                                                            .flag_outlined),
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10),
+                                                        labelText: '步骤说明',
+                                                      )),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                    bottom: 10),
-                                                child: InkWell(
-                                                  onTap: () async {
-                                                    try {
-                                                      final data =
-                                                          await Application
-                                                              .uploadImage();
-                                                      if (data != null) {
-                                                        BotToast.showLoading();
-                                                        setState(() {
-                                                          recipeInput
-                                                              .steps[item.key]
-                                                              .img = data.url;
-                                                        });
-                                                      }
-                                                    } finally {
-                                                      BotToast
-                                                          .closeAllLoading();
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .disabledColor
-                                                                .withOpacity(
-                                                                    .1)),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        color: Theme.of(context)
-                                                            .disabledColor
-                                                            .withOpacity(.02)),
-                                                    height: 200,
-                                                    child: recipeInput
-                                                            .steps[item.key]
-                                                            .img
-                                                            .isNotEmpty
-                                                        ? Image.network(
-                                                            recipeInput
-                                                                .steps[item.key]
-                                                                .img,
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : Text(
-                                                            '上传步骤图',
-                                                            style: TextStyle(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .disabledColor
-                                                                    .withOpacity(
-                                                                        .4)),
-                                                          ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 20),
-                                                child: TextFormField(
-                                                    decoration:
-                                                        const InputDecoration(
-                                                  prefixIcon:
-                                                      Icon(Icons.flag_outlined),
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 10),
-                                                  labelText: '步骤说明',
-                                                )),
-                                              ),
+                                                    left: 10),
+                                                child: GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        recipeInput.steps
+                                                            .removeAt(item.key);
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons
+                                                          .remove_circle_outline,
+                                                      color: Theme.of(context)
+                                                          .disabledColor,
+                                                    )),
+                                              )
                                             ],
                                           ),
                                         );

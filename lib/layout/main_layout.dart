@@ -6,6 +6,7 @@ import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/config/page.dart';
 import 'package:kitchen_flutter/config/theme.dart';
 import 'package:kitchen_flutter/controller/main_controller.dart';
+import 'package:kitchen_flutter/controller/search_controller.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/page/search_page.dart';
 import 'package:kitchen_flutter/page/user_page.dart';
@@ -19,6 +20,7 @@ class MainLayout extends StatelessWidget {
   MainLayout({super.key});
 
   final MainController mainController = Get.put(MainController());
+  final SearchController searchController = Get.put(SearchController());
   final PageController pageController = PageController();
 
   @override
@@ -27,6 +29,14 @@ class MainLayout extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () {
+        if (mainController.pageIndex.value != 0) {
+          pageController.jumpToPage(0);
+          return Future.value(false);
+        }
+        if (searchController.canSearch) {
+          searchController.handleClear();
+          return Future.value(false);
+        }
         int now = DateTime.now().millisecondsSinceEpoch;
         if (now - _last > 1200) {
           Application.toast('再按一次退出');

@@ -181,6 +181,13 @@ class RecipeModel {
         .post('recipe', data: input.toJson())
         .then((res) => res.data['data']);
   }
+
+  // 删除菜谱
+  static Future deleteRecipe(int id) {
+    return Application.ajax
+        .delete('recipe/$id')
+        .then((res) => res.data['data']);
+  }
 }
 
 final defaultRecipeItemModel =
