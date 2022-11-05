@@ -34,8 +34,8 @@ class AjaxPlugin {
           // fullscreenDialog: true, transition: Transition.downToUp);
         }
         Application.toast(message, contentColor: Colors.red);
-        return handler.reject(
-            DioError(requestOptions: response.requestOptions, error: message));
+        return handler.reject(DioError(
+            requestOptions: response.requestOptions, error: response.data));
       }
       return handler.next(response);
     }, onError: (e, handler) {

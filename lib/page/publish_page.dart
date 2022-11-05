@@ -279,10 +279,7 @@ class _PublishPageState extends State<PublishPage> {
                                 child: Container(
                                   clipBehavior: Clip.hardEdge,
                                   decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Theme.of(context)
-                                              .disabledColor
-                                              .withOpacity(.1)),
+                                      border: Border.all(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(15),
                                       color: Theme.of(context)
                                           .disabledColor
@@ -299,23 +296,20 @@ class _PublishPageState extends State<PublishPage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           mainAxisSize: MainAxisSize.max,
-                                          children: [
+                                          children: const [
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 10),
+                                              padding:
+                                                  EdgeInsets.only(bottom: 10),
                                               child: Icon(
                                                 Icons.add_a_photo_outlined,
                                                 size: 40,
-                                                color: Theme.of(context)
-                                                    .disabledColor,
+                                                color: Colors.grey,
                                               ),
                                             ),
                                             Text(
                                               '上传菜谱封面',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .disabledColor
-                                                      .withOpacity(.4)),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
                                             )
                                           ],
                                         ),
@@ -524,13 +518,12 @@ class _PublishPageState extends State<PublishPage> {
                                                           }
                                                         },
                                                         child: Container(
+                                                          clipBehavior:
+                                                              Clip.hardEdge,
                                                           decoration: BoxDecoration(
                                                               border: Border.all(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .disabledColor
-                                                                      .withOpacity(
-                                                                          .1)),
+                                                                  color: Colors
+                                                                      .grey),
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
@@ -573,15 +566,32 @@ class _PublishPageState extends State<PublishPage> {
                                                       child: TextFormField(
                                                           decoration:
                                                               const InputDecoration(
-                                                        prefixIcon: Icon(Icons
-                                                            .flag_outlined),
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        10),
-                                                        labelText: '步骤说明',
-                                                      )),
+                                                            prefixIcon: Icon(Icons
+                                                                .flag_outlined),
+                                                            contentPadding:
+                                                                EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            10),
+                                                            labelText: '步骤说明',
+                                                          ),
+                                                          onChanged: (value) {
+                                                            setState(() {
+                                                              recipeInput
+                                                                  .steps[
+                                                                      item.key]
+                                                                  .text = value;
+                                                            });
+                                                          },
+                                                          validator: (v) {
+                                                            if (v == null ||
+                                                                v
+                                                                    .trim()
+                                                                    .isEmpty) {
+                                                              return '请先填步骤说明';
+                                                            }
+                                                            return null;
+                                                          }),
                                                     ),
                                                   ],
                                                 ),

@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:chewie/chewie.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -103,6 +105,10 @@ class _DetailPageState extends State<DetailPage> {
       }
 
       setState(() {});
+    } on DioError catch (e) {
+      if (e.error['status'] == 10001) {
+        Get.back();
+      }
     } finally {
       cancel();
     }
