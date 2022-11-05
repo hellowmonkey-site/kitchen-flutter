@@ -1,3 +1,4 @@
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/common_model.dart';
@@ -35,6 +36,10 @@ class MainController extends GetxController {
                   })
             }
         });
+
+    Future.delayed(const Duration(seconds: 2)).then((v) {
+      FlutterNativeSplash.remove();
+    });
 
     super.onReady();
   }
