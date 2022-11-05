@@ -423,10 +423,7 @@ class _DetailPageState extends State<DetailPage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(
-                                      bottom: item.key == data.steps.length - 1
-                                          ? 0
-                                          : 30),
+                                  padding: const EdgeInsets.only(bottom: 30),
                                   child: Text(
                                     item.value.text,
                                     style: const TextStyle(fontSize: 16),
@@ -435,6 +432,14 @@ class _DetailPageState extends State<DetailPage> {
                               ],
                             ))
                         .toList(),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.start,
+                      children: data.categorys
+                          .map((str) => Chip(label: Text(str)))
+                          .toList(),
+                    )
                   ],
                 ),
               ),
