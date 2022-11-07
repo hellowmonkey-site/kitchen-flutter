@@ -213,7 +213,7 @@ class _PersonPageState extends State<PersonPage> {
               ),
               dataList.isEmpty
                   ? SizedBox(
-                      height: 300,
+                      height: MediaQuery.of(context).size.height - 300,
                       child: Center(
                         child: Text(
                           '暂无数据',
@@ -254,24 +254,19 @@ class _PersonPageState extends State<PersonPage> {
                         );
                       }).toList(),
                     ),
-              dataList.isEmpty
-                  ? Container()
-                  : loading
-                      ? const CircularProgressIndicator()
-                      : !hasMore
-                          ? Text(
-                              '暂无更多数据',
-                              style: TextStyle(
-                                  color: Theme.of(context).disabledColor),
-                            )
-                          : Container(),
-              // GridView.count(
-              //   crossAxisCount: 2,
-              //   mainAxisSpacing: 5,
-              //   crossAxisSpacing: 5,
-              //   children:
-              //       dataList.map((item) => RecipeItemComponent(item)).toList(),
-              // )
+              if (loading && page > 1)
+                Container(
+                    height: 60,
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator()),
+              if (!hasMore && dataList.isNotEmpty)
+                Container(
+                    height: 60,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '暂无更多数据',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    )),
             ],
           ),
         ),

@@ -408,27 +408,36 @@ class _DetailPageState extends State<DetailPage> {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Application.showImageGallery(
-                                          data.steps.map((e) => e.img).toList(),
-                                          initIndex: item.key);
-                                    },
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: cachedNetworkImage(item.value.img),
+                                if (item.value.img.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 15),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Application.showImageGallery(
+                                            data.steps
+                                                .map((e) => e.img)
+                                                .toList(),
+                                            initIndex: item.key);
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          constraints: const BoxConstraints(
+                                              minHeight: 150),
+                                          child: cachedNetworkImage(
+                                              item.value.img),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 30),
-                                  child: Text(
-                                    item.value.text,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                )
+                                if (item.value.text.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 30),
+                                    child: Text(
+                                      item.value.text,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  )
                               ],
                             ))
                         .toList(),

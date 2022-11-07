@@ -4,7 +4,7 @@ const appTitle = '沃德厨房';
 const appId = 1;
 const baseUrl = isProd
     ? 'https://kitchen.api.hellowmonkey.cc/'
-    : 'http://192.168.146.103:7001/';
+    : 'http://192.168.5.27:7001/';
 const appUrl = '${baseUrl}common/app-info?download';
 const successCode = 200;
 const loginError = 10000;

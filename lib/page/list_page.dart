@@ -1,93 +1,168 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/component/recipe_item_component.dart';
-import 'package:kitchen_flutter/controller/list_controller.dart';
+import 'package:kitchen_flutter/model/recipe_model.dart';
 
-class ListPage extends StatelessWidget {
-  ListPage({super.key});
+class ListPage extends StatefulWidget {
+  const ListPage({Key? key}) : super(key: key);
 
-  final ListController listController = Get.put(ListController());
+  @override
+  State<ListPage> createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage> {
+  // 数据列表
+  List<RecipeItemModel> dataList = [];
+  // 分页
+  int page = 1;
+  int totalPage = 1;
+
+  bool loading = false;
+
+  bool showTopBtn = false;
+
+  // 参数
+  final parameters = Get.parameters;
+
+  // 滚动
+  final ScrollController scrollController = ScrollController();
+
+  // 标题
+  String get searchTitle {
+    if (parameters['keywords'] == null && parameters['categorys'] == null) {
+      return '觅食';
+    }
+    return [parameters['keywords'], parameters['categorys']]
+        .where((element) => element != '')
+        .join(',');
+  }
+
+  // list渲染时需要的条数
+  get dataItemCount => dataList.isEmpty ? 1 : (dataList.length / 2).ceil() + 1;
+
+  get hasMore => page < totalPage;
+
+  Future fetchData() {
+    setState(() {
+      loading = true;
+    });
+    return RecipeModel.getRecipePageList(
+            page: page,
+            keywords: parameters['keywords'],
+            categorys: parameters['categorys'])
+        .then((data) {
+      page = data.page;
+      totalPage = data.pageCount;
+      if (page == 1) {
+        dataList = data.data;
+      } else {
+        dataList = [...dataList, ...data.data];
+      }
+    }).whenComplete(() {
+      loading = false;
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
+    fetchData().whenComplete(() {
+      cancel();
+    });
+
+    // 监听滚动
+    scrollController.addListener(() {
+      if (hasMore &&
+          scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent) {
+        page += 1;
+        fetchData();
+      }
+      showTopBtn = scrollController.offset > 1000;
+      setState(() {});
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).bottomAppBarColor,
       appBar: AppBar(
-        title: Text(listController.searchTitle),
+        title: Text(searchTitle),
       ),
       body: RefreshIndicator(
         onRefresh: () {
-          listController.page.value = 1;
-          return listController.fetchData();
+          page = 1;
+          return fetchData();
         },
         color: Theme.of(context).primaryColor,
-        child: Obx(
-          () => ListView.builder(
-            itemBuilder: (context, index) {
-              if (listController.dataList.value.isEmpty) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height - 250,
-                  child: Center(
-                    child: Text(
-                      '暂无数据',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
-                    ),
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            if (dataList.isEmpty) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height - 250,
+                child: Center(
+                  child: Text(
+                    '暂无数据',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
                   ),
-                );
-              } else if (index == listController.dataItemCount - 1) {
-                return SizedBox(
-                  height: 60,
-                  child: Center(
-                    child: listController.dataList.value.isEmpty
-                        ? Container()
-                        : listController.loading.value
-                            ? const CircularProgressIndicator()
-                            : !listController.hasMore
-                                ? Text(
-                                    '暂无更多数据',
-                                    style: TextStyle(
-                                        color: Theme.of(context).disabledColor),
-                                  )
-                                : Container(),
-                  ),
-                );
-              } else {
-                final list = listController.dataList.value;
-                int first = index * 2;
-                int last = first + 1;
-                final item1 = list.elementAt(first);
-                final item2 =
-                    last > list.length - 1 ? null : list.elementAt(last);
-                return Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 5),
-                        child: RecipeItemComponent(item1),
-                      )),
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 5),
-                        child: item2 == null
-                            ? Container()
-                            : RecipeItemComponent(item2),
-                      ))
-                    ],
-                  ),
-                );
-              }
-            },
-            itemCount: listController.dataItemCount,
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: listController.scrollController,
-          ),
+                ),
+              );
+            } else if (index == dataItemCount - 1) {
+              return Container(
+                alignment: Alignment.center,
+                height: 60,
+                child: Center(
+                  child: loading && page > 1
+                      ? const CircularProgressIndicator()
+                      : !hasMore && dataList.isNotEmpty
+                          ? Text(
+                              '暂无更多数据',
+                              style: TextStyle(
+                                  color: Theme.of(context).disabledColor),
+                            )
+                          : Container(),
+                ),
+              );
+            } else {
+              int first = index * 2;
+              int last = first + 1;
+              final item1 = dataList.elementAt(first);
+              final item2 =
+                  last > dataList.length - 1 ? null : dataList.elementAt(last);
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 5),
+                      child: RecipeItemComponent(item1),
+                    )),
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.only(right: 10, left: 5),
+                      child: item2 == null
+                          ? Container()
+                          : RecipeItemComponent(item2),
+                    ))
+                  ],
+                ),
+              );
+            }
+          },
+          itemCount: dataItemCount,
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: scrollController,
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          listController.scrollController.animateTo(0,
+          scrollController.animateTo(0,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOutQuart);
         },
