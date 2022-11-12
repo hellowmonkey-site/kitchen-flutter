@@ -39,7 +39,7 @@ class _ListPageState extends State<ListPage> {
   }
 
   // list渲染时需要的条数
-  get dataItemCount => dataList.isEmpty ? 1 : (dataList.length / 2).ceil() + 1;
+  get dataItemCount => dataList.isEmpty ? 0 : (dataList.length / 2).ceil();
 
   get hasMore => page < totalPage;
 
@@ -100,65 +100,66 @@ class _ListPageState extends State<ListPage> {
           return fetchData();
         },
         color: Theme.of(context).primaryColor,
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            if (dataList.isEmpty) {
-              return SizedBox(
-                height: MediaQuery.of(context).size.height - 250,
+        child: dataList.isEmpty
+            ? SizedBox(
+                height: MediaQuery.of(context).size.height - 300,
                 child: Center(
                   child: Text(
                     '暂无数据',
                     style: TextStyle(color: Theme.of(context).disabledColor),
                   ),
                 ),
-              );
-            } else if (index == dataItemCount - 1) {
-              return Container(
-                alignment: Alignment.center,
-                height: 60,
-                child: Center(
-                  child: loading && page > 1
-                      ? const CircularProgressIndicator()
-                      : !hasMore && dataList.isNotEmpty
-                          ? Text(
-                              '暂无更多数据',
-                              style: TextStyle(
-                                  color: Theme.of(context).disabledColor),
-                            )
-                          : Container(),
-                ),
-              );
-            } else {
-              int first = index * 2;
-              int last = first + 1;
-              final item1 = dataList.elementAt(first);
-              final item2 =
-                  last > dataList.length - 1 ? null : dataList.elementAt(last);
-              return Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 5),
-                      child: RecipeItemComponent(item1),
-                    )),
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(right: 10, left: 5),
-                      child: item2 == null
-                          ? Container()
-                          : RecipeItemComponent(item2),
-                    ))
-                  ],
-                ),
-              );
-            }
-          },
-          itemCount: dataItemCount,
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: scrollController,
-        ),
+              )
+            : CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                    int first = index * 2;
+                    int last = first + 1;
+                    final item1 = dataList.elementAt(first);
+                    final item2 = last > dataList.length - 1
+                        ? null
+                        : dataList.elementAt(last);
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 5),
+                            child: RecipeItemComponent(item1),
+                          )),
+                          Expanded(
+                              child: Padding(
+                            padding: const EdgeInsets.only(right: 10, left: 5),
+                            child: item2 == null
+                                ? Container()
+                                : RecipeItemComponent(item2),
+                          ))
+                        ],
+                      ),
+                    );
+                  }, childCount: dataItemCount)),
+                  SliverToBoxAdapter(
+                    child: loading && page > 1
+                        ? Container(
+                            height: 60,
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator())
+                        : !hasMore && dataList.isNotEmpty
+                            ? Container(
+                                height: 60,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '暂无更多数据',
+                                  style: TextStyle(
+                                      color: Theme.of(context).disabledColor),
+                                ))
+                            : null,
+                  )
+                ],
+              ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

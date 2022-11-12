@@ -36,6 +36,8 @@ class _PersonPageState extends State<PersonPage> {
 
   get username => user.nickname.isEmpty ? user.username : user.nickname;
 
+  get dataItemCount => dataList.isEmpty ? 0 : (dataList.length / 2).ceil();
+
   get hasMore => page < totalPage;
 
   fetchUserData() async {
@@ -145,128 +147,139 @@ class _PersonPageState extends State<PersonPage> {
             )
           ],
         ),
-        body: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                color: Theme.of(context).bottomAppBarColor,
-                padding: const EdgeInsets.only(
-                    top: 5, left: 20, bottom: 20, right: 20),
-                child: SizedBox(
-                  height: _headerHeight,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        width: _headerHeight,
-                        child: GestureDetector(
-                          onTap: () {
-                            Application.showImagePreview(user.cover);
-                          },
-                          child: Hero(
-                            tag: 'person-item-$id',
-                            child: userAvatar(user.cover, size: _headerHeight),
+        body: RefreshIndicator(
+          onRefresh: () {
+            page = 1;
+            return fetchData();
+          },
+          color: Theme.of(context).primaryColor,
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  color: Theme.of(context).bottomAppBarColor,
+                  padding: const EdgeInsets.only(
+                      top: 5, left: 20, bottom: 20, right: 20),
+                  child: SizedBox(
+                    height: _headerHeight,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          width: _headerHeight,
+                          child: GestureDetector(
+                            onTap: () {
+                              Application.showImagePreview(user.cover);
+                            },
+                            child: Hero(
+                              tag: 'person-item-$id',
+                              child:
+                                  userAvatar(user.cover, size: _headerHeight),
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                username,
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Application.openDialog(
-                                    title: '个性签名',
-                                    cancelText: '',
-                                    confirmText: '关闭',
-                                    content: user.samp,
-                                    onTap: (c) {});
-                              },
-                              child: Text(
-                                user.samp,
-                                maxLines: 2,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).disabledColor,
-                                  overflow: TextOverflow.ellipsis,
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Text(
+                                  username,
+                                  style: const TextStyle(fontSize: 20),
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                              InkWell(
+                                onTap: () {
+                                  Application.openDialog(
+                                      title: '个性签名',
+                                      cancelText: '',
+                                      confirmText: '关闭',
+                                      content: user.samp,
+                                      onTap: (c) {});
+                                },
+                                child: Text(
+                                  user.samp,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).disabledColor,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-              dataList.isEmpty
-                  ? SizedBox(
-                      height: MediaQuery.of(context).size.height - 300,
-                      child: Center(
-                        child: Text(
-                          '暂无数据',
-                          style:
-                              TextStyle(color: Theme.of(context).disabledColor),
-                        ),
+              if (dataList.isEmpty)
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height - 300,
+                    child: Center(
+                      child: Text(
+                        '暂无数据',
+                        style:
+                            TextStyle(color: Theme.of(context).disabledColor),
                       ),
-                    )
-                  : Column(
-                      children: dataList
-                          .sublist(0, (dataList.length / 2).ceil())
-                          .asMap()
-                          .entries
-                          .map((item) {
-                        final first = item.key * 2;
-                        int last = first + 1;
-                        final item1 = dataList.elementAt(first);
-                        final item2 = last > dataList.length - 1
-                            ? null
-                            : dataList.elementAt(last);
-                        return Row(
-                          children: [
-                            Expanded(
-                                child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              child: RecipeItemComponent(item1),
-                            )),
-                            Expanded(
-                                child: Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10, left: 5),
-                              child: item2 == null
-                                  ? Container()
-                                  : RecipeItemComponent(item2),
-                            ))
-                          ],
-                        );
-                      }).toList(),
                     ),
-              if (loading && page > 1)
-                Container(
-                    height: 60,
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator()),
-              if (!hasMore && dataList.isNotEmpty)
-                Container(
-                    height: 60,
-                    alignment: Alignment.center,
-                    child: Text(
-                      '暂无更多数据',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
-                    )),
+                  ),
+                )
+              else
+                SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                  if (dataList.isEmpty) {
+                    return null;
+                  }
+                  int first = index * 2;
+                  int last = first + 1;
+                  final item1 = dataList.elementAt(first);
+                  final item2 = last > dataList.length - 1
+                      ? null
+                      : dataList.elementAt(last);
+                  return Row(
+                    children: [
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 5),
+                        child: RecipeItemComponent(item1),
+                      )),
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 5),
+                        child: item2 == null
+                            ? Container()
+                            : RecipeItemComponent(item2),
+                      ))
+                    ],
+                  );
+                }, childCount: dataItemCount)),
+              SliverToBoxAdapter(
+                child: loading && page > 1
+                    ? Container(
+                        height: 60,
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator())
+                    : !hasMore && dataList.isNotEmpty
+                        ? Container(
+                            height: 60,
+                            alignment: Alignment.center,
+                            child: Text(
+                              '暂无更多数据',
+                              style: TextStyle(
+                                  color: Theme.of(context).disabledColor),
+                            ))
+                        : null,
+              )
             ],
           ),
         ),
