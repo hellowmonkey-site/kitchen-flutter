@@ -19,35 +19,53 @@ class SearchPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  TextField(
-                    focusNode: searchController.focusNode,
-                    controller: searchController.textController,
-                    textInputAction: TextInputAction.search,
-                    textCapitalization: TextCapitalization.sentences,
-                    cursorWidth: 3,
-                    // cursorColor: Colors.white,
-                    style: const TextStyle(fontSize: 16),
-                    decoration: InputDecoration(
-                        labelText: '搜菜谱',
-                        fillColor: Theme.of(context).bottomAppBarColor,
-                        hintText: '搜菜谱...',
-                        hintStyle: const TextStyle(
-                          color: Colors.grey,
-                          textBaseline: TextBaseline.ideographic,
-                        ),
-                        prefixIcon: const Icon(Icons.manage_search_rounded),
-                        filled: true,
-                        border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            borderSide: BorderSide(
-                                style: BorderStyle.solid, width: 2))),
-                    onChanged: (val) {
-                      searchController.keywords.value = val;
-                    },
-                    onSubmitted: (v) {
-                      searchController.handleSearch();
-                    },
-                    // onSubmitted: onSubmitted,
+                  Stack(
+                    children: [
+                      TextField(
+                        focusNode: searchController.focusNode,
+                        controller: searchController.textController,
+                        textInputAction: TextInputAction.search,
+                        textCapitalization: TextCapitalization.sentences,
+                        cursorWidth: 3,
+                        // cursorColor: Colors.white,
+                        style: const TextStyle(fontSize: 16),
+                        decoration: InputDecoration(
+                            labelText: '搜菜谱',
+                            fillColor: Theme.of(context).bottomAppBarColor,
+                            hintText: '搜菜谱...',
+                            hintStyle: const TextStyle(
+                              color: Colors.grey,
+                              textBaseline: TextBaseline.ideographic,
+                            ),
+                            prefixIcon: const Icon(Icons.manage_search_rounded),
+                            filled: true,
+                            border: const OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                                borderSide: BorderSide(
+                                    style: BorderStyle.solid, width: 2))),
+                        onChanged: (val) {
+                          searchController.keywords.value = val;
+                        },
+                        onSubmitted: (v) {
+                          searchController.handleSearch();
+                        },
+                        // onSubmitted: onSubmitted,
+                      ),
+                      Positioned(
+                          right: 10,
+                          top: 7,
+                          child: Obx(() => AnimatedOpacity(
+                                opacity: searchController.canSearch ? 0 : 1,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOutCirc,
+                                child: TextButton(
+                                    onPressed: () {
+                                      searchController.handleSearch();
+                                    },
+                                    child: const Text('去觅食')),
+                              )))
+                    ],
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -192,12 +210,12 @@ class SearchPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           children: const [
                             Icon(
-                              Icons.search_rounded,
+                              Icons.manage_search_outlined,
                             ),
                             Padding(
                               padding: EdgeInsets.only(left: 5),
                               child: Text(
-                                '搜索',
+                                '去觅食',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),

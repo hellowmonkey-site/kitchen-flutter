@@ -154,11 +154,11 @@ class RecipeModel {
     final data = await Application.ajax
         .get('recipe/$id')
         .then((res) => res.data['data']);
-    if (data['video'] != null && data['video'] != '') {
-      try {
-        data['video'] = await getVideoSrc(id);
-      } catch (e) {}
-    }
+    // if (data['video'] != null && data['video'] != '') {
+    //   try {
+    //     data['video'] = await getVideoSrc(id);
+    //   } catch (e) {}
+    // }
     final recipe = RecipeItemModel.fromJson(data);
     // 缓存
     Provider.of<RecipeProvider>(Get.context!, listen: false)

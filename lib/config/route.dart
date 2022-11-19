@@ -30,7 +30,7 @@ final routePages = [
       curve: Curves.linear),
   GetPage(
       name: '/list',
-      page: () => ListPage(),
+      page: () => const ListPage(),
       transition: Transition.cupertino,
       curve: Curves.linear),
   GetPage(

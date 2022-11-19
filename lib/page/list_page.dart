@@ -30,7 +30,8 @@ class _ListPageState extends State<ListPage> {
 
   // 标题
   String get searchTitle {
-    if (parameters['keywords'] == null && parameters['categorys'] == null) {
+    if ((parameters['keywords'] as String).isEmpty &&
+        (parameters['categorys'] as String).isEmpty) {
       return '觅食';
     }
     return [parameters['keywords'], parameters['categorys']]

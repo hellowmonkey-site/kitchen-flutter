@@ -27,7 +27,7 @@ class Application {
   //  轻提示
   static Function toast(String msg, {Color contentColor = Colors.black87}) {
     return BotToast.showText(
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
         text: msg,
         textStyle: const TextStyle(fontSize: 15, color: Colors.white),
         contentColor: contentColor,
@@ -192,8 +192,11 @@ class Application {
                   final orgUrl = list[index].split('?').first;
                   final url = '${baseUrl}proxy/image?url=$orgUrl';
                   return PhotoViewGalleryPageOptions(
-                    imageProvider: NetworkImage(url),
-                  );
+                      minScale: PhotoViewComputedScale.contained,
+                      imageProvider: NetworkImage(url),
+                      onTapUp: (context, details, controllerValue) {
+                        Get.back();
+                      });
                 },
                 itemCount: list.length,
                 loadingBuilder: (context, progress) => const Center(
@@ -220,6 +223,10 @@ class Application {
                 foregroundColor: Colors.white,
               ),
               body: PhotoView(
+                  onTapUp: (context, details, controllerValue) {
+                    Get.back();
+                  },
+                  minScale: PhotoViewComputedScale.contained,
                   imageProvider: NetworkImage(url),
                   loadingBuilder: (context, progress) => const Center(
                         child: LinearProgressIndicator(),
