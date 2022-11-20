@@ -30,13 +30,13 @@ class _ListPageState extends State<ListPage> {
 
   // 标题
   String get searchTitle {
-    if ((parameters['keywords'] as String).isEmpty &&
-        (parameters['categorys'] as String).isEmpty) {
+    final arr = [parameters['keywords'], parameters['categorys']]
+        .where((element) => element != '' && element != null)
+        .toList();
+    if (arr.isEmpty) {
       return '觅食';
     }
-    return [parameters['keywords'], parameters['categorys']]
-        .where((element) => element != '')
-        .join(',');
+    return arr.join(',');
   }
 
   // list渲染时需要的条数

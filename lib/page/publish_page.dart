@@ -150,11 +150,11 @@ class _PublishPageState extends State<PublishPage> {
                                 case 2:
                                   if ((_formKey2.currentState as FormState)
                                       .validate()) {
-                                    if (recipeInput.steps
-                                        .any((item) => item.img.isEmpty)) {
-                                      Application.toast('请先上传步骤面');
-                                      return;
-                                    }
+                                    // if (recipeInput.steps
+                                    //     .any((item) => item.img.isEmpty)) {
+                                    //   Application.toast('请先上传步骤面');
+                                    //   return;
+                                    // }
                                     details.onStepContinue!();
                                   }
                                   break;
@@ -226,7 +226,7 @@ class _PublishPageState extends State<PublishPage> {
                                     textCapitalization:
                                         TextCapitalization.sentences,
                                     cursorWidth: 3,
-                                    minLines: 3,
+                                    minLines: 1,
                                     maxLines: 10,
                                     style: const TextStyle(fontSize: 16),
                                     decoration: InputDecoration(
@@ -260,19 +260,14 @@ class _PublishPageState extends State<PublishPage> {
                             Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
                                 onTap: () async {
-                                  try {
-                                    final cover =
-                                        await Application.uploadImage();
-                                    if (cover != null) {
-                                      BotToast.showLoading();
-                                      setState(() {
-                                        recipeInput.cover = cover.url;
-                                        recipeInput.coverId = cover.id;
-                                      });
-                                    }
-                                  } finally {
-                                    BotToast.closeAllLoading();
+                                  final cover = await Application.uploadImage();
+                                  if (cover != null) {
+                                    setState(() {
+                                      recipeInput.cover = cover.url;
+                                      recipeInput.coverId = cover.id;
+                                    });
                                   }
                                 },
                                 child: Container(
@@ -375,27 +370,28 @@ class _PublishPageState extends State<PublishPage> {
                                               padding: const EdgeInsets.only(
                                                   bottom: 20),
                                               child: TextFormField(
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    prefixIcon: Icon(Icons
-                                                        .line_weight_outlined),
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10),
-                                                    labelText: '用量',
-                                                  ),
-                                                  onChanged: (value) {
-                                                    recipeInput
-                                                        .materials[item.key]
-                                                        .unit = value;
-                                                  },
-                                                  validator: (v) {
-                                                    if (v == null ||
-                                                        v.trim().isEmpty) {
-                                                      return '请先填写用量';
-                                                    }
-                                                    return null;
-                                                  }),
+                                                decoration:
+                                                    const InputDecoration(
+                                                  prefixIcon: Icon(Icons
+                                                      .line_weight_outlined),
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 10),
+                                                  labelText: '用量',
+                                                ),
+                                                onChanged: (value) {
+                                                  recipeInput
+                                                      .materials[item.key]
+                                                      .unit = value;
+                                                },
+                                                // validator: (v) {
+                                                //   if (v == null ||
+                                                //       v.trim().isEmpty) {
+                                                //     return '请先填写用量';
+                                                //   }
+                                                //   return null;
+                                                // }
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -479,7 +475,8 @@ class _PublishPageState extends State<PublishPage> {
                                                   mainAxisSize:
                                                       MainAxisSize.max,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                      CrossAxisAlignment
+                                                          .stretch,
                                                   children: [
                                                     Padding(
                                                       padding:
@@ -496,24 +493,21 @@ class _PublishPageState extends State<PublishPage> {
                                                           const EdgeInsets.only(
                                                               bottom: 10),
                                                       child: InkWell(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
                                                         onTap: () async {
-                                                          try {
-                                                            final data =
-                                                                await Application
-                                                                    .uploadImage();
-                                                            if (data != null) {
-                                                              BotToast
-                                                                  .showLoading();
-                                                              setState(() {
-                                                                recipeInput
-                                                                    .steps[item
-                                                                        .key]
-                                                                    .img = data.url;
-                                                              });
-                                                            }
-                                                          } finally {
-                                                            BotToast
-                                                                .closeAllLoading();
+                                                          final data =
+                                                              await Application
+                                                                  .uploadImage();
+                                                          if (data != null) {
+                                                            setState(() {
+                                                              recipeInput
+                                                                      .steps[item
+                                                                          .key]
+                                                                      .img =
+                                                                  data.url;
+                                                            });
                                                           }
                                                         },
                                                         child: Container(

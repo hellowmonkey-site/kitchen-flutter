@@ -239,6 +239,7 @@ class Application {
   // 图片上传
   static Future<StorageModel?> uploadImage() async {
     final ImagePicker imagePicker = ImagePicker();
+    StorageModel? data;
     try {
       final index = await Application.showBottomSheet(['相册选取', '拍照']);
       if (index == null) {
@@ -252,13 +253,13 @@ class Application {
       if (file == null) {
         return null;
       }
-      final cancel = BotToast.showLoading();
-      final data = await CommonModel.uploadFile(file);
-      cancel();
-      return data;
+      BotToast.showLoading();
+      data = await CommonModel.uploadFile(file);
     } catch (e) {
-      Application.toast('上传失败，请使用app重试', contentColor: Colors.red);
+      Application.toast('上传失败', contentColor: Colors.red);
+    } finally {
+      BotToast.closeAllLoading();
     }
-    return null;
+    return data;
   }
 }

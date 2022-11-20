@@ -365,7 +365,7 @@ class _DetailPageState extends State<DetailPage> {
                             .entries
                             .map((item) => Container(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
+                                      const EdgeInsets.symmetric(vertical: 15),
                                   decoration: BoxDecoration(
                                       border: itemBorder(
                                           isLast: item.key ==
@@ -446,7 +446,16 @@ class _DetailPageState extends State<DetailPage> {
                       runSpacing: 10,
                       alignment: WrapAlignment.start,
                       children: data.categorys
-                          .map((str) => Chip(label: Text(str)))
+                          .map((str) => OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)))),
+                                child: Text(str),
+                                onPressed: () {
+                                  Get.toNamed('/list?categorys=$str');
+                                },
+                              ))
                           .toList(),
                     )
                   ],

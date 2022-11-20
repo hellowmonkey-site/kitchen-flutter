@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
@@ -44,8 +45,13 @@ class AppInfoModel {
 class CommonModel {
   // 文件上传
   static Future<StorageModel> uploadFile(XFile file, {isImage = true}) async {
-    final fileData =
-        await MultipartFile.fromFile(file.path, filename: file.name);
+    late final MultipartFile fileData;
+    if (kIsWeb) {
+      fileData = MultipartFile.fromBytes(await file.readAsBytes(),
+          filename: file.name);
+    } else {
+      fileData = await MultipartFile.fromFile(file.path, filename: file.name);
+    }
     FormData formData =
         FormData.fromMap({'file': fileData, 'is_image': isImage});
     final data = await Application.ajax

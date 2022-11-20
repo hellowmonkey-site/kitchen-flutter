@@ -54,16 +54,19 @@ class SearchPage extends StatelessWidget {
                       ),
                       Positioned(
                           right: 10,
-                          top: 7,
+                          top: 0,
+                          bottom: 0,
                           child: Obx(() => AnimatedOpacity(
                                 opacity: searchController.canSearch ? 0 : 1,
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.easeInOutCirc,
-                                child: TextButton(
-                                    onPressed: () {
-                                      searchController.handleSearch();
-                                    },
-                                    child: const Text('去觅食')),
+                                child: Center(
+                                  child: TextButton(
+                                      onPressed: () {
+                                        Get.toNamed('/list');
+                                      },
+                                      child: const Text('去觅食')),
+                                ),
                               )))
                     ],
                   ),
@@ -180,11 +183,11 @@ class SearchPage extends StatelessWidget {
                             backgroundColor:
                                 Theme.of(context).bottomAppBarColor,
                             shadowColor: Theme.of(context).shadowColor,
-                            elevation: 10,
+                            elevation: 15,
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(30))),
-                            padding: const EdgeInsets.symmetric(vertical: 15)),
+                            padding: const EdgeInsets.symmetric(vertical: 20)),
                         // ignore: prefer_const_constructors
                         child: Icon(
                           Icons.cleaning_services_outlined,
@@ -199,11 +202,11 @@ class SearchPage extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             shadowColor: Theme.of(context).primaryColor,
-                            elevation: 10,
+                            elevation: 15,
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(30))),
-                            padding: const EdgeInsets.symmetric(vertical: 15)),
+                            padding: const EdgeInsets.symmetric(vertical: 20)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
