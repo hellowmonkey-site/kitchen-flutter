@@ -82,7 +82,7 @@ class SearchPage extends StatelessWidget {
                     child: SingleChildScrollView(
                         child: Obx(() => Padding(
                               padding: EdgeInsets.only(
-                                  bottom: searchController.canSearch ? 90 : 0),
+                                  bottom: searchController.canSearch ? 100 : 0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -164,8 +164,8 @@ class SearchPage extends StatelessWidget {
             ),
             Obx(() => AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOutCirc,
-                bottom: searchController.canSearch ? 40 : -60,
+                curve: Curves.bounceInOut,
+                bottom: searchController.canSearch ? 40 : -80,
                 left: 20,
                 right: 20,
                 child: Row(
@@ -187,7 +187,7 @@ class SearchPage extends StatelessWidget {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(30))),
-                            padding: const EdgeInsets.symmetric(vertical: 20)),
+                            padding: const EdgeInsets.symmetric(vertical: 18)),
                         // ignore: prefer_const_constructors
                         child: Icon(
                           Icons.cleaning_services_outlined,
@@ -206,7 +206,7 @@ class SearchPage extends StatelessWidget {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(30))),
-                            padding: const EdgeInsets.symmetric(vertical: 20)),
+                            padding: const EdgeInsets.symmetric(vertical: 18)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,

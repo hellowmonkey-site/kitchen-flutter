@@ -443,7 +443,7 @@ class _DetailPageState extends State<DetailPage> {
                         .toList(),
                     Wrap(
                       spacing: 10,
-                      runSpacing: 10,
+                      runSpacing: 0,
                       alignment: WrapAlignment.start,
                       children: data.categorys
                           .map((str) => OutlinedButton(

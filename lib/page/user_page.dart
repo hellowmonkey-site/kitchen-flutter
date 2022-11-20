@@ -41,8 +41,10 @@ class UserPage extends StatelessWidget {
                   width: 70,
                   height: 70,
                   child: userProvider.user.cover.isEmpty
-                      ? CircleAvatar(
-                          backgroundColor: Theme.of(context).disabledColor,
+                      ? const CircleAvatar(
+                          backgroundImage: AssetImage(
+                            'static/image/splash/logo.png',
+                          ),
                         )
                       : GestureDetector(
                           onTap: () {
