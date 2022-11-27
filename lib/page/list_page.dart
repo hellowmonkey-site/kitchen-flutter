@@ -81,7 +81,7 @@ class _ListPageState extends State<ListPage> {
         page += 1;
         fetchData();
       }
-      showTopBtn = scrollController.offset > 1000;
+      showTopBtn = scrollController.offset > 500;
       setState(() {});
     });
 
@@ -162,14 +162,16 @@ class _ListPageState extends State<ListPage> {
                 ],
               ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          scrollController.animateTo(0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOutQuart);
-        },
-        child: const Icon(Icons.arrow_upward),
-      ),
+      floatingActionButton: showTopBtn
+          ? FloatingActionButton(
+              onPressed: () {
+                scrollController.animateTo(0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOutQuart);
+              },
+              child: const Icon(Icons.arrow_upward),
+            )
+          : null,
     );
   }
 }

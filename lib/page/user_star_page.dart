@@ -19,54 +19,27 @@ class UserStarPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('我的关注'),
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: userStarProvider.starList.isEmpty
-          ? Center(
-              child: Text(
-                '暂无数据',
-                style: TextStyle(color: Theme.of(context).disabledColor),
+      backgroundColor:
+          Get.isDarkMode ? null : Theme.of(context).backgroundColor,
+      body: RefreshIndicator(
+        onRefresh: () {
+          return UserStarModel.getUserStarList();
+        },
+        color: Theme.of(context).primaryColor,
+        child: userStarProvider.starList.isEmpty
+            ? Center(
+                child: Text(
+                  '暂无数据',
+                  style: TextStyle(color: Theme.of(context).disabledColor),
+                ),
+              )
+            : ListView.builder(
+                itemBuilder: _itemBuild,
+                itemCount: userStarProvider.starList.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: scrollController,
               ),
-            )
-          : ListView.builder(
-              itemBuilder: (context, index) {
-                final item = userStarProvider.starList[index];
-                return Container(
-                  decoration: BoxDecoration(
-                      border: itemBorder(
-                          isLast:
-                              index == userStarProvider.starList.length - 1)),
-                  // padding: const EdgeInsets.only(top: 10),
-                  child: ListTile(
-                    onTap: () {
-                      Get.toNamed('/person/${item.starUserId}');
-                    },
-                    leading: Hero(
-                      tag: 'person-item-${item.starUserId}',
-                      child: userAvatar(item.starUserCover, size: 40),
-                    ),
-                    title: Text(item.starUserName),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text(item.createdAt),
-                    ),
-                    trailing: InkWell(
-                      onTap: () async {
-                        final index =
-                            await Application.showBottomSheet(['取消关注']);
-                        if (index == 0) {
-                          UserStarModel.deleteUserStar(item.starUserId);
-                        }
-                      },
-                      child: Icon(Icons.more_vert,
-                          color: Theme.of(context).disabledColor),
-                    ),
-                  ),
-                );
-              },
-              itemCount: userStarProvider.starList.length,
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: scrollController,
-            ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           scrollController.animateTo(0,
@@ -74,6 +47,44 @@ class UserStarPage extends StatelessWidget {
               curve: Curves.easeInOutQuart);
         },
         child: const Icon(Icons.arrow_upward),
+      ),
+    );
+  }
+
+  Widget _itemBuild(BuildContext context, int index) {
+    UserStarProvider userStarProvider = Provider.of<UserStarProvider>(context);
+    final item = userStarProvider.starList[index];
+
+    return Container(
+      decoration: BoxDecoration(
+          border: itemBorder(
+              isLast: index == userStarProvider.starList.length - 1)),
+      // padding: const EdgeInsets.only(top: 10),
+      child: ListTile(
+        onTap: () {
+          Get.toNamed('/person/${item.starUserId}');
+        },
+        leading: Hero(
+          tag: 'person-item-${item.starUserId}',
+          child: userAvatar(item.starUserCover, size: 40),
+        ),
+        title: Text(item.starUserName),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Text(
+            item.createdAt,
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+        trailing: InkWell(
+          onTap: () async {
+            final index = await Application.showBottomSheet(['取消关注']);
+            if (index == 0) {
+              UserStarModel.deleteUserStar(item.starUserId);
+            }
+          },
+          child: Icon(Icons.more_vert, color: Theme.of(context).disabledColor),
+        ),
       ),
     );
   }

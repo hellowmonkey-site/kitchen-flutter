@@ -28,9 +28,10 @@ class _PersonPageState extends State<PersonPage> {
   var user = defaultUserModel;
   List<RecipeItemModel> dataList = [];
 
-  final double _headerHeight = 80;
+  final double headerHeight = 80;
   bool loading = false;
   bool overHeader = false;
+  bool showTopBtn = false;
   int page = 1;
   int totalPage = 1;
 
@@ -91,9 +92,9 @@ class _PersonPageState extends State<PersonPage> {
         page += 1;
         fetchData();
       }
-      setState(() {
-        overHeader = scrollController.position.pixels > _headerHeight;
-      });
+      overHeader = scrollController.position.pixels > headerHeight;
+      showTopBtn = scrollController.offset > 500;
+      setState(() {});
     });
 
     super.initState();
@@ -101,8 +102,6 @@ class _PersonPageState extends State<PersonPage> {
 
   @override
   Widget build(BuildContext context) {
-    UserStarProvider userStarProvider = Provider.of<UserStarProvider>(context);
-
     return Scaffold(
         appBar: AppBar(
           title: AnimatedOpacity(
@@ -119,33 +118,7 @@ class _PersonPageState extends State<PersonPage> {
             ),
           ),
           elevation: overHeader ? null : 0,
-          actions: [
-            if (userStarProvider.starUserIds.contains(user.id))
-              IconButton(
-                  tooltip: '点击取消关注',
-                  onPressed: () {
-                    UserStarModel.deleteUserStar(user.id);
-                  },
-                  icon: const Icon(
-                    Icons.star,
-                    color: Colors.redAccent,
-                  ))
-            else
-              IconButton(
-                  tooltip: '点击关注此作者',
-                  onPressed: () {
-                    UserStarModel.postUserStar(user.id);
-                  },
-                  icon: const Icon(Icons.star_border_outlined)),
-            IconButton(
-              onPressed: () {
-                Share.share('【$appTitle】$username <$webUrl#/person/${user.id}>',
-                    subject: username);
-              },
-              icon: const Icon(Icons.share),
-              tooltip: '分享',
-            )
-          ],
+          actions: _actions(),
         ),
         body: RefreshIndicator(
           onRefresh: () {
@@ -156,71 +129,7 @@ class _PersonPageState extends State<PersonPage> {
           child: CustomScrollView(
             controller: scrollController,
             slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  color: Theme.of(context).bottomAppBarColor,
-                  padding: const EdgeInsets.only(
-                      top: 5, left: 20, bottom: 20, right: 20),
-                  child: SizedBox(
-                    height: _headerHeight,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          width: _headerHeight,
-                          child: GestureDetector(
-                            onTap: () {
-                              Application.showImagePreview(user.cover);
-                            },
-                            child: Hero(
-                              tag: 'person-item-$id',
-                              child:
-                                  userAvatar(user.cover, size: _headerHeight),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Text(
-                                  username,
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Application.openDialog(
-                                      title: '个性签名',
-                                      cancelText: '',
-                                      confirmText: '关闭',
-                                      content: user.samp,
-                                      onTap: (c) {});
-                                },
-                                child: Text(
-                                  user.samp,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context).disabledColor,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              _person(),
               if (dataList.isEmpty)
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -283,13 +192,113 @@ class _PersonPageState extends State<PersonPage> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            scrollController.animateTo(0,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOutQuart);
-          },
-          child: const Icon(Icons.arrow_upward),
-        ));
+        floatingActionButton: showTopBtn
+            ? FloatingActionButton(
+                onPressed: () {
+                  scrollController.animateTo(0,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutQuart);
+                },
+                child: const Icon(Icons.arrow_upward),
+              )
+            : null);
+  }
+
+  List<Widget> _actions() {
+    UserStarProvider userStarProvider = Provider.of<UserStarProvider>(context);
+
+    return [
+      if (userStarProvider.starUserIds.contains(user.id))
+        IconButton(
+            tooltip: '点击取消关注',
+            onPressed: () {
+              UserStarModel.deleteUserStar(user.id);
+            },
+            icon: const Icon(
+              Icons.star,
+              color: Colors.redAccent,
+            ))
+      else
+        IconButton(
+            tooltip: '点击关注此作者',
+            onPressed: () {
+              UserStarModel.postUserStar(user.id);
+            },
+            icon: const Icon(Icons.star_border_outlined)),
+      IconButton(
+        onPressed: () {
+          Share.share('【$appTitle】$username <$webUrl#/person/${user.id}>',
+              subject: username);
+        },
+        icon: const Icon(Icons.share),
+        tooltip: '分享',
+      )
+    ];
+  }
+
+  Widget _person() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        color: Theme.of(context).bottomAppBarColor,
+        padding: const EdgeInsets.only(top: 5, left: 20, bottom: 20, right: 20),
+        child: SizedBox(
+          height: headerHeight,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                width: headerHeight,
+                child: GestureDetector(
+                  onTap: () {
+                    Application.showImagePreview(user.cover);
+                  },
+                  child: Hero(
+                    tag: 'person-item-$id',
+                    child: userAvatar(user.cover, size: headerHeight),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        username,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Application.openDialog(
+                            title: '个性签名',
+                            cancelText: '',
+                            confirmText: '关闭',
+                            content: user.samp,
+                            onTap: (c) {});
+                      },
+                      child: Text(
+                        user.samp,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).disabledColor,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

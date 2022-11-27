@@ -27,70 +27,8 @@ class LoginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: TextFormField(
-                          autofocus: true,
-                          controller: _unameController,
-                          cursorWidth: 3,
-                          style: const TextStyle(fontSize: 16),
-                          decoration: InputDecoration(
-                              labelText: '用户名',
-                              fillColor: Theme.of(context).bottomAppBarColor,
-                              hintText: '用户名',
-                              hintStyle: const TextStyle(
-                                color: Colors.grey,
-                                textBaseline: TextBaseline.ideographic,
-                              ),
-                              prefixIcon: const Icon(Icons.person),
-                              filled: true,
-                              border: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30)),
-                                  borderSide: BorderSide(
-                                      style: BorderStyle.solid, width: 2))),
-                          validator: (v) {
-                            if (v == null || v.trim().isEmpty) {
-                              return '用户名不能为空';
-                            }
-                            return null;
-                          }
-                          // onSubmitted: onSubmitted,
-                          ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30),
-                      child: TextFormField(
-                        textInputAction: TextInputAction.send,
-                        controller: _pwdController,
-                        decoration: InputDecoration(
-                            labelText: '密码',
-                            fillColor: Theme.of(context).bottomAppBarColor,
-                            hintText: '密码',
-                            hintStyle: const TextStyle(
-                              color: Colors.grey,
-                              textBaseline: TextBaseline.ideographic,
-                            ),
-                            prefixIcon: const Icon(Icons.lock),
-                            filled: true,
-                            border: const OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                                borderSide: BorderSide(
-                                    style: BorderStyle.solid, width: 2))),
-                        obscureText: true,
-                        //校验密码
-                        validator: (v) {
-                          if (v == null || v.trim().length <= 5) {
-                            return '密码不能少于6位';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (value) {
-                          handleSubmit();
-                        },
-                      ),
-                    ),
+                    _username(),
+                    _password(),
                     // 登录按钮
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -136,5 +74,72 @@ class LoginPage extends StatelessWidget {
           username: _unameController.value.text,
           password: _pwdController.value.text);
     }
+  }
+
+  Widget _username() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: TextFormField(
+          textInputAction: TextInputAction.next,
+          autofocus: true,
+          controller: _unameController,
+          cursorWidth: 3,
+          style: const TextStyle(fontSize: 16),
+          decoration: InputDecoration(
+              labelText: '用户名',
+              fillColor: Theme.of(Get.context!).bottomAppBarColor,
+              hintText: '用户名',
+              hintStyle: const TextStyle(
+                color: Colors.grey,
+                textBaseline: TextBaseline.ideographic,
+              ),
+              prefixIcon: const Icon(Icons.person),
+              filled: true,
+              border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  borderSide: BorderSide(style: BorderStyle.solid, width: 2))),
+          validator: (v) {
+            if (v == null || v.trim().isEmpty) {
+              return '用户名不能为空';
+            }
+            return null;
+          }
+          // onSubmitted: onSubmitted,
+          ),
+    );
+  }
+
+  Widget _password() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: TextFormField(
+        textInputAction: TextInputAction.done,
+        controller: _pwdController,
+        decoration: InputDecoration(
+            labelText: '密码',
+            fillColor: Theme.of(Get.context!).bottomAppBarColor,
+            hintText: '密码',
+            hintStyle: const TextStyle(
+              color: Colors.grey,
+              textBaseline: TextBaseline.ideographic,
+            ),
+            prefixIcon: const Icon(Icons.lock),
+            filled: true,
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                borderSide: BorderSide(style: BorderStyle.solid, width: 2))),
+        obscureText: true,
+        //校验密码
+        validator: (v) {
+          if (v == null || v.trim().length <= 5) {
+            return '密码不能少于6位';
+          }
+          return null;
+        },
+        onFieldSubmitted: (value) {
+          handleSubmit();
+        },
+      ),
+    );
   }
 }
