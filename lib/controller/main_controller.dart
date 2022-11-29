@@ -26,14 +26,14 @@ class MainController extends GetxController {
           if (data.version != Application.packageInfo.version)
             {
               Application.openDialog(
-                  title: '发现新版本',
-                  content: data.description,
-                  confirmText: '立即更新',
-                  onTap: (c) {
-                    if (c) {
-                      Application.openUrl(data.downloadUrl);
-                    }
-                  })
+                title: '发现新版本',
+                content: data.description,
+                confirmText: '立即更新',
+              ).then((c) {
+                if (c != null) {
+                  Application.openUrl(data.downloadUrl);
+                }
+              })
             }
         });
 

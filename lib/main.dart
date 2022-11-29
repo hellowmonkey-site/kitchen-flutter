@@ -73,6 +73,7 @@ class MainApp extends StatelessWidget {
     final themeMode = themeModeList[themeProvider.themeModeIndex];
 
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: appTitle,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

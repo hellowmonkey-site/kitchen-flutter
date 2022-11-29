@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/component/recipe_item_component.dart';
+import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/recipe_model.dart';
 
 class ListPage extends StatefulWidget {
@@ -94,6 +95,20 @@ class _ListPageState extends State<ListPage> {
       backgroundColor: Theme.of(context).bottomAppBarColor,
       appBar: AppBar(
         title: Text(searchTitle),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Application.navigateTo('/publish', auth: true).then((value) {
+                if (value != null) {
+                  page = 1;
+                  fetchData();
+                }
+              });
+            },
+            icon: const Icon(Icons.add),
+            tooltip: '发布新菜谱',
+          )
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () {
@@ -129,14 +144,12 @@ class _ListPageState extends State<ListPage> {
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 10, right: 5),
-                            child: RecipeItemComponent(item1),
+                            child: _recipeItem(item1),
                           )),
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(right: 10, left: 5),
-                            child: item2 == null
-                                ? Container()
-                                : RecipeItemComponent(item2),
+                            child: _recipeItem(item2),
                           ))
                         ],
                       ),
@@ -173,5 +186,20 @@ class _ListPageState extends State<ListPage> {
             )
           : null,
     );
+  }
+
+  _recipeItem(RecipeItemModel? item) {
+    return item == null
+        ? const SizedBox()
+        : InkWell(
+            child: RecipeItemComponent(item),
+            onTap: () {
+              Get.toNamed('/detail/${item.id}')?.then((value) {
+                if (value != null) {
+                  page = 1;
+                  fetchData();
+                }
+              });
+            });
   }
 }

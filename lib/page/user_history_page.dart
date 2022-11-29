@@ -26,12 +26,12 @@ class UserHistoryPage extends StatelessWidget {
           IconButton(
               onPressed: () {
                 Application.openDialog(
-                    title: '确认清空所有浏览记录吗？',
-                    onTap: (c) {
-                      if (c) {
-                        UserHistoryModel.clearUserHistory();
-                      }
-                    });
+                  title: '确认清空所有浏览记录吗？',
+                ).then((c) {
+                  if (c != null) {
+                    UserHistoryModel.clearUserHistory();
+                  }
+                });
               },
               icon: const Icon(Icons.delete_outline))
         ],
@@ -77,7 +77,11 @@ class UserHistoryPage extends StatelessWidget {
       // color: Theme.of(context).bottomAppBarColor,
       child: InkWell(
         onTap: () {
-          Get.toNamed('/detail/${item.recipeId}');
+          Get.toNamed('/detail/${item.recipeId}')?.then((value) {
+            if (value != null) {
+              UserHistoryModel.getUserHistoryList();
+            }
+          });
         },
         child: Container(
           decoration: BoxDecoration(

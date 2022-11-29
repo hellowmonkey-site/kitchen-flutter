@@ -5,6 +5,7 @@ import 'package:kitchen_flutter/config/common.dart';
 import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/helper/util.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
+import 'package:kitchen_flutter/page/login_page.dart';
 // import 'package:kitchen_flutter/page/login_page.dart';
 import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -27,13 +28,13 @@ class AjaxPlugin {
       final status = response.data['status'];
       final message = response.data['message'].toString();
       if (status != null && status != successCode) {
+        Application.toast(message, contentColor: Colors.red.withOpacity(.87));
         if (status == loginError) {
           Provider.of<UserProvider>(Get.context!, listen: false)
               .setUser(defaultUserModel);
-          // Application.navigateTo(() => const LoginPage(),
-          // fullscreenDialog: true, transition: Transition.downToUp);
+          Get.to(() => LoginPage(),
+              fullscreenDialog: true, transition: Transition.downToUp);
         }
-        Application.toast(message, contentColor: Colors.red);
         return handler.reject(DioError(
             requestOptions: response.requestOptions, error: response.data));
       }

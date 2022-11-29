@@ -44,13 +44,12 @@ class Application {
   //           const EdgeInsets.symmetric(vertical: 10, horizontal: 20));
   // }
 
-  static openDialog(
+  static Future openDialog(
       {required String title,
       String? content,
       String cancelText = '取消',
       String confirmText = '确认',
-      bool autoClose = true,
-      required Function onTap}) {
+      bool autoClose = true}) {
     List<TextButton> actions = [];
     if (cancelText != '') {
       actions.add(TextButton(
@@ -59,7 +58,6 @@ class Application {
           if (autoClose) {
             Get.back();
           }
-          onTap(false);
         },
       ));
     }
@@ -67,11 +65,10 @@ class Application {
         child: Text(confirmText),
         onPressed: () {
           if (autoClose) {
-            Get.back();
+            Get.back(result: 1);
           }
-          onTap(true);
         }));
-    Get.generalDialog(
+    return Get.generalDialog(
         pageBuilder: (context, anim1, anim2) => Container(),
         transitionBuilder: (context, anim1, anim2, child) {
           return Transform.scale(
@@ -99,16 +96,31 @@ class Application {
         });
   }
 
+  // 检测登录
+  static Future checkLogin() async {
+    final token = Provider.of<UserProvider>(Get.context!, listen: false).token;
+    if (token.isEmpty) {
+      toast('请先登录', contentColor: Colors.red.withOpacity(.87));
+      final value = await Get.to(() => LoginPage(),
+          fullscreenDialog: true, transition: Transition.downToUp);
+      if (value == null) {
+        return Future.value(null);
+      }
+      await Future.delayed(const Duration(milliseconds: 250));
+    }
+    return Future.value(1);
+  }
+
   // 链接跳转
-  static navigateTo(
+  static Future navigateTo(
     String page, {
     bool auth = false,
-  }) {
-    final token = Provider.of<UserProvider>(Get.context!, listen: false).token;
-    if (auth && token.isEmpty) {
-      toast('请先登录');
-      return Get.to(() => LoginPage(),
-          fullscreenDialog: true, transition: Transition.downToUp);
+  }) async {
+    if (auth) {
+      final val = await checkLogin();
+      if (val == null) {
+        return Future.value(null);
+      }
     }
     return Get.toNamed(page);
   }

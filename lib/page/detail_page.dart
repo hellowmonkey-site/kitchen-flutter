@@ -110,7 +110,7 @@ class _DetailPageState extends State<DetailPage> {
       setState(() {});
     } on DioError catch (e) {
       if (e.error['status'] == 10001) {
-        Get.back();
+        Get.back(result: 2);
       }
     } finally {
       BotToast.closeAllLoading();
@@ -464,15 +464,14 @@ class _DetailPageState extends State<DetailPage> {
         IconButton(
           onPressed: () {
             Application.openDialog(
-                title: '确认要删除此菜谱？',
-                onTap: (c) {
-                  if (c) {
-                    RecipeModel.deleteRecipe(data.id).then((value) {
-                      Application.toast('删除成功');
-                      Get.back(result: 1);
-                    });
-                  }
+              title: '确认要删除此菜谱？',
+            ).then((c) {
+              if (c != null) {
+                RecipeModel.deleteRecipe(data.id).then((value) {
+                  Get.back(result: 1);
                 });
+              }
+            });
           },
           icon: const Icon(Icons.delete_outline),
           tooltip: '删除',

@@ -59,21 +59,28 @@ class UserStarModel {
   }
 
   // 添加关注
-  static Future postUserStar(int userId) {
-    return Application.ajax
-        .post('user-star', data: {'user_id': userId}).then((res) {
-      getUserStarList();
-      return res.data['data'];
-    });
+  static Future postUserStar(int userId) async {
+    if (await Application.checkLogin() != null) {
+      return Application.ajax
+          .post('user-star', data: {'user_id': userId}).then((res) {
+        Application.toast('关注成功');
+        getUserStarList();
+        return res.data['data'];
+      });
+    }
   }
 
   // 取消关注
-  static Future deleteUserStar(int userId) {
+  static Future deleteUserStar(int userId) async {
+    if (await Application.checkLogin() == null) {
+      return Future.value(null);
+    }
     final id = Provider.of<UserStarProvider>(Get.context!, listen: false)
         .starList
         .firstWhere((element) => element.starUserId == userId)
         .id;
     return Application.ajax.delete('user-star/$id').then((res) {
+      Application.toast('取消关注成功');
       getUserStarList();
       return res.data['data'];
     });

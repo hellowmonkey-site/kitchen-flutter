@@ -9,7 +9,7 @@ class LoginController extends GetxController {
     final cancel = BotToast.showLoading();
     UserModel.postLogin(username: username, password: password).then((v) {
       Application.toast('登录成功');
-      Get.back();
+      Get.back(result: 1);
     }).whenComplete(() {
       cancel();
     });

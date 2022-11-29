@@ -9,6 +9,7 @@ import 'package:kitchen_flutter/model/recipe_model.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
 import 'package:kitchen_flutter/provider/person_provider.dart';
+import 'package:kitchen_flutter/provider/user_provider.dart';
 import 'package:kitchen_flutter/provider/user_star_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -41,26 +42,11 @@ class _PersonPageState extends State<PersonPage> {
 
   get hasMore => page < totalPage;
 
-  fetchUserData() async {
-    // 填充初始值
-    user = Provider.of<PersonProvider>(context, listen: false)
-        .personList
-        .firstWhere(
-          (element) => id == element.id,
-          orElse: () => defaultUserModel,
-        );
-    setState(() {});
-
-    // 获取数据
-    user = await UserModel.getPersonDetail(id);
-    setState(() {});
-  }
-
-  fetchData() {
+  Future fetchData() {
     setState(() {
       loading = true;
     });
-    return RecipeModel.getRecipePageList(userId: id, page: page).then((data) {
+    return UserModel.getUserRecipePageList(userId: id, page: page).then((data) {
       page = data.page;
       totalPage = data.pageCount;
       if (page == 1) {
@@ -78,10 +64,33 @@ class _PersonPageState extends State<PersonPage> {
 
   @override
   void initState() {
-    fetchUserData();
-    final cancel = BotToast.showLoading(backgroundColor: Colors.transparent);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    PersonProvider personProvider =
+        Provider.of<PersonProvider>(context, listen: false);
+
+    // 填充初始值
+    if (userProvider.user.id == id) {
+      user = userProvider.user;
+      dataList = userProvider.userRecipeList;
+    } else {
+      user = personProvider.personList.firstWhere(
+        (element) => id == element.id,
+        orElse: () => defaultUserModel,
+      );
+      UserModel.getPersonDetail(id).then((value) {
+        setState(() {
+          user = value;
+        });
+      });
+    }
+    setState(() {});
+
+    if (dataList.isEmpty) {
+      BotToast.showLoading(backgroundColor: Colors.transparent);
+    }
     fetchData().whenComplete(() {
-      cancel();
+      BotToast.closeAllLoading();
     });
 
     // 监听滚动
@@ -160,14 +169,12 @@ class _PersonPageState extends State<PersonPage> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.only(left: 10, right: 5),
-                        child: RecipeItemComponent(item1),
+                        child: _recipeItem(item1),
                       )),
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.only(right: 10, left: 5),
-                        child: item2 == null
-                            ? Container()
-                            : RecipeItemComponent(item2),
+                        child: _recipeItem(item2),
                       ))
                     ],
                   );
@@ -206,8 +213,23 @@ class _PersonPageState extends State<PersonPage> {
 
   List<Widget> _actions() {
     UserStarProvider userStarProvider = Provider.of<UserStarProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return [
+      if (userProvider.user.id == id)
+        IconButton(
+            tooltip: '发布新菜谱',
+            onPressed: () {
+              Get.toNamed('/publish')?.then((value) {
+                if (value != null) {
+                  page = 1;
+                  fetchData();
+                }
+              });
+            },
+            icon: const Icon(
+              Icons.add,
+            )),
       if (userStarProvider.starUserIds.contains(user.id))
         IconButton(
             tooltip: '点击取消关注',
@@ -279,8 +301,7 @@ class _PersonPageState extends State<PersonPage> {
                             title: '个性签名',
                             cancelText: '',
                             confirmText: '关闭',
-                            content: user.samp,
-                            onTap: (c) {});
+                            content: user.samp);
                       },
                       child: Text(
                         user.samp,
@@ -300,5 +321,20 @@ class _PersonPageState extends State<PersonPage> {
         ),
       ),
     );
+  }
+
+  _recipeItem(RecipeItemModel? item) {
+    return item == null
+        ? const SizedBox()
+        : InkWell(
+            child: RecipeItemComponent(item),
+            onTap: () {
+              Get.toNamed('/detail/${item.id}')?.then((value) {
+                if (value != null) {
+                  page = 1;
+                  fetchData();
+                }
+              });
+            });
   }
 }

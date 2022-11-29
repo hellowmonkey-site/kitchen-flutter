@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/recipe_model.dart';
 import 'package:kitchen_flutter/model/user_model.dart';
 
 class UserProvider with ChangeNotifier {
   UserModel _user = defaultUserModel;
+  List<RecipeItemModel> _userRecipeList = [];
 
   UserProvider() {
     // 初始化
@@ -33,6 +35,8 @@ class UserProvider with ChangeNotifier {
 
   bool get isLogined => token.isNotEmpty;
 
+  List<RecipeItemModel> get userRecipeList => _userRecipeList;
+
   setUser(UserModel data) {
     if (data == null || data.id == null || data.id == 0) {
       _user = defaultUserModel;
@@ -43,5 +47,9 @@ class UserProvider with ChangeNotifier {
           .setString('user', json.encode(_user.toJson()).toString());
     }
     notifyListeners();
+  }
+
+  setUserRecipeList(List<RecipeItemModel> data) {
+    _userRecipeList = data;
   }
 }

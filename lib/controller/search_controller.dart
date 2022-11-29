@@ -73,7 +73,7 @@ class SearchController extends GetxController {
   // 搜索
   handleSearch() {
     focusNode.unfocus();
-    Application.navigateTo(
+    Get.toNamed(
         '/list?keywords=${keywords.value}&categorys=${selectedCategory.value.join(',')}');
   }
 

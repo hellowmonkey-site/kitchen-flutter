@@ -17,7 +17,23 @@ class UserPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          _userBox(),
+          Container(
+            decoration: BoxDecoration(
+                boxShadow: [
+                  if (!Get.isDarkMode)
+                    BoxShadow(
+                        color: Theme.of(context).primaryColor.withOpacity(.6),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3))
+                ],
+                color: Get.isDarkMode
+                    ? Theme.of(context).bottomAppBarColor
+                    : Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(20)),
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
+            child: _userBox(),
+          ),
           Expanded(
               child: SingleChildScrollView(
             child: Column(
@@ -76,14 +92,14 @@ class UserPage extends StatelessWidget {
                       Application.toast('已是最新版本');
                     } else {
                       Application.openDialog(
-                          title: '发现新版本',
-                          content: info.description,
-                          confirmText: '立即更新',
-                          onTap: (c) {
-                            if (c) {
-                              Application.openUrl(info.downloadUrl);
-                            }
-                          });
+                        title: '发现新版本',
+                        content: info.description,
+                        confirmText: '立即更新',
+                      ).then((c) {
+                        if (c != null) {
+                          Application.openUrl(info.downloadUrl);
+                        }
+                      });
                     }
                   },
                 ),
@@ -98,105 +114,88 @@ class UserPage extends StatelessWidget {
   Widget _userBox() {
     UserProvider userProvider = Provider.of<UserProvider>(Get.context!);
 
-    return Container(
-      decoration: BoxDecoration(
-          boxShadow: [
-            if (!Get.isDarkMode)
-              BoxShadow(
-                  color: Theme.of(Get.context!).primaryColor.withOpacity(.6),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3))
-          ],
-          color: Get.isDarkMode
-              ? Theme.of(Get.context!).bottomAppBarColor
-              : Theme.of(Get.context!).primaryColor,
-          borderRadius: BorderRadius.circular(20)),
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 70,
-            height: 70,
-            child: userProvider.user.cover.isEmpty
-                ? const CircleAvatar(
-                    backgroundImage: AssetImage(
-                      'static/image/splash/logo.png',
-                    ),
-                  )
-                : GestureDetector(
-                    onTap: () {
-                      Application.showImagePreview(userProvider.user.cover);
-                    },
-                    child: Hero(
-                        tag: 'person-item-${userProvider.user.id}',
-                        child: userAvatar(userProvider.user.cover, size: 70)),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 70,
+          height: 70,
+          child: userProvider.user.cover.isEmpty
+              ? const CircleAvatar(
+                  backgroundImage: AssetImage(
+                    'static/image/splash/logo.png',
                   ),
-          ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        userProvider.isLogined ? userProvider.username : '请先登录',
-                        maxLines: 1,
-                        style:
-                            const TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: Text(
-                            userProvider.isLogined
-                                ? userProvider.user.samp.isEmpty
-                                    ? '暂无个性签名'
-                                    : userProvider.user.samp
-                                : '',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                            ),
-                          ))
-                    ],
-                  ),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    Application.showImagePreview(userProvider.user.cover);
+                  },
+                  child: Hero(
+                      tag: 'person-item-${userProvider.user.id}',
+                      child: userAvatar(userProvider.user.cover, size: 70)),
                 ),
-                if (userProvider.isLogined)
-                  IconButton(
-                      onPressed: () {
-                        Application.openDialog(
-                            title: '退出登录',
-                            onTap: (confirm) {
-                              if (confirm) {
-                                userProvider.setUser(defaultUserModel);
-                              }
-                            });
-                      },
-                      icon: const Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                      ))
-                else
-                  IconButton(
-                      onPressed: () {
-                        Get.toNamed('/login');
-                      },
-                      icon: const Icon(
-                        Icons.login,
-                        color: Colors.white,
-                      ))
-              ],
-            ),
-          ))
-        ],
-      ),
+        ),
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      userProvider.isLogined ? userProvider.username : '请先登录',
+                      maxLines: 1,
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text(
+                          userProvider.isLogined
+                              ? userProvider.user.samp.isEmpty
+                                  ? '暂无个性签名'
+                                  : userProvider.user.samp
+                              : '',
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.5),
+                          ),
+                        ))
+                  ],
+                ),
+              ),
+              if (userProvider.isLogined)
+                IconButton(
+                    onPressed: () {
+                      Application.openDialog(
+                        title: '退出登录',
+                      ).then((c) {
+                        if (c != null) {
+                          userProvider.setUser(defaultUserModel);
+                        }
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ))
+              else
+                IconButton(
+                    onPressed: () {
+                      Get.toNamed('/login');
+                    },
+                    icon: const Icon(
+                      Icons.login,
+                      color: Colors.white,
+                    ))
+            ],
+          ),
+        ))
+      ],
     );
   }
 }

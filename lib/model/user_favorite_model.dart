@@ -63,21 +63,28 @@ class UserFavoriteModel {
   }
 
   // 添加收藏
-  static Future postUserFavorite(int recipeId) {
-    return Application.ajax
-        .post('user-favorite', data: {'recipe_id': recipeId}).then((res) {
-      getUserFavoriteList();
-      return res.data['data'];
-    });
+  static Future postUserFavorite(int recipeId) async {
+    if (await Application.checkLogin() != null) {
+      return Application.ajax
+          .post('user-favorite', data: {'recipe_id': recipeId}).then((res) {
+        Application.toast('收藏成功');
+        getUserFavoriteList();
+        return res.data['data'];
+      });
+    }
   }
 
   // 取消收藏
-  static Future deleteUserFavorite(int recipeId) {
+  static Future deleteUserFavorite(int recipeId) async {
+    if (await Application.checkLogin() == null) {
+      return Future.value(null);
+    }
     final id = Provider.of<UserFavoriteProvider>(Get.context!, listen: false)
         .favoriteList
         .firstWhere((element) => element.recipeId == recipeId)
         .id;
     return Application.ajax.delete('user-favorite/$id').then((res) {
+      Application.toast('取消收藏成功');
       getUserFavoriteList();
       return res.data['data'];
     });

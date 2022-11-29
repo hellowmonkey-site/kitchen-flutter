@@ -69,6 +69,7 @@ class UserHistoryModel {
   // 清空浏览记录
   static Future clearUserHistory() {
     return Application.ajax.delete('user/recipe-history/clear').then((value) {
+      Application.toast('清空浏览记录成功');
       return getUserHistoryList();
     });
   }
@@ -76,6 +77,7 @@ class UserHistoryModel {
   // 删除浏览记录
   static Future deleteUserHistory(int id) {
     return Application.ajax.delete('user/recipe-history/$id').then((value) {
+      Application.toast('删除浏览记录成功');
       return getUserHistoryList();
     });
   }

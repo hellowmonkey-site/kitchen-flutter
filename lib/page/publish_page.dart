@@ -182,8 +182,7 @@ class _PublishPageState extends State<PublishPage> {
         onPressed: () {
           final calcel = BotToast.showLoading();
           RecipeModel.postRecipe(recipeInput).then((value) {
-            Application.toast('发布成功');
-            Get.back();
+            Get.back(result: 1);
           }).whenComplete(() {
             calcel();
           });

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kitchen_flutter/helper/application.dart';
+import 'package:kitchen_flutter/model/page_data_model.dart';
+import 'package:kitchen_flutter/model/recipe_model.dart';
 import 'package:kitchen_flutter/model/user_favorite_model.dart';
 import 'package:kitchen_flutter/model/user_star_model.dart';
 import 'package:kitchen_flutter/provider/person_provider.dart';
@@ -73,6 +75,8 @@ class UserModel {
       // 获取关注、收藏信息
       UserFavoriteModel.getUserFavoriteList();
       UserStarModel.getUserStarList();
+
+      Application.toast('登录成功');
       return user;
     });
   }
@@ -136,6 +140,23 @@ class UserModel {
       ]);
 
       return user;
+    });
+  }
+
+  // 我的主页
+  static Future<PageDataModel<RecipeItemModel>> getUserRecipePageList(
+      {int page = 1, int? userId}) {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(Get.context!, listen: false);
+
+    userId ??= userProvider.user.id;
+
+    return RecipeModel.getRecipePageList(page: page, userId: userId)
+        .then((data) {
+      if (data.page == 1 && userId == userProvider.user.id) {
+        userProvider.setUserRecipeList(data.data);
+      }
+      return data;
     });
   }
 }

@@ -111,7 +111,7 @@ class RecipeInputModel {
 class RecipeModel {
   // 分页获取菜谱
   static Future<PageDataModel<RecipeItemModel>> getRecipePageList(
-      {page = 1, String? keywords, String? categorys, int? userId}) {
+      {int page = 1, String? keywords, String? categorys, int? userId}) {
     return Application.ajax.get('recipe/page-list', queryParameters: {
       'page': page,
       'keywords': keywords,
@@ -176,17 +176,21 @@ class RecipeModel {
   }
 
   // 发布菜谱
-  static Future postRecipe(RecipeInputModel input) {
-    return Application.ajax
-        .post('recipe', data: input.toJson())
-        .then((res) => res.data['data']);
+  static Future postRecipe(RecipeInputModel input) async {
+    if (await Application.checkLogin() != null) {
+      return Application.ajax.post('recipe', data: input.toJson()).then((res) {
+        Application.toast('发布成功');
+        return res.data['data'];
+      });
+    }
   }
 
   // 删除菜谱
   static Future deleteRecipe(int id) {
-    return Application.ajax
-        .delete('recipe/$id')
-        .then((res) => res.data['data']);
+    return Application.ajax.delete('recipe/$id').then((res) {
+      Application.toast('删除成功');
+      return res.data['data'];
+    });
   }
 }
 
