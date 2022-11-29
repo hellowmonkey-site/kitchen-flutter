@@ -4,7 +4,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
-import 'package:kitchen_flutter/helper/application.dart';
 import 'package:kitchen_flutter/model/category_model.dart';
 import 'package:kitchen_flutter/provider/recipe_provider.dart';
 import 'package:provider/provider.dart';

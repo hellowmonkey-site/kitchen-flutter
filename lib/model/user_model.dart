@@ -82,7 +82,7 @@ class UserModel {
   }
 
   // 获取用户信息
-  static Future<UserModel> getUserInfo() {
+  static Future getUserInfo() {
     return Application.ajax.get('user/info').then((res) {
       final user = UserModel.fromJson(res.data['data']);
 
@@ -100,8 +100,9 @@ class UserModel {
       // 获取关注、收藏信息
       UserFavoriteModel.getUserFavoriteList();
       UserStarModel.getUserStarList();
-
-      return user;
+    }).catchError((e) {
+      Provider.of<UserProvider>(Get.context!, listen: false)
+          .setUser(defaultUserModel);
     });
   }
 
